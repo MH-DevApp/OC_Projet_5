@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" testdox="true" colors="true" cacheResult="false" cacheDirectory=".phpunit.cache" requireCoverageMetadata="true">
+  <coverage>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <html outputDirectory="coverage"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Functional tests">
+      <directory suffix=".php">tests</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
