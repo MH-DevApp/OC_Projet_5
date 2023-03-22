@@ -14,4 +14,13 @@
 
 declare(strict_types=1);
 
+use App\Factory\Utils\DotEnv\DotEnv;
+use App\Factory\Utils\DotEnv\DotEnvException;
+
 require_once "../vendor/autoload.php";
+
+try {
+    (new DotEnv())->load();
+} catch (DotEnvException $e) {
+    print_r($e->getMessage());
+}
