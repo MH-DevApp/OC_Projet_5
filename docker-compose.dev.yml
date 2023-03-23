@@ -27,7 +27,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: Docker/Dockerfile.php
+      dockerfile: Docker/php.dockerfile
     volumes:
       - type: bind
         source: ./app
