@@ -42,7 +42,7 @@ class Route
      * Construct
      *
      * @param string                $path    Path route (for example /posts or
-                                    /posts/:id with params)
+                                       /posts/:id with params)
      * @param string                $name    Name of route (for example app_posts)
      * @param array<string, string> $regexs  [Optional] array of regexs for params
      * @param array<int, string>    $methods [Optional] array of methods, by default GET
@@ -55,7 +55,7 @@ class Route
     ) {
         $this->path = trim($this->path, "/");
 
-        // Replace to remove bracket open
+        // Replace to remove bracket open.
         foreach ($this->regexs as $key => $value) {
             $this->regexs[$key] = str_replace('(', '(?:', $value);
         }
@@ -67,7 +67,7 @@ class Route
      * Math all params between URL and path.
      * If match then return true else false.
      *
-     * @param string $url
+     * @param string $url This URI of the request
      *
      * @return bool
      */
@@ -77,8 +77,8 @@ class Route
         $path = preg_replace_callback(
             '#:(\w+)#',
             [
-                $this,
-                'paramMatch'
+             $this,
+             'paramMatch'
             ],
             $this->path
         );
@@ -86,13 +86,14 @@ class Route
 
         /*
          * Return false if no match with regex path else
-         * get all params of the url matches with regex path
+         * get all params of the url matches with regex path.
          */
-        if (preg_match($regex, $url, $matches) === false) {
+
+        if (preg_match($regex, $url, $matches) !== PREG_SPLIT_NO_EMPTY) {
             return false;
         }
 
-        // Remove first item and keep matches word
+        // Remove first item and keep matches word.
         array_shift($matches);
         $this->params = $matches;
 
@@ -113,10 +114,9 @@ class Route
     {
         if (isset($this->regexs[$match[1]]) === true) {
             return '('.$this->regexs[$match[1]].')';
-
         }
 
-        // Return default regex value
+        // Return default regex value.
         return '([^/]+)';
 
     }
