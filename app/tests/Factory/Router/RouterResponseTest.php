@@ -37,6 +37,8 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Response::class)]
 class RouterResponseTest extends TestCase
 {
+
+
     /**
      * Test should be get response ok with html/text.
      *
@@ -50,13 +52,15 @@ class RouterResponseTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
+        $content = (ob_get_contents() !== false)
+            ? ob_get_contents()
+            : "";
         ob_end_clean();
 
         $this->assertStringContainsString("Test", $content);
         $this->assertEquals(200, http_response_code());
 
-    }
+    } // end itGetResponseOkHtmlText()
 
 
     /**
@@ -72,13 +76,15 @@ class RouterResponseTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
+        $content = (ob_get_contents() !== false)
+            ? ob_get_contents()
+            : "";
         ob_end_clean();
 
         $this->assertStringContainsString("Not Found", $content);
         $this->assertEquals(404, http_response_code());
 
-    }
+    } // end itGetResponseNotFound()
 
 
     /**
@@ -91,19 +97,24 @@ class RouterResponseTest extends TestCase
     public function itGetResponseOkWithJson(): void
     {
         $response = new Response(
-            json_encode(["name" => "test", "id" => 123]) ?: "",
+            (json_encode(["name" => "test", "id" => 123]) !== false)
+                ? json_encode(["name" => "test", "id" => 123])
+                : "",
             200,
             ["Content-Type: application/json"]
         );
 
         ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
+        $content = (ob_get_contents() !== false)
+            ? ob_get_contents()
+            : "";
         ob_end_clean();
 
         $this->assertStringContainsString("{\"name\":\"test\",\"id\":123}", $content);
         $this->assertEquals(200, http_response_code());
 
-    }
+    } // end itGetResponseOkWithJson()
+
 
 }
