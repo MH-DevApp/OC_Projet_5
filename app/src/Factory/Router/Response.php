@@ -32,19 +32,21 @@ namespace App\Factory\Router;
 class Response
 {
 
+
     /**
      * Construct
      *
-     * @param string|null        $content [Optional] Text to render
+     * @param string             $content [Optional] Text to render
      * @param int                $status  [Optional] Status code to response
      * @param array<int, string> $headers [Optional] headers to response
      */
     public function __construct(
-        private readonly ?string $content = '',
-        private readonly int $status = 200,
-        private readonly array $headers = ['Content-Type: text/html; charset=utf-8'])
-    {
+        private readonly string $content="",
+        private readonly int $status=200,
+        private readonly array $headers=['Content-Type: text/html; charset=utf-8']
+    ) {
         http_response_code($this->status);
+
     }
 
 
@@ -58,7 +60,9 @@ class Response
         foreach ($this->headers as $header) {
             header($header);
         }
-        echo $this->content;
+
+        echo htmlspecialchars($this->content, ENT_QUOTES, "UTF-8");
+
     }
 
 
