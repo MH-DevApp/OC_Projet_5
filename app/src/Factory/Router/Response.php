@@ -60,6 +60,7 @@ class Response
         foreach ($this->headers as $header) {
             header($header);
         }
+
         echo $this->content;
 
     }

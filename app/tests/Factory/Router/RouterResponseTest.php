@@ -52,9 +52,9 @@ class RouterResponseTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = (ob_get_contents() !== false)
-            ? ob_get_contents()
-            : "";
+        $content = (ob_get_contents() !== false) ?
+            ob_get_contents() :
+            "";
         ob_end_clean();
 
         $this->assertStringContainsString("Test", $content);
@@ -76,9 +76,9 @@ class RouterResponseTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = (ob_get_contents() !== false)
-            ? ob_get_contents()
-            : "";
+        $content = (ob_get_contents() !== false) ?
+            ob_get_contents() :
+            "";
         ob_end_clean();
 
         $this->assertStringContainsString("Not Found", $content);
