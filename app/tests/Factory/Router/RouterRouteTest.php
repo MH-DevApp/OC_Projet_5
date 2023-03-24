@@ -101,14 +101,13 @@ class RouterRouteTest extends TestCase
             "/test/:id/:slug",
             "app_test_id_and_slug",
             [
-                "id" => "[0-9]+",
-                "slug" => "([a-z\-0-9])+"
+            "id" => "[0-9]+",
+            "slug" => "([a-z\-0-9])+"
             ],
             [
-                "GET",
-                "POST"
-            ]
-
+            "GET",
+            "POST"
+            ],
         );
 
         $this->assertTrue($route->match("/test/1/hello"));
