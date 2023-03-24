@@ -61,7 +61,7 @@ class Response
             header($header);
         }
 
-        echo $this->content;
+        echo htmlspecialchars($this->content);
 
     }
 
