@@ -52,15 +52,17 @@ class RouterResponseTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = (ob_get_contents() !== false) ?
-            ob_get_contents() :
-            "";
+        $obContent = "";
+        if (ob_get_contents() !== false) {
+            $obContent = ob_get_contents();
+        }
+
         ob_end_clean();
 
-        $this->assertStringContainsString("Test", $content);
+        $this->assertStringContainsString("Test", $obContent);
         $this->assertEquals(200, http_response_code());
 
-    } // end itGetResponseOkHtmlText()
+    }
 
 
     /**
@@ -76,15 +78,17 @@ class RouterResponseTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = (ob_get_contents() !== false) ?
-            ob_get_contents() :
-            "";
+        $obContent = "";
+        if (ob_get_contents() !== false) {
+            $obContent = ob_get_contents();
+        }
+
         ob_end_clean();
 
-        $this->assertStringContainsString("Not Found", $content);
+        $this->assertStringContainsString("Not Found", $obContent);
         $this->assertEquals(404, http_response_code());
 
-    } // end itGetResponseNotFound()
+    }
 
 
     /**
@@ -96,25 +100,30 @@ class RouterResponseTest extends TestCase
     #[TestDox("should be get response ok with json content")]
     public function itGetResponseOkWithJson(): void
     {
+        $content = "";
+        if (($tmpContent = json_encode(["name" => "test", "id" => 123])) !== false) {
+            $content = $tmpContent;
+        }
+
         $response = new Response(
-            (json_encode(["name" => "test", "id" => 123]) !== false)
-                ? json_encode(["name" => "test", "id" => 123])
-                : "",
+            $content,
             200,
             ["Content-Type: application/json"]
         );
 
         ob_start();
         $response->send();
-        $content = (ob_get_contents() !== false)
-            ? ob_get_contents()
-            : "";
+        $obContent = "";
+        if (ob_get_contents() !== false) {
+            $obContent = ob_get_contents();
+        }
+
         ob_end_clean();
 
-        $this->assertStringContainsString("{\"name\":\"test\",\"id\":123}", $content);
+        $this->assertStringContainsString("{\"name\":\"test\",\"id\":123}", $obContent);
         $this->assertEquals(200, http_response_code());
 
-    } // end itGetResponseOkWithJson()
+    }
 
 
 }
