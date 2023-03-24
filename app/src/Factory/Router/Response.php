@@ -61,7 +61,7 @@ class Response
             header($header);
         }
 
-        echo htmlspecialchars($this->content);
+        echo htmlspecialchars($this->content, ENT_QUOTES, "UTF-8");
 
     }
 
