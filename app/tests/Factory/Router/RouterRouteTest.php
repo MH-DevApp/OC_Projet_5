@@ -100,9 +100,14 @@ class RouterRouteTest extends TestCase
         $route = new Route(
             "/test/:id/:slug",
             "app_test_id_and_slug",
-            ["id" => "[0-9]+", "slug" => "([a-z\-0-9])+"],
-            ["GET", "POST"]
-
+            [
+             "id" => "[0-9]+",
+             "slug" => "([a-z\-0-9])+"
+            ],
+            [
+             "GET",
+             "POST"
+            ],
         );
 
         $this->assertTrue($route->match("/test/1/hello"));
@@ -113,5 +118,6 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(["1", "hello"], $route->getParams());
 
     }
+
 
 }

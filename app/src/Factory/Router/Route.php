@@ -41,31 +41,33 @@ class Route
     /**
      * Construct
      *
-     * @param string $path Path route (for example /posts or
-     *                                 /posts/:id with params)
-     * @param string $name Name of route (for example app_posts)
-     * @param array<string, string> $regexs [Optional] array of regexs for params
-     * @param array<int, string> $methods [Optional] array of methods, by default GET
+     * @param string                $path    Path route (for example /posts or
+                                       /posts/:id with params)
+     * @param string                $name    Name of route (for example app_posts)
+     * @param array<string, string> $regexs  [Optional] array of regexs for params
+     * @param array<int, string>    $methods [Optional] array of methods, by default GET
      */
     public function __construct(
-        private string          $path,
+        private string $path,
         private readonly string $name,
-        private array           $regexs=[],
-        private readonly array  $methods=["GET"]
+        private array $regexs=[],
+        private readonly array $methods=["GET"]
     ) {
         $this->path = trim($this->path, "/");
 
-        // replace to remove bracket open
+        // Replace to remove bracket open.
         foreach ($this->regexs as $key => $value) {
             $this->regexs[$key] = str_replace('(', '(?:', $value);
-
         }
 
     }
 
 
     /**
-     * @param string $url
+     * Math all params between URL and path.
+     * If match then return true else false.
+     *
+     * @param string $url This URI of the request
      *
      * @return bool
      */
@@ -74,20 +76,24 @@ class Route
         $url = trim($url, '/');
         $path = preg_replace_callback(
             '#:(\w+)#',
-            [$this, 'paramMatch'],
+            [
+             $this,
+             'paramMatch'
+            ],
             $this->path
         );
         $regex = "#^$path$#i";
 
-        /**
+        /*
          * Return false if no match with regex path else
-         * get all params of the url matches with regex path
+         * get all params of the url matches with regex path.
          */
-        if (!preg_match($regex, $url, $matches)) {
+
+        if (preg_match($regex, $url, $matches) !== PREG_SPLIT_NO_EMPTY) {
             return false;
         }
 
-        // remove first item and keep matches word
+        // Remove first item and keep matches word.
         array_shift($matches);
         $this->params = $matches;
 
@@ -100,18 +106,17 @@ class Route
      * Get regex if defined else return default
      * regex value
      *
-     * @param array<int, string> $match
+     * @param array<int, string> $match Param in path
      *
      * @return string
      */
     private function paramMatch(array $match): string
     {
-        if (isset($this->regexs[$match[1]])) {
+        if (isset($this->regexs[$match[1]]) === true) {
             return '('.$this->regexs[$match[1]].')';
-
         }
 
-        // return default regex value
+        // Return default regex value.
         return '([^/]+)';
 
     }
