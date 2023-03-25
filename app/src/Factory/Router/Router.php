@@ -42,7 +42,8 @@ class Router
     /**
      * Construct
      */
-    public function __construct() {
+    public function __construct()
+    {
         /*
          * @Todo: Make a file contains all routes.
          */
@@ -99,8 +100,7 @@ class Router
 
         foreach ($this->routes[$request->getMethod()] as $route) {
             if ($route->match($request->getURI()) === true) {
-
-                // @Todo : Render Twig template into content param of the response
+                // @Todo : Render Twig template into content param of the response.
                 return new Response("SUCCESS");
             }
         }
