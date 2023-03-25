@@ -14,23 +14,25 @@
 
 declare(strict_types=1);
 
-use App\Factory\Router\Response;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
+use App\Service\Container\Container;
 
 require_once "../vendor/autoload.php";
 
 try {
     (new DotEnv())->load();
-    $dispatchRouter = (new Router())->dispatch();
-    if ($dispatchRouter instanceof Response) {
-        $dispatchRouter->send();
-    } else {
-        header("HTTP/1.0 404 Not Found");
-        exit;
-    }
+    $container = new Container();
+
+    /**
+     * @var Router $router
+     */
+    $router = Container::$containers["services"]["router"];
+    $router->dispatch();
+
 } catch (DotEnvException|RouterException $e) {
     print_r($e->getMessage());
+
 }

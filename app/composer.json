@@ -1,7 +1,7 @@
 {
     "name": "styx/p5-blog",
     "description": "Project number 5 for my Application Developer training - PHP/Symfony from Openclassrooms. Creation of a blog in PHP.",
-    "license": "MIT Licence",
+    "license": "MIT",
     "authors": [
         {
             "name": "Mehdi Haddou",
@@ -19,7 +19,8 @@
         "make:env": "php scripts/DotEnvScript.php"
     },
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "ext-yaml": "*"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.10",

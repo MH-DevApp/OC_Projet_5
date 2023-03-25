@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace App\Factory\Router;
 
+use App\Service\Container\ContainerInterface;
+
 /**
  * Request class
  * Manage all globals variables :
@@ -30,7 +32,7 @@ namespace App\Factory\Router;
  * @license  MIT Licence
  * @link     https://p5.mehdi-haddou.fr
  */
-class Request
+class Request implements ContainerInterface
 {
     private string $_method = "";
     /** @var array<string, string> $_get */

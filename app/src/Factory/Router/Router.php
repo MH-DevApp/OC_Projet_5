@@ -17,6 +17,8 @@ declare(strict_types=1);
 namespace App\Factory\Router;
 
 
+use App\Service\Container\ContainerInterface;
+
 /**
  * Router class
  * Manage the routing application and contains
@@ -30,7 +32,7 @@ namespace App\Factory\Router;
  * @license  MIT Licence
  * @link     https://p5.mehdi-haddou.fr
  */
-class Router
+class Router implements ContainerInterface
 {
 
     /**
@@ -44,13 +46,6 @@ class Router
      */
     public function __construct()
     {
-        /*
-         * @Todo: Make a file contains all routes.
-         */
-
-        /*
-         * @Todo: Try found tips to use Attributes on Controllers.
-         */
 
         $routes = [new Route("/", "app_home")];
 
@@ -100,7 +95,6 @@ class Router
 
         foreach ($this->routes[$request->getMethod()] as $route) {
             if ($route->match($request->getURI()) === true) {
-                // @Todo : Render Twig template into content param of the response.
                 return new Response("SUCCESS");
             }
         }
