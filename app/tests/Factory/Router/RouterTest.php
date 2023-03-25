@@ -66,6 +66,7 @@ class RouterTest extends TestCase
         if (ob_get_contents() !== false) {
             $obContent = ob_get_contents();
         }
+
         ob_end_clean();
 
         $this->assertEquals(200, http_response_code());
@@ -95,7 +96,6 @@ class RouterTest extends TestCase
 
         if ($dispatch === false) {
             header("HTTP/1.0 404 Not Found");
-
         }
 
         ob_end_clean();
