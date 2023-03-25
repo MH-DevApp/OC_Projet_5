@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad3178824d9ec27cfc99b49f0591e036",
+    "content-hash": "8fd93a2152505137d40b3b0d4c4a7dd6",
     "packages": [],
     "packages-dev": [
         {
@@ -235,16 +235,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.7",
+            "version": "1.10.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b10ceb526d9607903c5b2673f1fc8775dbe48975"
+                "reference": "0166aef76e066f0dd2adc2799bdadfa1635711e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b10ceb526d9607903c5b2673f1fc8775dbe48975",
-                "reference": "b10ceb526d9607903c5b2673f1fc8775dbe48975",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0166aef76e066f0dd2adc2799bdadfa1635711e9",
+                "reference": "0166aef76e066f0dd2adc2799bdadfa1635711e9",
                 "shasum": ""
             },
             "require": {
@@ -293,7 +293,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-16T15:24:20+00:00"
+            "time": "2023-03-24T10:28:16+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -615,16 +615,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.0.17",
+            "version": "10.0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "b75eddcabca052312ae38c8a2bc69ff1a7b89b77"
+                "reference": "582563ed2edc62d1455cdbe00ea49fe09428eef3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b75eddcabca052312ae38c8a2bc69ff1a7b89b77",
-                "reference": "b75eddcabca052312ae38c8a2bc69ff1a7b89b77",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/582563ed2edc62d1455cdbe00ea49fe09428eef3",
+                "reference": "582563ed2edc62d1455cdbe00ea49fe09428eef3",
                 "shasum": ""
             },
             "require": {
@@ -696,7 +696,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.0.17"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.0.18"
             },
             "funding": [
                 {
@@ -712,7 +712,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-20T14:42:33+00:00"
+            "time": "2023-03-22T06:15:31+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -1016,16 +1016,16 @@
         },
         {
             "name": "sebastian/diff",
-            "version": "5.0.0",
+            "version": "5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "70dd1b20bc198da394ad542e988381b44e64e39f"
+                "reference": "aae9a0a43bff37bd5d8d0311426c87bf36153f02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/70dd1b20bc198da394ad542e988381b44e64e39f",
-                "reference": "70dd1b20bc198da394ad542e988381b44e64e39f",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/aae9a0a43bff37bd5d8d0311426c87bf36153f02",
+                "reference": "aae9a0a43bff37bd5d8d0311426c87bf36153f02",
                 "shasum": ""
             },
             "require": {
@@ -1070,7 +1070,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/diff/issues",
-                "source": "https://github.com/sebastianbergmann/diff/tree/5.0.0"
+                "security": "https://github.com/sebastianbergmann/diff/security/policy",
+                "source": "https://github.com/sebastianbergmann/diff/tree/5.0.1"
             },
             "funding": [
                 {
@@ -1078,7 +1079,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-03T07:00:31+00:00"
+            "time": "2023-03-23T05:12:41+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -1736,7 +1737,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "ext-yaml": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
