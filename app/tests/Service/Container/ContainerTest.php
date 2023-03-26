@@ -25,6 +25,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Test Container cases
@@ -46,20 +47,23 @@ class ContainerTest extends TestCase
      * Test should be loaded all service in container of services.
      *
      * @return void
+     *
+     * @throws ReflectionException
      */
     #[Test]
     #[TestDox("should be loaded all service in container of services")]
     public function itLoadAllServices(): void
     {
-        $container = new Container();
+        Container::loadServices();
 
-        foreach (Container::$containers["services"] as $service)
-        {
+        $this->assertCount(2, Container::getServices());
+
+        foreach (Container::getServices() as $service) {
             $this->assertInstanceOf(ContainerInterface::class, $service);
         }
 
-        $this->assertInstanceOf(Request::class, Container::$containers["services"]["request"]);
-        $this->assertInstanceOf(Router::class, Container::$containers["services"]["router"]);
+        $this->assertInstanceOf(Request::class, Container::getService("request"));
+        $this->assertInstanceOf(Router::class, Container::getService("router"));
 
     }
 
