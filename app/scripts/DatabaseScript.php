@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace scripts;
 
 
+use App\Database\DatabaseException;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use PDO;
@@ -61,7 +62,7 @@ $result = $pdo->query("CREATE DATABASE IF NOT EXISTS $dbname COLLATE utf8mb4_gen
 if (!$result) {
     echo "- An error occurred while creating the database.\n";
     echo "- The script has stopped.\n";
-    exit;
+    return;
 }
 
 echo "- Database has created successfully.\n\n";
