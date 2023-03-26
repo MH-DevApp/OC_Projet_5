@@ -20,10 +20,13 @@ namespace tests\Factory\Router;
 use App\Factory\Router\Response;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
+use App\Service\Container\Container;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Test Router cases
@@ -46,7 +49,9 @@ class RouterTest extends TestCase
      * of the router.
      *
      * @return void
+     *
      * @throws RouterException
+     * @throws ReflectionException
      */
     #[Test]
     #[TestDox("should be get Response SUCCESS value with the dispatch of the router")]
@@ -54,6 +59,7 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/";
         $_SERVER["REQUEST_METHOD"] = "GET";
+        Container::loadServices();
 
         $router = new Router();
         $dispatch = $router->dispatch();
@@ -81,6 +87,7 @@ class RouterTest extends TestCase
      *
      * @return void
      * @throws RouterException
+     * @throws ReflectionException
      */
     #[Test]
     #[TestDox("should be get Response FAILED with the dispatch of the router")]
@@ -88,6 +95,7 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/posts";
         $_SERVER["REQUEST_METHOD"] = "GET";
+        Container::loadServices();
 
         $router = new Router();
         $dispatch = $router->dispatch();
@@ -112,6 +120,7 @@ class RouterTest extends TestCase
      *
      * @return void
      * @throws RouterException
+     * @throws ReflectionException
      */
     #[Test]
     #[TestDox("should be get router exception because set request method not exist")]
@@ -119,6 +128,7 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/";
         $_SERVER["REQUEST_METHOD"] = "PUT";
+        Container::loadServices();
 
         $this->expectException(RouterException::class);
         $this->expectExceptionMessage("REQUEST_METHOD does not exist.");
