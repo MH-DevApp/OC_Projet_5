@@ -35,24 +35,13 @@ use ReflectionException;
  * @license  MIT Licence
  * @link     https://p5.mehdi-haddou.fr
  */
-class Container
+abstract class Container
 {
 
     /**
-     * @var array<string, ContainerInterface> $containers
+     * @var array<string, array<string, ContainerInterface>> $containers
      */
-    public static array $containers = [];
-
-
-    /**
-     * Construct
-     *
-     * @throws ReflectionException
-     */
-    public function __construct()
-    {
-        $this->loadServices();
-    }
+    private static array $containers = [];
 
 
     /**
@@ -60,16 +49,43 @@ class Container
      *
      * @throws ReflectionException
      */
-    private function loadServices(): void
+    public static function loadServices(): void
     {
         $services = yaml_parse_file(__DIR__.'/../../../config/services.yml');
 
         foreach ($services["services"] as $key => $service) {
             $class = new ReflectionClass($service);
-            self::$containers["services"][$key] = $class->newInstance();
+            static::$containers["services"][$key] = $class->newInstance();
         }
 
-        self::$containers["services"]["router"] = new Router();
+        static::$containers["services"]["router"] = new Router();
+
+    }
+
+
+    /**
+     * Return a service with name
+     *
+     * @param string $name
+     *
+     * @return ?ContainerInterface
+     */
+    public static function getService(string $name): ?ContainerInterface
+    {
+        return static::$containers["services"][$name];
+
+    }
+
+
+    /**
+     * Return container of services
+     *
+     * @return array<string, ContainerInterface>
+     */
+    public static function getServices(): array
+    {
+        return static::$containers["services"];
+
     }
 
 

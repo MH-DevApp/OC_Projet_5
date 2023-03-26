@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Factory\Router;
 
 
+use App\Service\Container\Container;
 use App\Service\Container\ContainerInterface;
 
 /**
@@ -81,7 +82,10 @@ class Router implements ContainerInterface
      */
     public function dispatch(): Response|false
     {
-        $request = new Request();
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
 
         /*
          * First time, check if the request method exist in the routes list.
