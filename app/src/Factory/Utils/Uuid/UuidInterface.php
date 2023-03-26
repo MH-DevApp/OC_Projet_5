@@ -32,6 +32,6 @@ use Exception;
 interface UuidInterface
 {
 
-    static function generate(): string;
+    public static function generate(): string;
 
 }
