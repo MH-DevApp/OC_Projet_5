@@ -111,13 +111,13 @@ class Comment extends AbstractEntity
     /**
      * Set the content of the comment
      *
-     * @param string $content Content of the comment
+     * @param string $commentContent Content of the comment
      *
      * @return self
      */
-    public function setContent(string $content): self
+    public function setContent(string $commentContent): self
     {
-        $this->content = $content;
+        $this->content = $commentContent;
         return $this;
 
     }
@@ -138,18 +138,18 @@ class Comment extends AbstractEntity
     /**
      * Set the date of the created at Comment.
      *
-     * @param DateTime|string $createdAt Date of created at comment
+     * @param DateTime|string $createdAtComment Date of created at comment
      *
      * @return self
      * @throws Exception
      */
-    public function setCreatedAt(DateTime|string $createdAt): self
+    public function setCreatedAt(DateTime|string $createdAtComment): self
     {
-        if (is_string($createdAt)) {
-            $createdAt = new DateTime($createdAt, new DateTimeZone('Europe/Paris'));
+        if (is_string($createdAtComment)) {
+            $createdAtComment = new DateTime($createdAtComment, new DateTimeZone('Europe/Paris'));
         }
 
-        $this->createdAt = $createdAt;
+        $this->createdAt = $createdAtComment;
         return $this;
 
     }
@@ -170,18 +170,18 @@ class Comment extends AbstractEntity
     /**
      * Set the date of the updated at Comment.
      *
-     * @param DateTime|string $updatedAt Date of updated at comment ²
+     * @param DateTime|string $updatedAtComment Date of updated at comment
      *
      * @return self
      * @throws Exception
      */
-    public function setUpdatedAt(DateTime|string $updatedAt): self
+    public function setUpdatedAt(DateTime|string $updatedAtComment): self
     {
-        if (is_string($updatedAt)) {
-            $updatedAt = new DateTime($updatedAt, new DateTimeZone('Europe/Paris'));
+        if (is_string($updatedAtComment)) {
+            $updatedAtComment = new DateTime($updatedAtComment, new DateTimeZone('Europe/Paris'));
         }
 
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $updatedAtComment;
         return $this;
 
     }
