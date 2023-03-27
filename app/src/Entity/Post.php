@@ -139,13 +139,13 @@ class Post extends AbstractEntity
     /**
      * Set the content of the post
      *
-     * @param string $content Content of the post
+     * @param string $contentPost Content of the post
      *
      * @return self
      */
-    public function setContent(string $content): self
+    public function setContent(string $contentPost): self
     {
-        $this->content = $content;
+        $this->content = $contentPost;
         return $this;
 
     }
@@ -166,18 +166,18 @@ class Post extends AbstractEntity
     /**
      * Set the date of the created at Post.
      *
-     * @param DateTime|string $createdAt Date of created at post
+     * @param DateTime|string $createdAtPost Date of created at post
      *
      * @return self
      * @throws Exception
      */
-    public function setCreatedAt(DateTime|string $createdAt): self
+    public function setCreatedAt(DateTime|string $createdAtPost): self
     {
-        if (is_string($createdAt)) {
-            $createdAt = new DateTime($createdAt, new DateTimeZone('Europe/Paris'));
+        if (is_string($createdAtPost)) {
+            $createdAtPost = new DateTime($createdAtPost, new DateTimeZone('Europe/Paris'));
         }
 
-        $this->createdAt = $createdAt;
+        $this->createdAt = $createdAtPost;
         return $this;
 
     }
@@ -198,18 +198,18 @@ class Post extends AbstractEntity
     /**
      * Set the date of the updated at Post.
      *
-     * @param DateTime|string $updatedAt Date of updated at post
+     * @param DateTime|string $updatedAtPost Date of updated at post
      *
      * @return self
      * @throws Exception
      */
-    public function setUpdatedAt(DateTime|string $updatedAt): self
+    public function setUpdatedAt(DateTime|string $updatedAtPost): self
     {
-        if (is_string($updatedAt)) {
-            $updatedAt = new DateTime($updatedAt, new DateTimeZone('Europe/Paris'));
+        if (is_string($updatedAtPost)) {
+            $updatedAtPost = new DateTime($updatedAtPost, new DateTimeZone('Europe/Paris'));
         }
 
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $updatedAtPost;
         return $this;
 
     }
