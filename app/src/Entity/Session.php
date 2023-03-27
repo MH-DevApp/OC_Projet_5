@@ -22,7 +22,7 @@ use DateTimeZone;
 use Exception;
 
 /**
- * User Entity class
+ * Session Entity class
  *
  * PHP Version 8.1
  *
