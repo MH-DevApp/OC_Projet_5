@@ -96,7 +96,7 @@ echo "- User table has created successfully.\n";
 
 // BLOG POST
 $pdo->query("
-    CREATE TABLE `blog_post` (
+    CREATE TABLE `post` (
         `id` VARCHAR(255) NOT NULL UNIQUE,
         `userId` VARCHAR(255) NOT NULL,
         `title` VARCHAR(255) NOT NULL,
@@ -117,11 +117,11 @@ $pdo->query("
         `userId` VARCHAR (255) NOT NULL,
         `blogPostId` VARCHAR(255) NOT NULL,
         `content` TEXT NOT NULL,
-        `created_at` DATETIME NOT NULL,
-        `updated_at` DATETIME NULL,
+        `createdAt` DATETIME NOT NULL,
+        `updatedAt` DATETIME NULL,
         PRIMARY KEY(`id`),
         FOREIGN KEY(`userId`) REFERENCES `user`(`id`),
-        FOREIGN KEY(`blogPostId`) REFERENCES `blog_post`(`id`)
+        FOREIGN KEY(`blogPostId`) REFERENCES `post`(`id`)
     )
 ");
 echo "- Comment table has created successfully.\n";
