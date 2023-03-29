@@ -42,8 +42,6 @@ abstract class AbstractRepository
      * Construct
      *
      * @param class-string $entityName Class name of entity
-     *
-     * @throws RepositoryException
      */
     public function __construct(protected string $entityName)
     {
@@ -54,18 +52,16 @@ abstract class AbstractRepository
 
 
     /**
-     * @param array<int, string> $select [Optional] Columns selected,
-     *                                   Default value all columns (*)
      * @param array<int, int|class-string> $returnType [Optional] Type Entity for return,
      *                                            Default value []
      *                                            example value : [PDO::FETCH_CLASS, User::class]
      *
      * @return array<int, array<string, string>|AbstractEntity>
      */
-    public function findAll(array $select = ["*"], array $returnType = []): array
+    public function findAll(array $returnType = []): array
     {
         $statement = $this->pdo->prepare(
-            "SELECT ".join(', ', $select).
+            "SELECT *".
             " FROM ".$this->entityName::TABLE_NAME
         );
         $statement->execute();
@@ -79,7 +75,6 @@ abstract class AbstractRepository
      * @param array<string, string> $where [Optional] Search all values where params,
      *                                      Default value [],
      *                                      example : ["id" => "f93af1bf-cace-4d4c-a319-bca215cfa4f4"]
-     * @param array<int, string> $select [Optional] Columns selected,
      *                                   Default value all columns (*)
      * @param array<int|class-string> $returnType [Optional] Type Entity for return,
      *                                            Default value []
@@ -87,9 +82,9 @@ abstract class AbstractRepository
      *
      * @return array<int, array<string, string>|AbstractEntity>
      */
-    public function findBy(array $where = [], array $select = ["*"], array $returnType = []): array
+    public function findBy(array $where = [], array $returnType = []): array
     {
-        $query = "SELECT ".join(', ', $select).
+        $query = "SELECT *".
             " FROM ".$this->entityName::TABLE_NAME;
 
         if (count($where)) {
@@ -111,7 +106,6 @@ abstract class AbstractRepository
      * @param  array<string, string> $where [Optional] Search all values where params,
      *                                      Default value [],
      *                                      example : ["id" => "f93af1bf-cace-4d4c-a319-bca215cfa4f4"]
-     * @param  array<int, string> $select [Optional] Columns selected,
      *                                   Default value all columns (*)
      * @param  class-string|null $classObject [Optional] Entity if not null,
      *                                        Default value is null.
@@ -120,10 +114,9 @@ abstract class AbstractRepository
      */
     public function findByOne(
         array $where,
-        array $select = ["*"],
         ?string $classObject = null
     ): mixed {
-        $query = "SELECT ".join(', ', $select).
+        $query = "SELECT *".
             " FROM ".$this->entityName::TABLE_NAME.
             $this->addWhere($where).
             " LIMIT 1 ";
