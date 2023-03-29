@@ -15,8 +15,8 @@
     },
     "scripts": {
         "tests": [
-            "XDEBUG_MODE=coverage vendor/bin/phpunit -c phpunit.xml",
-            "TEST_PATH=_test php scripts/DatabaseScript.php"
+            "TEST_PATH=_test php scripts/DatabaseScript.php",
+            "XDEBUG_MODE=coverage vendor/bin/phpunit -c phpunit.xml"
         ],
         "analyse": "vendor/bin/phpstan analyse -l 9 public src tests scripts --xdebug;",
         "make:env": "php scripts/DotEnvScript.php",
