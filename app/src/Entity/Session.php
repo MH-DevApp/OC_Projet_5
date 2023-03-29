@@ -35,6 +35,8 @@ use Exception;
 class Session extends AbstractEntity
 {
 
+    const TABLE_NAME = "session";
+
     private ?string $userId = null;
 
 

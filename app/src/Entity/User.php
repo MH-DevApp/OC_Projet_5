@@ -35,16 +35,39 @@ use Exception;
 class User extends AbstractEntity
 {
 
+    const TABLE_NAME = "user";
+
     private ?string $lastname = null;
     private ?string $firstname = null;
     private ?string $pseudo = null;
     private ?string $password = null;
     private ?string $email = null;
     private string $role = "ROLE_USER";
-    private ?DateTime $createdAt = null;
+    private DateTime|string|null $createdAt = null;
     private ?string $forgottenPasswordToken = null;
-    private ?Datetime $expiredTokenAt = null;
+    private Datetime|string|null $expiredTokenAt = null;
 
+    /**
+     * Construct
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        if ($this->createdAt && is_string($this->createdAt)) {
+            $this->createdAt = new DateTime(
+                $this->createdAt,
+                new DateTimeZone("Europe/Paris")
+            );
+        }
+
+        if ($this->expiredTokenAt && is_string($this->expiredTokenAt)) {
+            $this->expiredTokenAt = new DateTime(
+                $this->expiredTokenAt,
+                new DateTimeZone("Europe/Paris")
+            );
+        }
+
+    }
 
     /**
      * Get the Lastname of the User
@@ -212,9 +235,11 @@ class User extends AbstractEntity
     /**
      * Get the date of the created at User
      *
-     * @return DateTime|null
+     * @return DateTime|string|null
+     *
+     * @throws Exception
      */
-    public function getCreatedAt(): DateTime|null
+    public function getCreatedAt(): DateTime|string|null
     {
         return $this->createdAt;
 
@@ -227,6 +252,7 @@ class User extends AbstractEntity
      * @param DateTime|string $createdAt Role of the user
      *
      * @return self
+     *
      * @throws Exception
      */
     public function setCreatedAt(DateTime|string $createdAt): self
@@ -273,9 +299,11 @@ class User extends AbstractEntity
     /**
      * Get the expired date of the token forgotten password.
      *
-     * @return DateTime|null
+     * @return DateTime|string|null
+     *
+     * @throws Exception
      */
-    public function getExpiredTokenAt(): DateTime|null
+    public function getExpiredTokenAt(): DateTime|string|null
     {
         return $this->expiredTokenAt;
 
@@ -287,6 +315,7 @@ class User extends AbstractEntity
      * 5 minutes since generate token forgotten password.
      *
      * @return self
+     *
      * @throws Exception
      */
     public function setExpiredTokenAt(): self
