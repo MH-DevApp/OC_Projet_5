@@ -30,6 +30,7 @@ namespace App\Entity;
  */
 abstract class AbstractEntity
 {
+    const TABLE_NAME = null;
 
     protected ?string $id = null;
 

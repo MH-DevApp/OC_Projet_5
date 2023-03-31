@@ -35,12 +35,36 @@ use Exception;
 class Post extends AbstractEntity
 {
 
+    const TABLE_NAME = "post";
+
     private ?string $userId = null;
     private ?string $title = null;
     private ?string $chapo = null;
     private ?string $content = null;
-    private ?DateTime $createdAt = null;
-    private ?DateTime $updatedAt = null;
+    private DateTime|string|null $createdAt = null;
+    private DateTime|string|null $updatedAt = null;
+
+
+    /**
+     * Construct
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        if ($this->createdAt && is_string($this->createdAt)) {
+            $this->createdAt = new DateTime(
+                $this->createdAt,
+                new DateTimeZone("Europe/Paris")
+            );
+        }
+
+        if ($this->updatedAt && is_string($this->updatedAt)) {
+            $this->updatedAt = new DateTime(
+                $this->updatedAt,
+                new DateTimeZone("Europe/Paris")
+            );
+        }
+    }
 
 
     /**
@@ -58,7 +82,7 @@ class Post extends AbstractEntity
     /**
      * Set the Id author to the post
      *
-     * @param string $userId Id user of the session
+     * @param string $userId Id author of the post
      *
      * @return self
      */
@@ -154,9 +178,11 @@ class Post extends AbstractEntity
     /**
      * Get the date of the created at Post
      *
-     * @return DateTime|null
+     * @return DateTime|string|null
+     *
+     * @throws Exception
      */
-    public function getCreatedAt(): DateTime|null
+    public function getCreatedAt(): DateTime|string|null
     {
         return $this->createdAt;
 
@@ -169,6 +195,7 @@ class Post extends AbstractEntity
      * @param DateTime|string $createdAtPost Date of created at post
      *
      * @return self
+     *
      * @throws Exception
      */
     public function setCreatedAt(DateTime|string $createdAtPost): self
@@ -186,9 +213,11 @@ class Post extends AbstractEntity
     /**
      * Get the date of the updated at Post
      *
-     * @return DateTime|null
+     * @return DateTime|string|null
+     *
+     * @throws Exception
      */
-    public function getUpdatedAt(): DateTime|null
+    public function getUpdatedAt(): DateTime|string|null
     {
         return $this->updatedAt;
 
@@ -201,6 +230,7 @@ class Post extends AbstractEntity
      * @param DateTime|string $updatedAtPost Date of updated at post
      *
      * @return self
+     *
      * @throws Exception
      */
     public function setUpdatedAt(DateTime|string $updatedAtPost): self

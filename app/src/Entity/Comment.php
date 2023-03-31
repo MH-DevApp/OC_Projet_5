@@ -35,11 +35,35 @@ use Exception;
 class Comment extends AbstractEntity
 {
 
+    const TABLE_NAME = "comment";
+
     private ?string $userId = null;
     private ?string $postId = null;
     private ?string $content = null;
-    private ?DateTime $createdAt = null;
-    private ?DateTime $updatedAt = null;
+    private Datetime|string|null $createdAt = null;
+    private Datetime|string|null $updatedAt = null;
+
+
+    /**
+     * Construct
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        if ($this->createdAt && is_string($this->createdAt)) {
+            $this->createdAt = new DateTime(
+                $this->createdAt,
+                new DateTimeZone("Europe/Paris")
+            );
+        }
+
+        if ($this->updatedAt && is_string($this->updatedAt)) {
+            $this->updatedAt = new DateTime(
+                $this->updatedAt,
+                new DateTimeZone("Europe/Paris")
+            );
+        }
+    }
 
 
     /**
@@ -126,9 +150,11 @@ class Comment extends AbstractEntity
     /**
      * Get the date of the created at Comment
      *
-     * @return DateTime|null
+     * @return DateTime|string|null
+     *
+     * @throws Exception
      */
-    public function getCreatedAt(): DateTime|null
+    public function getCreatedAt(): DateTime|string|null
     {
         return $this->createdAt;
 
@@ -141,6 +167,7 @@ class Comment extends AbstractEntity
      * @param DateTime|string $createdAtComment Date of created at comment
      *
      * @return self
+     *
      * @throws Exception
      */
     public function setCreatedAt(DateTime|string $createdAtComment): self
@@ -158,9 +185,11 @@ class Comment extends AbstractEntity
     /**
      * Get the date of the updated at Comment
      *
-     * @return DateTime|null
+     * @return DateTime|string|null
+     *
+     * @throws Exception
      */
-    public function getUpdatedAt(): DateTime|null
+    public function getUpdatedAt(): DateTime|string|null
     {
         return $this->updatedAt;
 
@@ -173,6 +202,7 @@ class Comment extends AbstractEntity
      * @param DateTime|string $updatedAtComment Date of updated at comment
      *
      * @return self
+     *
      * @throws Exception
      */
     public function setUpdatedAt(DateTime|string $updatedAtComment): self
