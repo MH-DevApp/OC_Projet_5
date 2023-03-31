@@ -26,6 +26,7 @@ use App\Repository\AbstractRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
 use DateTime;
+use DateTimeZone;
 use Exception;
 use PDO;
 use PHPUnit\Framework\Attributes\Before;
@@ -190,14 +191,14 @@ class UserRepositoryTest extends TestCase
             ":createdAt",
             (new DateTime(
                 "now",
-                new \DateTimeZone("Europe/Paris")
+                new DateTimeZone("Europe/Paris")
             ))->format(DATE_ATOM)
         );
         $statement->bindValue(
             ":expiredTokenAt",
             (new DateTime(
                 "now",
-                new \DateTimeZone("Europe/Paris")
+                new DateTimeZone("Europe/Paris")
             ))->format(DATE_ATOM)
         );
         $statement->bindValue(":role", "ROLE_USER");
