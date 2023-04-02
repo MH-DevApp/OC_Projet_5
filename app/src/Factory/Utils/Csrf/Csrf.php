@@ -49,12 +49,36 @@ abstract class Csrf
          */
         $request = Container::getService("request");
 
+        /**
+         * @var string $secretKey
+         */
+        $secretKey = $request->getEnv("SECRET_KEY");
+
+        /**
+         * @var string $remoteAddr
+         */
+        $remoteAddr = $request->getServer("REMOTE_ADDR");
+
+        /**
+         * @var string $httpUserAgent
+         */
+        $httpUserAgent = $request->getServer("HTTP_USER_AGENT");
+
+        if (
+            !$secretKey ||
+            !$remoteAddr ||
+            !$httpUserAgent
+        ) {
+            return false;
+
+        }
+
         return hash_hmac(
             'sha256',
             $key,
-            $request->getEnv("SECRET_KEY").
-            $request->getServer("REMOTE_ADDR").
-            $request->getServer("HTTP_USER_AGENT")
+            $secretKey.
+            $remoteAddr.
+            $httpUserAgent
         );
     }
 
@@ -73,10 +97,17 @@ abstract class Csrf
         string $key
     ): bool
     {
-        return hash_equals(
-            self::generateTokenCsrf($key),
-            $token
-        );
+        $tokenKey = self::generateTokenCsrf($key);
+
+        if ($tokenKey) {
+            return hash_equals(
+                $tokenKey,
+                $token
+            );
+        }
+
+        return false;
+
     }
 
 
