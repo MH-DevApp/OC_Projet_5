@@ -45,7 +45,8 @@ class DotEnv
             "APP_ENV",
             "DB_DNS",
             "DB_USER",
-            "DB_PWD"
+            "DB_PWD",
+            "SECRET_KEY"
         ];
     }
 
