@@ -20,6 +20,8 @@ namespace tests\Factory\Router;
 use App\Factory\Router\Response;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
+use App\Factory\Utils\DotEnv\DotEnv;
+use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Service\Container\Container;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -43,6 +45,18 @@ use ReflectionException;
 class RouterTest extends TestCase
 {
 
+    /**
+     * Initialise environment of test
+     *
+     * @return void
+     */
+    #[Before]
+    public function init(): void
+    {
+        $_ENV["TEST_PATH"] = "_test";
+
+    }
+
 
     /**
      * Test should be get Response success value with the dispatch
@@ -52,6 +66,7 @@ class RouterTest extends TestCase
      *
      * @throws RouterException
      * @throws ReflectionException
+     * @throws DotEnvException
      */
     #[Test]
     #[TestDox("should be get Response SUCCESS value with the dispatch of the router")]
@@ -59,8 +74,9 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/";
         $_SERVER["REQUEST_METHOD"] = "GET";
-        Container::loadServices();
+        (new DotEnv())->load();
 
+        Container::loadServices();
         $router = new Router();
         $dispatch = $router->dispatch();
 
@@ -69,6 +85,7 @@ class RouterTest extends TestCase
         ob_start();
         $dispatch->send();
         $obContent = "";
+
         if (ob_get_contents() !== false) {
             $obContent = ob_get_contents();
         }
@@ -88,6 +105,7 @@ class RouterTest extends TestCase
      * @return void
      * @throws RouterException
      * @throws ReflectionException
+     * @throws DotEnvException
      */
     #[Test]
     #[TestDox("should be get Response FAILED with the dispatch of the router")]
@@ -95,8 +113,9 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/posts";
         $_SERVER["REQUEST_METHOD"] = "GET";
-        Container::loadServices();
+        (new DotEnv())->load();
 
+        Container::loadServices();
         $router = new Router();
         $dispatch = $router->dispatch();
 
@@ -121,6 +140,7 @@ class RouterTest extends TestCase
      * @return void
      * @throws RouterException
      * @throws ReflectionException
+     * @throws DotEnvException
      */
     #[Test]
     #[TestDox("should be get router exception because set request method not exist")]
@@ -128,8 +148,9 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/";
         $_SERVER["REQUEST_METHOD"] = "PUT";
-        Container::loadServices();
+        (new DotEnv())->load();
 
+        Container::loadServices();
         $this->expectException(RouterException::class);
         $this->expectExceptionMessage("REQUEST_METHOD does not exist.");
 

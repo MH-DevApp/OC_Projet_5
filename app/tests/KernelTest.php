@@ -20,9 +20,12 @@ namespace tests\Factory\Router;
 use App\Factory\Router\Request;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
+use App\Factory\Utils\DotEnv\DotEnv;
+use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Kernel;
 use App\Service\Container\Container;
 use App\Service\Container\ContainerInterface;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -44,6 +47,17 @@ use ReflectionException;
 class KernelTest extends TestCase
 {
 
+    /**
+     * Initialise environment of test
+     *
+     * @return void
+     */
+    #[Before]
+    public function init(): void
+    {
+        $_ENV["TEST_PATH"] = "_test";
+    }
+
 
     /**
      * Test should be got a response Ok from router.
@@ -51,6 +65,7 @@ class KernelTest extends TestCase
      * @return void
      *
      * @throws RouterException
+     * @throws DotEnvException
      */
     #[Test]
     #[TestDox("should be got a response Ok from router")]
@@ -59,6 +74,7 @@ class KernelTest extends TestCase
         $_SERVER["REQUEST_METHOD"] = "GET";
         $_SERVER["REQUEST_URI"] = "/";
 
+        (new DotEnv())->load();
         $response = (new Kernel())->run();
 
         ob_start();
@@ -78,6 +94,7 @@ class KernelTest extends TestCase
      * @return void
      *
      * @throws RouterException
+     * @throws DotEnvException
      */
     #[Test]
     #[TestDox("should be got a response Not Found from router")]
@@ -86,6 +103,7 @@ class KernelTest extends TestCase
         $_SERVER["REQUEST_METHOD"] = "GET";
         $_SERVER["REQUEST_URI"] = "/posts";
 
+        (new DotEnv())->load();
         $response = (new Kernel())->run();
         $response->send();
 

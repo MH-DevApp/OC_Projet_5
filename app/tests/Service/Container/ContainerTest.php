@@ -17,8 +17,11 @@ declare(strict_types=1);
 namespace tests\Service\Container;
 
 
+use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
 use App\Factory\Router\Router;
+use App\Factory\Utils\DotEnv\DotEnv;
+use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Service\Container\Container;
 use App\Service\Container\ContainerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -49,20 +52,24 @@ class ContainerTest extends TestCase
      * @return void
      *
      * @throws ReflectionException
+     * @throws DotEnvException
      */
     #[Test]
     #[TestDox("should be loaded all service in container of services")]
     public function itLoadAllServices(): void
     {
-        Container::loadServices();
+        $_ENV["TEST_PATH"] = "_test";
+        (new DotEnv())->load();
 
-        $this->assertCount(2, Container::getServices());
+        Container::loadServices();
+        $this->assertCount(3, Container::getServices());
 
         foreach (Container::getServices() as $service) {
             $this->assertInstanceOf(ContainerInterface::class, $service);
         }
 
         $this->assertInstanceOf(Request::class, Container::getService("request"));
+        $this->assertInstanceOf(Manager::class, Container::getService("manager"));
         $this->assertInstanceOf(Router::class, Container::getService("router"));
 
     }
