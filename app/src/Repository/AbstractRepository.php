@@ -17,8 +17,9 @@ declare(strict_types=1);
 namespace App\Repository;
 
 
-use App\Database\Database;
 use App\Entity\AbstractEntity;
+use App\Factory\Manager\Manager;
+use App\Service\Container\Container;
 use PDO;
 
 /**
@@ -45,8 +46,9 @@ abstract class AbstractRepository
      */
     public function __construct(protected string $entityName)
     {
-        $db = new Database();
-        $this->pdo = $db->connect();
+        /** @var Manager $manager */
+        $manager = Container::getService("manager");
+        $this->pdo = $manager->getPDO();
 
     }
 
