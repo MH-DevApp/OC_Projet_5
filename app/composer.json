@@ -5,7 +5,7 @@
     "authors": [
         {
             "name": "Mehdi Haddou",
-            "email": "mehdi.h.devapp@gmail.com"
+            "email": "mehdih.devapp@gmail.com"
         }
     ],
     "autoload": {
@@ -26,7 +26,8 @@
     "require": {
         "php": ">=8.1",
         "ext-yaml": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "twig/twig": "^3.5"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.10",
