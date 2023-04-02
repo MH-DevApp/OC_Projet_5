@@ -42,5 +42,5 @@ try {
     echo "# File .env_test created : it is necessary to modify the default values 
     with your data.".PHP_EOL.PHP_EOL;
 } catch (Exception $e) {
-    print_r($e);
+    echo $e->getMessage();
 }
