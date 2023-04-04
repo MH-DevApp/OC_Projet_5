@@ -41,17 +41,19 @@ abstract class Mapper
      * Map array associative to entity
      *
      * @param array<string, string|int> $obj
-     * @param class-string|string $entityName
+     * @param class-string|string|object $entity
      *
      * @return object|null
      */
     public static function mapArrayToEntity(
         array $obj,
-        string $entityName
+        string|object $entity
     ): ?object
     {
-        if (class_exists($entityName)) {
-            $entity = new $entityName();
+        if (class_exists(is_string($entity) ? $entity : $entity::class)) {
+            $entity = is_string($entity) ?
+                new $entity() :
+                $entity;
 
             if (!$entity instanceof AbstractEntity) {
                 return null;
@@ -64,7 +66,7 @@ abstract class Mapper
                         $key[0] = strtoupper($key[0]);
                         $method = "set".$key;
 
-                        if (method_exists($entity::class, $method)) {
+                        if (method_exists($entity, $method)) {
                             $entity->$method($value);
                         }
 

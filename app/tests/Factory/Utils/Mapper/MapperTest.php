@@ -87,6 +87,9 @@ class MapperTest extends TestCase
         $this->assertInstanceOf(DateTime::class, $entity->getUpdatedAt());
         $this->assertEquals($updatedAt, $entity->getUpdatedAt()->format(DATE_ATOM));
 
+        $postEntity = new Post();
+        $this->assertEquals($postEntity, Mapper::mapArrayToEntity($post, $postEntity));
+
         // Tests cases of null
         $entity = Mapper::mapArrayToEntity([], "App\\ClassNotExist::class");
         $this->assertNull($entity);
