@@ -27,7 +27,8 @@
         "php": ">=8.1",
         "ext-yaml": "*",
         "ext-pdo": "*",
-        "twig/twig": "^3.5"
+        "twig/twig": "^3.5",
+        "phpmailer/phpmailer": "^6.8"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.10",
