@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace tests\Service\Container;
 
 
+use App\Auth\Auth;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
 use App\Factory\Router\Router;
@@ -62,7 +63,7 @@ class ContainerTest extends TestCase
         (new DotEnv())->load();
 
         Container::loadServices();
-        $this->assertCount(3, Container::getServices());
+        $this->assertCount(4, Container::getServices());
 
         foreach (Container::getServices() as $service) {
             $this->assertInstanceOf(ContainerInterface::class, $service);
@@ -70,6 +71,7 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf(Request::class, Container::getService("request"));
         $this->assertInstanceOf(Manager::class, Container::getService("manager"));
+        $this->assertInstanceOf(Auth::class, Container::getService("auth"));
         $this->assertInstanceOf(Router::class, Container::getService("router"));
 
     }
