@@ -19,6 +19,8 @@ namespace scripts;
 use App\Factory\Utils\Uuid\UuidV4;
 use Exception;
 
+require_once __DIR__.'/../vendor/autoload.php';
+
 try {
     echo "# Creation of the '.env' file in the root of the app folder."
         .PHP_EOL.PHP_EOL;
