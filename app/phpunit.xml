@@ -15,6 +15,7 @@
       <directory suffix=".php">tests/Service</directory>
       <directory suffix=".php">tests/Database</directory>
       <directory suffix=".php">tests/Entity</directory>
+      <directory suffix=".php">tests/Auth</directory>
     </testsuite>
     <testsuite name="Tests Repository">
       <file>tests/Repository/UserRepositoryTest.php</file>
