@@ -291,10 +291,18 @@ abstract class AbstractForm
      */
     public function getErrors(): array
     {
+        $errors = [];
+
+        foreach ($this->fields["errors"] as $key => $error) {
+            if (!empty($error)) {
+                $errors[$key] = $error;
+            }
+        }
+
         /**
          * @var array<string, string>
          */
-        return $this->fields["errors"];
+        return $errors;
 
     }
 
