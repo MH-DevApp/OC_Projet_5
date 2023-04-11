@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AbstractForm file
+ * ContactForm file
  *
  * PHP Version 8.1
  *
@@ -17,16 +17,11 @@ declare(strict_types=1);
 namespace App\Factory\Form;
 
 
-use App\Factory\Router\Request;
-use App\Factory\Utils\Csrf\Csrf;
-use App\Factory\Utils\Mapper\Mapper;
-use App\Service\Container\Container;
-
 /**
- * AbstractForm class
+ * ContactForm class
  *
- * Manage forms in the application with sanitize filter,
- * validation and errors.
+ * Contact form builder with sanitize,
+ * validation, and errors for fields.
  *
  * @category PHP
  * @package  OC_P5_BLOG
