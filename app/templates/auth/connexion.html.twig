@@ -1,0 +1,7 @@
+{% if errors and errors|length > 0 %}
+    {% for key, error in errors %}
+        <small id="{{ key }}">{{ error }}</small>
+    {% endfor %}
+{% else %}
+    SUCCESS
+{% endif %}
