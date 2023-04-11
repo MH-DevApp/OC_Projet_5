@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AuthTest file
+ * HomeControllerTest file
  *
  * PHP Version 8.1
  *
@@ -35,7 +35,7 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 /**
- * Test Auth cases
+ * Test HomeController cases
  *
  * PHP Version 8.1
  *
@@ -69,6 +69,7 @@ class HomeControllerTest extends TestCase
         $_SERVER["REQUEST_METHOD"] = "GET";
         $_SERVER["REMOTE_ADDR"] = "Test";
         $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_ENV["TEST_PATH"] = "_test";
 
         (new DotEnv())->load();
         Container::loadServices();
@@ -102,6 +103,7 @@ class HomeControllerTest extends TestCase
         $_SERVER["REQUEST_METHOD"] = "POST";
         $_SERVER["REMOTE_ADDR"] = "Test";
         $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_ENV["TEST_PATH"] = "_test";
         $_POST["email"] = "";
         $_POST["subject"] = "";
         $_POST["message"] = "";
@@ -176,6 +178,7 @@ class HomeControllerTest extends TestCase
         $_SERVER["REQUEST_METHOD"] = "POST";
         $_SERVER["REMOTE_ADDR"] = "Test";
         $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_ENV["TEST_PATH"] = "_test";
         $_POST["email"] = "test@test.fr";
         $_POST["subject"] = "[TEST] Contact Form";
         $_POST["message"] = "This is a test for contact form of home controller";
