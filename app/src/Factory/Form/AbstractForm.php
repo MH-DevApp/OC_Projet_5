@@ -189,7 +189,10 @@ abstract class AbstractForm
         ) ?: [];
 
         if ($this->request->getPost("_csrf")) {
-            $this->fields["data"]["_csrf"] = $this->request->getPost("_csrf");
+            $this->fields["data"]["_csrf"] = filter_var(
+                $this->request->getPost("_csrf"),
+                FILTER_SANITIZE_SPECIAL_CHARS
+            );
         }
 
         if ($this->fields["data"] && $this->entity) {
