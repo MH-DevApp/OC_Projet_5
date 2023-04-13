@@ -18,6 +18,7 @@ namespace App\Repository;
 
 
 use App\Entity\Post;
+use PDO;
 
 /**
  * Post Repository class
@@ -40,14 +41,66 @@ class PostRepository extends AbstractRepository
 
 
     /**
-     * Construct
-     *
-     * @throws RepositoryException
+     * Constructor
      */
     public function __construct()
     {
         parent::__construct(Post::class);
 
+    }
+
+
+    /**
+     * @param string $order
+     *
+     * @return array<int, array<string, string|int>>
+     */
+    public function getPostsByOrderDate(string $order = "ASC"): array
+    {
+        $query = "
+            SELECT p.id as `post_id`, p.title as `post_title`, p.chapo as `post_chapo`,
+                   p.content as `post_content`, p.createdAt as `post_createdAt`,
+                   p.updatedAt as `post_updatedAt`, u.id as `user_id`, u.lastname as `user_lastname`,
+                   u.firstname as `user_firstname`, u.pseudo as `user_pseudo`, 
+                   u.email as `user_email`, u.role as `user_role`
+            FROM post as p
+            JOIN user as u on p.userId = u.id
+            ORDER BY p.createdAt $order
+        ";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->execute();
+
+        return $statement->fetchAll() ?: [];
+
+    }
+
+
+    /**
+     * Get Post by Id with User
+     *
+     * @param string $postId
+     *
+     * @return array<string, string|int>
+     */
+    public function getPostByIdWithUser(string $postId): array
+    {
+        $query = "
+            SELECT p.id as `post_id`, p.title as `post_title`, p.chapo as `post_chapo`,
+                   p.content as `post_content`, p.createdAt as `post_createdAt`,
+                   p.updatedAt as `post_updatedAt`, u.id as `user_id`, u.lastname as `user_lastname`,
+                   u.firstname as `user_firstname`, u.pseudo as `user_pseudo`, 
+                   u.email as `user_email`, u.role as `user_role`
+            FROM post as p
+            JOIN user u on p.userId = u.id
+            WHERE p.id = :postId
+        ";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->bindValue(":postId", $postId);
+        $statement->execute();
+
+        return $statement->fetch() ?: [];
     }
 
 
