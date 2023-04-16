@@ -1,0 +1,6 @@
+controllers:
+  [
+    "App\\Controller\\AuthController",
+    "App\\Controller\\HomeController",
+    "App\\Controller\\PostController"
+  ]

@@ -24,6 +24,7 @@ use App\Factory\Form\RegisterForm;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
 use App\Factory\Router\Response;
+use App\Factory\Router\Route;
 use App\Service\Container\Container;
 use Exception;
 use Twig\Error\LoaderError;
@@ -49,6 +50,7 @@ class AuthController extends AbstractController
      * @throws SyntaxError|RuntimeError|LoaderError
      * @throws Exception
      */
+    #[Route("/auth/login", "app_auth_login", methods: ["GET", "POST"])]
     public function login(): Response
     {
         /**
@@ -77,6 +79,7 @@ class AuthController extends AbstractController
             "data" => $form->getData(),
             "errors" => $form->getErrors()
         ]);
+
     }
 
 
@@ -86,6 +89,7 @@ class AuthController extends AbstractController
      * @throws SyntaxError|RuntimeError|LoaderError
      * @throws Exception
      */
+    #[Route("/auth/register", "app_auth_register", methods: ["GET", "POST"])]
     public function register(): Response
     {
         $user = new User();
@@ -119,12 +123,14 @@ class AuthController extends AbstractController
             "data" => $form->getData(),
             "errors" => $form->getErrors()
         ]);
+
     }
 
 
     /**
      * Logout page of auth controller
      */
+    #[Route("/auth/logout", "app_auth_logout")]
     public function logout(): Response
     {
         /**
@@ -139,6 +145,7 @@ class AuthController extends AbstractController
         }
 
         return new Response("SUCCESS");
+
     }
 
 

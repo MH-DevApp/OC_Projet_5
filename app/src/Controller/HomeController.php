@@ -21,6 +21,7 @@ use App\Factory\Form\ContactForm;
 use App\Factory\Mailer\Email;
 use App\Factory\Mailer\Mailer;
 use App\Factory\Router\Response;
+use App\Factory\Router\Route;
 use PHPMailer\PHPMailer\Exception;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -47,6 +48,7 @@ class HomeController extends AbstractController
      * @throws SyntaxError|RuntimeError|LoaderError
      * @throws Exception
      */
+    #[Route("/", "app_home", methods: ["GET", "POST"])]
     public function index(): Response
     {
         $form = new ContactForm();

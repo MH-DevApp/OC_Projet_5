@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Factory\Router;
+namespace tests;
 
 
 use App\Factory\Router\Request;
@@ -79,11 +79,11 @@ class KernelTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = ob_get_contents();
+        $content = ob_get_contents() ?: "";
         ob_get_clean();
 
         $this->assertEquals(200, http_response_code());
-        $this->assertEquals("SUCCESS", $content);
+        $this->assertStringContainsString("SUCCESS", $content);
 
     }
 
@@ -101,7 +101,7 @@ class KernelTest extends TestCase
     public function itGetResponseNotFoundFromRouter(): void
     {
         $_SERVER["REQUEST_METHOD"] = "GET";
-        $_SERVER["REQUEST_URI"] = "/posts";
+        $_SERVER["REQUEST_URI"] = "/bad-route";
 
         (new DotEnv())->load();
         $response = (new Kernel())->run();

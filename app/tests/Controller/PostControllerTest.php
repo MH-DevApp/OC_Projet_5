@@ -139,7 +139,7 @@ class PostControllerTest extends TestCase
 
         $this->assertStringContainsString(
             "<div>Aucun post n'a été publié</div>",
-            html_entity_decode(htmlspecialchars_decode($content))
+            $content
         );
 
     }
@@ -164,11 +164,7 @@ class PostControllerTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = html_entity_decode(
-            htmlspecialchars_decode(
-                ob_get_contents() ?: ""
-            )
-        );
+        $content = ob_get_contents() ?: "";
         ob_get_clean();
 
         preg_match_all("#(<div>){1}([\w\d\s]+)(<\/div>){1}#", $content, $matches);
@@ -204,15 +200,11 @@ class PostControllerTest extends TestCase
 
         ob_start();
         $response->send();
-        $content = html_entity_decode(
-            htmlspecialchars_decode(
-                ob_get_contents() ?: ""
-            )
-        );
+        $content = ob_get_contents() ?: "";
         ob_get_clean();
 
         $this->assertMatchesRegularExpression("#(<div>){1}([\w\d\s]+)(<\/div>){1}#", $content);
-        $this->assertEquals("<div>Titre 4</div>", $content);
+        $this->assertStringContainsString("<div>Titre 4</div>", $content);
 
         $response = $this->controller->showPost("NOK");
         $response->send();

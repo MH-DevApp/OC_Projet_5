@@ -18,6 +18,7 @@ namespace App\Controller;
 
 
 use App\Factory\Router\Response;
+use App\Factory\Router\Route;
 use App\Repository\PostRepository;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -55,6 +56,7 @@ class PostController extends AbstractController
      *
      * @throws SyntaxError|RuntimeError|LoaderError
      */
+    #[Route("/posts", "app_posts")]
     public function showPosts(): Response
     {
         $posts = $this->postRepository->getPostsByOrderDate("DESC");
@@ -71,6 +73,7 @@ class PostController extends AbstractController
      *
      * @throws SyntaxError|RuntimeError|LoaderError
      */
+    #[Route("/post/:id", "app_post_details", regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"])]
     public function showPost(string $postId): Response
     {
         $post = $this->postRepository->getPostByIdWithUser($postId);
