@@ -20,7 +20,10 @@ namespace App\Controller;
 use App\Auth\Auth;
 use App\Entity\User;
 use App\Factory\Router\Response;
+use App\Factory\Router\Router;
+use App\Factory\Router\RouterException;
 use App\Factory\Twig\Twig;
+use App\Service\Container\Container;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -38,6 +41,18 @@ use Twig\Error\SyntaxError;
  */
 abstract class AbstractController
 {
+    private Router $router;
+
+
+    public function __construct()
+    {
+        /**
+         * @var Router $router
+         */
+        $router = Container::getService("router");
+        $this->router = $router;
+
+    }
 
 
     /**
@@ -59,7 +74,11 @@ abstract class AbstractController
      * @param array<string, mixed> $params
      * @param int $statusCode
      *
-     * @throws SyntaxError|RuntimeError|LoaderError
+     * @return Response
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     protected function render(
         string $path,
@@ -72,6 +91,79 @@ abstract class AbstractController
             $twig->getTwig()->render($path, $params),
             $statusCode
         );
+
+    }
+
+
+    /**
+     * Generate url
+     *
+     * @param string $name
+     * @param array $params
+     * @param bool $isAbsolute
+     *
+     * @return string
+     *
+     * @throws RouterException
+     */
+    public function generateUrl(
+        string $name,
+        array $params = [],
+        bool $isAbsolute = false
+    ): string
+    {
+        return $this->router->generateUrl(
+            $name,
+            $params,
+            $isAbsolute
+        );
+
+    }
+
+
+    /**
+     * Redirect to URL
+     *
+     * @param string $name
+     * @param array $params
+     *
+     * @return Response
+     *
+     * @throws RouterException
+     */
+    public function redirectTo(
+        string $name,
+        array $params = []
+    ): Response
+    {
+        return $this->router->redirectTo(
+            $name,
+            $params
+        );
+
+    }
+
+
+    /**
+     * Return not found response
+     *
+     * @return Response
+     */
+    public function responseHttpNotFound(): Response
+    {
+        return $this->router->httpNotFound();
+
+    }
+
+
+    /**
+     * Return forbidden response.
+     *
+     * @return Response
+     */
+    public function responseHttpForbidden(): Response
+    {
+        return $this->router->httpForbidden();
 
     }
 

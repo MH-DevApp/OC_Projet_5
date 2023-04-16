@@ -142,4 +142,89 @@ class Router implements ContainerInterface
     }
 
 
+    /**
+     * Generate url with a name route.
+     * Throw exception if the name doesn't exist.
+     *
+     * @param string $name
+     * @param array<string, string|int> $params
+     * @param bool $isAbsolute
+     *
+     * @return string
+     * @throws RouterException
+     */
+    public function generateUrl(
+        string $name,
+        array $params = [],
+        bool $isAbsolute = false
+    ): string
+    {
+        if (!isset($this->namedRoutes[$name])) {
+            throw new RouterException("The route $name doesn't exists, please check this name.");
+        }
+
+        return $this->namedRoutes[$name]->makeUrl(
+            $params,
+            $isAbsolute
+        );
+
+    }
+
+
+    /**
+     * Redirect to new route with params.
+     *
+     * @param string $name
+     * @param array<string, string|int> $params
+     *
+     * @return Response
+     *
+     * @throws RouterException
+     */
+    public function redirectTo(
+        string $name,
+        array $params = []
+    ): Response
+    {
+        $url = $this->generateUrl($name, $params);
+
+        return new Response(
+            "",
+            302,
+            ["Location: $url"]
+        );
+
+    }
+
+
+    /**
+     * Return Not found response.
+     *
+     * @return Response
+     */
+    public function httpNotFound(): Response
+    {
+        return new Response(
+            "",
+            404,
+            ["HTTP/1.0 404 Not Found"]
+        );
+    }
+
+
+    /**
+     * Return Forbidden response.
+     *
+     * @return Response
+     */
+    public function httpForbidden(): Response
+    {
+        return new Response(
+            "",
+            403,
+            ["HTTP/1.1 403 Forbidden"]
+        );
+    }
+
+
 }

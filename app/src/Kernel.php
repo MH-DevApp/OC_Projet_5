@@ -80,8 +80,7 @@ class Kernel
 
         }
 
-        header("HTTP/1.0 404 Not Found");
-        return new Response("", 404);
+        return $this->router->httpNotFound();
 
     }
 

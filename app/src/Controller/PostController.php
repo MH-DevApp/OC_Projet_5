@@ -46,6 +46,7 @@ class PostController extends AbstractController
      */
     public function __construct()
     {
+        parent::__construct();
         $this->postRepository = new PostRepository();
 
     }
