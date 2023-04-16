@@ -18,6 +18,7 @@ namespace tests\Factory\Router;
 
 
 use App\Factory\Router\Response;
+use App\Factory\Router\Route;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
 use App\Factory\Utils\DotEnv\DotEnv;
@@ -42,6 +43,7 @@ use ReflectionException;
  * @link     https://p5.mehdi-haddou.fr
  */
 #[CoversClass(Router::class)]
+#[CoversClass(Route::class)]
 class RouterTest extends TestCase
 {
 
@@ -78,22 +80,25 @@ class RouterTest extends TestCase
 
         Container::loadServices();
         $router = new Router();
+        /**
+         * @var array<int, callable> $dispatch
+         */
         $dispatch = $router->dispatch();
 
-        $this->assertInstanceOf(Response::class, $dispatch);
+        $this->assertIsArray($dispatch);
 
         ob_start();
-        $dispatch->send();
-        $obContent = "";
 
-        if (ob_get_contents() !== false) {
-            $obContent = ob_get_contents();
-        }
-
+        /**
+         * @var Response $response
+         */
+        $response = call_user_func_array(...$dispatch);
+        $response->send();
+        $obContent = ob_get_contents() ?: "";
         ob_end_clean();
 
         $this->assertEquals(200, http_response_code());
-        $this->assertEquals("SUCCESS", $obContent);
+        $this->assertStringContainsString("SUCCESS", $obContent);
 
     }
 
@@ -111,7 +116,7 @@ class RouterTest extends TestCase
     #[TestDox("should be get Response FAILED with the dispatch of the router")]
     public function itGetResponseFailedWithDispatchRouter(): void
     {
-        $_SERVER["REQUEST_URI"] = "/posts";
+        $_SERVER["REQUEST_URI"] = "/bad-route";
         $_SERVER["REQUEST_METHOD"] = "GET";
         (new DotEnv())->load();
 
@@ -119,13 +124,9 @@ class RouterTest extends TestCase
         $router = new Router();
         $dispatch = $router->dispatch();
 
-        ob_start();
-
-        if ($dispatch === false) {
+        if (!$dispatch) {
             header("HTTP/1.0 404 Not Found");
         }
-
-        ob_end_clean();
 
         $this->assertFalse($dispatch);
         $this->assertEquals(404, http_response_code());

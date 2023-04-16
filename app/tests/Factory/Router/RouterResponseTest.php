@@ -120,7 +120,7 @@ class RouterResponseTest extends TestCase
 
         ob_end_clean();
 
-        $this->assertStringContainsString(htmlspecialchars("{\"name\":\"test\",\"id\":123}"), $obContent);
+        $this->assertStringContainsString("{\"name\":\"test\",\"id\":123}", $obContent);
         $this->assertEquals(200, http_response_code());
 
     }

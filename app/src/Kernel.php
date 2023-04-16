@@ -48,7 +48,7 @@ class Kernel
     {
         Container::loadServices();
 
-        /** @var Router router */
+        /** @var ?Router router */
         $router = Container::getService("router");
 
         if ($router) {
@@ -67,10 +67,17 @@ class Kernel
      */
     public function run(): Response
     {
+        /**
+         * @var array<int, callable> $dispatch
+         */
         $dispatch = $this->router->dispatch();
 
         if ($dispatch) {
-            return $dispatch;
+            /** @var Response $response */
+            $response = call_user_func_array(...$dispatch);
+
+            return $response;
+
         }
 
         header("HTTP/1.0 404 Not Found");
