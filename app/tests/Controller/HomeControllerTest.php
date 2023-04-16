@@ -20,6 +20,9 @@ namespace tests\Database;
 use App\Controller\AbstractController;
 use App\Controller\HomeController;
 use App\Factory\Form\ContactForm;
+use App\Factory\Router\Route;
+use App\Factory\Router\Router;
+use App\Factory\Router\RouterException;
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
@@ -48,6 +51,8 @@ use Twig\Error\SyntaxError;
 #[CoversClass(AbstractController::class)]
 #[CoversClass(HomeController::class)]
 #[CoversClass(ContactForm::class)]
+#[CoversClass(Router::class)]
+#[CoversClass(Route::class)]
 class HomeControllerTest extends TestCase
 {
 
@@ -199,6 +204,71 @@ class HomeControllerTest extends TestCase
             "SUCCESS",
             html_entity_decode(htmlspecialchars_decode($content))
         );
+
+    }
+
+
+    /**
+     * Test should be to use generateUrl, redirectTo,
+     * httpNotFound and httpForbidden response in AbstractController.
+     *
+     * @return void
+     *
+     * @throws RouterException
+     * @throws DotEnvException
+     * @throws ReflectionException
+     */
+    #[Test]
+    #[TestDox("should be to use generateUrl, redirectTo, httpNotFound and httpForbidden response in AbstractController")]
+    public function itSomeFunctionsAbstractController(): void
+    {
+        $_SERVER["REQUEST_METHOD"] = "GET";
+        $_SERVER["REMOTE_ADDR"] = "Test";
+        $_SERVER["HTTP_HOST"] = "localhost";
+        $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_ENV["TEST_PATH"] = "_test";
+
+        (new DotEnv())->load();
+        Container::loadServices();
+
+        $controller = new HomeController();
+
+        // Generate url and absolute url without params
+        $url = $controller->generateUrl("app_posts");
+
+        $this->assertEquals("/posts", $url);
+
+        $url = $controller->generateUrl("app_posts", isAbsolute: true);
+
+        $this->assertEquals("http://localhost/posts", $url);
+
+        // Generate url with params
+        $url = $controller->generateUrl("app_post_details", ["id" => "da0a369a-6474-4e18-8aab-6f7d32145279"]);
+
+        $this->assertEquals("/post/da0a369a-6474-4e18-8aab-6f7d32145279", $url);
+
+        // Redirect to url
+
+        $controller->redirectTo("app_posts")->send();
+
+        $this->assertEquals(302, http_response_code());
+
+        // Not found response
+
+        $controller->responseHttpNotFound();
+
+        $this->assertEquals(404, http_response_code());
+
+        // Forbidden response
+
+        $controller->responseHttpForbidden();
+
+        $this->assertEquals(403, http_response_code());
+
+        $this->expectException(RouterException::class);
+        $this->expectExceptionMessage("The route app_bad_route doesn't exists, please check this name.");
+
+        $controller->generateUrl("app_bad_route");
 
     }
 

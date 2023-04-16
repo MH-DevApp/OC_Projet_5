@@ -154,6 +154,43 @@ class Route
 
 
     /**
+     * Make url with the name and params and return string.
+     *
+     * @param array $params
+     * @param bool $isAbsolute
+     *
+     * @return string
+     */
+    public function makeUrl(
+        array $params,
+        bool $isAbsolute = false
+    ): string
+    {
+        $path = $this->path;
+
+        foreach ($params as $k => $v) {
+            $path = str_replace(":$k", $v, $path);
+        }
+
+        if ($isAbsolute) {
+            /**
+             * @var Request $request
+             */
+            $request = Container::getService("request");
+
+            /**
+             * @var string $host
+             */
+            $host = $request->getServer("HTTP_HOST");
+
+            return "http://".$host."/".$path;
+        }
+
+        return "/".$path;
+    }
+
+
+    /**
      * Get path of the route
      *
      * @return string
