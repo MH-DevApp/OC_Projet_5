@@ -54,6 +54,10 @@ class CsrfTest extends TestCase
     #[TestDox("should be to generate a unique token csrf and check is valid")]
     public function itGenerateCsrfAndCheckIsValid(): void
     {
+        $_SERVER = [];
+
+        (new DotEnv())->load();
+        Container::loadServices();
         /**
          * @var string $token
          */

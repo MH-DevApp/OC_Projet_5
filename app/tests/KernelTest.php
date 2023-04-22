@@ -80,6 +80,8 @@ class KernelTest extends TestCase
     {
         $_SERVER["REQUEST_METHOD"] = "GET";
         $_SERVER["REQUEST_URI"] = "/";
+        $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_SERVER["REMOTE_ADDR"] = "Test";
 
         (new DotEnv())->load();
         $response = (new Kernel())->run();
@@ -90,7 +92,7 @@ class KernelTest extends TestCase
         ob_get_clean();
 
         $this->assertEquals(200, http_response_code());
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $content);
 
     }
 

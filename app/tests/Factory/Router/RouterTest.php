@@ -76,6 +76,8 @@ class RouterTest extends TestCase
     {
         $_SERVER["REQUEST_URI"] = "/";
         $_SERVER["REQUEST_METHOD"] = "GET";
+        $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_SERVER["REMOTE_ADDR"] = "Test";
         (new DotEnv())->load();
 
         Container::loadServices();
@@ -98,7 +100,7 @@ class RouterTest extends TestCase
         ob_end_clean();
 
         $this->assertEquals(200, http_response_code());
-        $this->assertStringContainsString("SUCCESS", $obContent);
+        $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $obContent);
 
     }
 
