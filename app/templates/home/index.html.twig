@@ -1,7 +1,23 @@
-{% if errors and errors|length > 0 %}
-    {% for key, error in errors %}
-        <small id="{{ key }}">{{ error }}</small>
-    {% endfor %}
-{% else %}
-    SUCCESS
-{% endif %}
+{% extends "base.html.twig" %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("styles/home.css") }}">
+{% endblock %}
+
+{% block body %}
+    {% include 'home/partials/index/_presentation.html.twig' %}
+    {% include 'home/partials/index/_form_contact.html.twig' %}
+
+    {% if submitted %}
+        <script type="text/javascript">
+            window.addEventListener("load", () => {
+                const sectionEl = document.getElementById("contact");
+                const positionY = sectionEl.offsetTop;
+                window.scrollTo(0, positionY);
+            });
+        </script>
+    {% endif %}
+
+{% endblock %}

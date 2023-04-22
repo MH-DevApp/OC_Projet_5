@@ -1,0 +1,52 @@
+#presentation {
+    justify-content: center;
+    align-items: center;
+    text-align: justify;
+}
+
+#presentation .slogan {
+    padding: 20px;
+}
+
+#presentation .profil img {
+    border-radius: 50%;
+    border: 1px solid #444;
+    max-width: 200px;
+    width: 100%;
+}
+
+#presentation .phrase-catch {
+    border-radius: 10px;
+    border-left: 3px solid orange;
+    border-right: 3px solid orange;
+    padding: 0 30px;
+}
+
+#presentation .presentation-content {
+    border-radius: 15% 2% 15% 2%;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+#presentation .presentation-content p {
+    font-size: 1.05rem;
+}
+
+#presentation .technologies .card-header img {
+    height: 24px;
+    left: 10px;
+}
+
+#contact {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bs-dark);
+    border-radius: 2% 15% 2% 15%;
+}
+
+#contact textarea {
+    resize: none;
+    height: 200px;
+}

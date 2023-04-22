@@ -68,6 +68,7 @@ class Twig
         $this->twig->addExtension(new DebugExtension());
         $this->twig->addFunction($this->generateUrl());
         $this->twig->addFunction($this->generateCSRF());
+        $this->twig->addFunction($this->getAssetsFolder());
         $this->twig->addGlobal("app", self::$app);
 
     }
@@ -137,13 +138,33 @@ class Twig
     {
         return new TwigFunction(
             "path",
-            function (string $name, array $params = []) {
+            function (string $name, array $params = []): string {
                 /**
                  * @var Router $router
                  */
                 $router = Container::getService("router");
 
                 return $router->generateUrl($name, $params);
+
+            }
+        );
+
+    }
+
+
+    /**
+     * Get assets folder path.
+     *
+     * @return TwigFunction
+     */
+    private function getAssetsFolder(): TwigFunction
+    {
+        return new TwigFunction(
+            "asset",
+            function (string $path): string {
+                $path = trim($path, "/");
+
+                return "./assets/".$path;
 
             }
         );

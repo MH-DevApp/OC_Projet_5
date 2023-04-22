@@ -66,6 +66,7 @@ class HomeControllerTest extends TestCase
      * @throws ReflectionException
      * @throws PHPMailerException
      * @throws LoaderError|RuntimeError|SyntaxError
+     * @throws RouterException
      */
     #[Test]
     #[TestDox("should be to render index of home controller")]
@@ -86,7 +87,7 @@ class HomeControllerTest extends TestCase
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $content);
 
     }
 
@@ -126,16 +127,8 @@ class HomeControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"email\">Ce champ est requis.</small>",
-            html_entity_decode(htmlspecialchars_decode($content))
-        );
-        $this->assertStringContainsString(
-            "<small id=\"subject\">Ce champ est requis.</small>",
-            html_entity_decode(htmlspecialchars_decode($content))
-        );
-        $this->assertStringContainsString(
-            "<small id=\"message\">Ce champ est requis.</small>",
-            html_entity_decode(htmlspecialchars_decode($content))
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
+            $content
         );
 
         $_POST["email"] = "NotValidEmail";
@@ -151,15 +144,15 @@ class HomeControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"email\">L'email n'est pas valide.</small>",
+            "<div class=\"invalid-feedback\">L'email n'est pas valide.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"subject\">Ce champ doit contenir entre 5 et 120 caractères.</small>",
+            "<div class=\"invalid-feedback\">Ce champ doit contenir entre 5 et 120 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"message\">Ce champ doit contenir au minimum 10 caractères.</small>",
+            "<div class=\"invalid-feedback\">Ce champ doit contenir au minimum 10 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -175,6 +168,7 @@ class HomeControllerTest extends TestCase
      * @throws ReflectionException
      * @throws PHPMailerException
      * @throws LoaderError|RuntimeError|SyntaxError
+     * @throws RouterException
      */
     #[Test]
     #[TestDox("should be to post contact form valid")]
@@ -194,16 +188,9 @@ class HomeControllerTest extends TestCase
         Container::loadServices();
 
         $response = (new HomeController())->index();
-
-        ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
-        ob_get_clean();
 
-        $this->assertStringContainsString(
-            "SUCCESS",
-            html_entity_decode(htmlspecialchars_decode($content))
-        );
+        $this->assertEquals(302, http_response_code());
 
     }
 
