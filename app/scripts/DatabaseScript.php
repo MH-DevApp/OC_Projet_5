@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace scripts;
 
 
-use App\Database\DatabaseException;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use PDO;
@@ -87,8 +86,11 @@ $pdo->query("
         `email` VARCHAR(255) NOT NULL UNIQUE,
         `createdAt` DATETIME NOT NULL,
         `role` VARCHAR(255) NOT NULL,
+        `status` BOOLEAN,
         `forgottenPasswordToken` VARCHAR(255),
         `expiredTokenAt` DATETIME,
+        `emailValidateToken` VARCHAR(255),
+        `expiredEmailTokenAt` DATETIME,
         PRIMARY KEY(`id`)
     )
 ");

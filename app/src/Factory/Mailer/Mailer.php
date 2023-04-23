@@ -57,6 +57,7 @@ class Mailer
 
         $this->serverSMTP = new PHPMailer(true);
         $this->serverSMTP->isSMTP();
+        $this->serverSMTP->CharSet = "UTF-8";
         $this->serverSMTP->Host = $host;
         $this->serverSMTP->Port = $port;
 

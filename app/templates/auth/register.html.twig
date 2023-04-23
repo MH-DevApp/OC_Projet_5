@@ -1,7 +1,104 @@
-{% if errors and errors|length > 0 %}
-    {% for key, error in errors %}
-        <small id="{{ key }}">{{ error }}</small>
-    {% endfor %}
-{% else %}
-    SUCCESS
-{% endif %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <section id="register" class="mb-4 d-flex flex-column align-items-center">
+        <h3 class="text-center mb-2 bg-dark text-light py-5 w-100">
+            <img src="{{ asset("images/logos/id-card-regular.svg") }}" alt="Logo ID card">
+            <span>FORMULAIRE D'INSCRIPTION</span>
+        </h3>
+        <div class="col-12 col-md-8 col-xl-6 p-2 p-lg-5">
+            {% if errors.global is defined %}
+                <div class="col-12 text-center text-danger">{{ errors.global }}</div>
+            {% endif %}
+            <form class="border shadow rounded p-3" method="post">
+                <div class="col-12 form-floating mb-2">
+                    <input
+                            type="text"
+                            class="form-control {% if submitted %}{{ errors.lastname is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="lastname"
+                            name="lastname"
+                            placeholder="Nom"
+                            value="{{ data.lastname ?? "" }}"
+                    >
+                    <label for="lastname">Nom</label>
+                    {% if errors.lastname is defined %}
+                        <div class="invalid-feedback">{{ errors.lastname }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-12 form-floating mb-2">
+                    <input
+                            type="text"
+                            class="form-control {% if submitted %}{{ errors.firstname is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="firstname"
+                            name="firstname"
+                            placeholder="Prénom"
+                            value="{{ data.firstname ?? "" }}"
+                    >
+                    <label for="firstname">Prénom</label>
+                    {% if errors.firstname is defined %}
+                        <div class="invalid-feedback">{{ errors.firstname }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-12 form-floating mb-2">
+                    <input
+                            type="email"
+                            class="form-control {% if submitted %}{{ errors.email is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            value="{{ data.email ?? "" }}"
+                    >
+                    <label for="email">Email</label>
+                    {% if errors.email is defined %}
+                        <div class="invalid-feedback">{{ errors.email }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-12 form-floating mb-5">
+                    <input
+                            type="text"
+                            class="form-control {% if submitted %}{{ errors.pseudo is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="pseudo"
+                            name="pseudo"
+                            placeholder="Pseudo"
+                            value="{{ data.pseudo ?? "" }}"
+                    >
+                    <label for="pseudo">Pseudo</label>
+                    {% if errors.pseudo is defined %}
+                        <div class="invalid-feedback">{{ errors.pseudo }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-12 form-floating mb-2">
+                    <input
+                            type="password"
+                            class="form-control {% if submitted %}{{ errors.password is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="password"
+                            name="password"
+                            placeholder="Mot de passe"
+                            value="{{ data.password ?? "" }}"
+                    >
+                    <label for="password">Mot de passe</label>
+                    {% if errors.password is defined %}
+                        <div class="invalid-feedback">{{ errors.password }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-12 form-floating mb-4">
+                    <input
+                            type="password"
+                            class="form-control"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirmation mot de passe"
+                            value=""
+                    >
+                    <label for="confirmPassword">Confirmation mot de passe</label>
+                </div>
+                <input type="hidden" name="_csrf" value="{{ csrf("register") }}">
+                <div class="my-2 text-end p-2">
+                    <button type="submit" class="btn btn-dark">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}

@@ -23,6 +23,7 @@ use App\Factory\Form\ContactForm;
 use App\Factory\Router\Route;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
+use App\Factory\Twig\Twig;
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
@@ -53,6 +54,7 @@ use Twig\Error\SyntaxError;
 #[CoversClass(ContactForm::class)]
 #[CoversClass(Router::class)]
 #[CoversClass(Route::class)]
+#[CoversClass(Twig::class)]
 class HomeControllerTest extends TestCase
 {
 
