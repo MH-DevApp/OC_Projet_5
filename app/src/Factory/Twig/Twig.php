@@ -164,7 +164,7 @@ class Twig
             function (string $path): string {
                 $path = trim($path, "/");
 
-                return "./assets/".$path;
+                return "/assets/".$path;
 
             }
         );
