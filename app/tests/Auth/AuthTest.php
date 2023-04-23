@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Database;
+namespace tests\Auth;
 
 
 use App\Auth\Auth;
@@ -85,6 +85,7 @@ class AuthTest extends TestCase
             ->setLastname("Test")
             ->setFirstname("Test")
             ->setPseudo("Test")
+            ->setStatus(true)
             ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
             ->setEmail("test@test.com");
         $this->manager->flush($this->user);

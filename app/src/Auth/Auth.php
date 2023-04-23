@@ -96,6 +96,7 @@ class Auth implements ContainerInterface
 
             if (
                 is_object($user) &&
+                $user->getStatus() &&
                 password_verify(
                     $credentials["password"],
                     $user->getPassword() ?? ""
@@ -205,7 +206,12 @@ class Auth implements ContainerInterface
                             classObject: User::class
                         );
 
-                    self::$currentUser = $user;
+                    if ($user->getStatus()) {
+                        self::$currentUser = $user;
+                    } else {
+                        // Delete cookie session
+                        $this->request->setCookie("session", "", time() - 1);
+                    }
 
                 }
 
