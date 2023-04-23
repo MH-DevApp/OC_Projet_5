@@ -77,12 +77,14 @@ class EntityTest extends TestCase
             ->setEmail("mail@test.fr")
             ->setPassword($password)
             ->setCreatedAt($createdAt->format(DATE_ATOM))
+            ->setEmailValidateToken("Token")
+            ->setExpiredEmailTokenAt()
             ->setForgottenPasswordToken("Token")
             ->setExpiredTokenAt()
             ->setId($id)
         ;
 
-        $expiredAt = (new DateTime("+5 minutes", new DateTimeZone("Europe/Paris")))->format(DATE_ATOM);
+        $expiredAt = (new DateTime("+5 minutes"))->format(DATE_ATOM);
 
         $this->assertEquals($id, $user->getId());
         $this->assertEquals("Lastname", $user->getLastname());
@@ -90,10 +92,13 @@ class EntityTest extends TestCase
         $this->assertEquals("Pseudo", $user->getPseudo());
         $this->assertEquals("mail@test.fr", $user->getEmail());
         $this->assertEquals("ROLE_USER", $user->getRole());
+        $this->assertEquals(false, $user->getStatus());
+        $this->assertEquals("Token", $user->getEmailValidateToken());
         $this->assertEquals("Token", $user->getForgottenPasswordToken());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $user->getCreatedAt());
         $this->assertTrue(password_verify("TEST", $user->getPassword() ?? ""));
         $this->assertEquals($expiredAt, $user->getExpiredTokenAt()?->format(DATE_ATOM) ?? "");
+        $this->assertEquals($expiredAt, $user->getExpiredEmailTokenAt()?->format(DATE_ATOM) ?? "");
 
         $user->setRole("ROLE_ADMIN");
 

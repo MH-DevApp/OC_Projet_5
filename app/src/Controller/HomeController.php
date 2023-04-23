@@ -58,12 +58,6 @@ class HomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Send email
-
-            /**
-             * @var string $subject
-             */
-            $subject = $form->getData("subject");
-
             $email = (new Email())
                 ->setSubject("[P5] Formulaire de contact")
                 ->setBody(

@@ -22,7 +22,6 @@ use App\Factory\Utils\Mapper\Mapper;
 use App\Factory\Utils\Uuid\UuidV4;
 use App\Service\Container\ContainerInterface;
 use DateTime;
-use DateTimeZone;
 use Exception;
 use PDO;
 
@@ -133,10 +132,7 @@ class Manager implements ContainerInterface
             if ($task["action"] === "CREATE") {
                 if (method_exists($entity, "setCreatedAt")) {
                     $entity->setCreatedAt(
-                        new DateTime(
-                            "now",
-                            new DateTimeZone("Europe/Paris")
-                        )
+                        new DateTime("now")
                     );
                 }
 
@@ -152,10 +148,7 @@ class Manager implements ContainerInterface
                     method_exists($entity, "setUpdatedAt")
                 ) {
                     $entity->setUpdatedAt(
-                        new DateTime(
-                            "now",
-                            new DateTimeZone("Europe/Paris")
-                        )
+                        new DateTime("now")
                     );
 
                 }
@@ -183,7 +176,7 @@ class Manager implements ContainerInterface
      */
     private function createEntity(array $obj, string $tableName): void
     {
-        $keys = array_keys($obj, true);
+        $keys = array_keys($obj);
         $query = "INSERT INTO $tableName (";
         $query .= join(", ", $keys).")";
         $query .= " VALUES ";
@@ -192,7 +185,13 @@ class Manager implements ContainerInterface
         $statement = $this->pdo->prepare($query);
 
         foreach ($keys as $key) {
-            $statement->bindValue(":val_".$key, $obj[$key]);
+            $value = $obj[$key];
+
+            if (is_bool($value)) {
+                $value = $value ? 1 : 0;
+            }
+
+            $statement->bindValue(":val_".$key, $value);
 
         }
 
@@ -212,7 +211,7 @@ class Manager implements ContainerInterface
     {
         // without ID key
         $keys = array_filter(
-            array_keys($obj, true),
+            array_keys($obj),
             fn ($key) => $key !== "id"
         );
 
@@ -228,7 +227,13 @@ class Manager implements ContainerInterface
         $statement->bindValue(":id", $obj["id"]);
 
         foreach ($keys as $key) {
-            $statement->bindValue(":".$key, $obj[$key]);
+            $value = $obj[$key];
+
+            if (is_bool($value)) {
+                $value = $value ? 1 : 0;
+            }
+
+            $statement->bindValue(":".$key, $value);
 
         }
 
