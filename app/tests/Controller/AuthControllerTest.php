@@ -30,9 +30,12 @@ use App\Factory\Router\Request;
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
+use App\Factory\Utils\Mapper\Mapper;
+use App\Factory\Utils\Uuid\UuidV4;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
+use DateTime;
 use Exception;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
@@ -61,6 +64,7 @@ use Twig\Error\SyntaxError;
 #[CoversClass(AbstractForm::class)]
 #[CoversClass(ConnexionForm::class)]
 #[CoversClass(RegisterForm::class)]
+#[CoversClass(Manager::class)]
 class AuthControllerTest extends TestCase
 {
 
@@ -247,7 +251,7 @@ class AuthControllerTest extends TestCase
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertEquals(302, http_response_code());
         $this->assertTrue($request->hasCookie("session"));
         $this->assertNotNull(Auth::$currentUser);
 
@@ -330,7 +334,7 @@ class AuthControllerTest extends TestCase
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertStringContainsString("<title>P5 DAPS BLOG - Inscription", $content);
 
     }
 
@@ -373,23 +377,23 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"lastname\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"firstname\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"pseudo\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"email\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"password\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -416,23 +420,23 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"lastname\">Ce champ doit contenir entre 2 et 50 caractères.</small>",
+            "<div class=\"invalid-feedback\">Ce champ doit contenir entre 2 et 50 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"firstname\">Ce champ doit contenir entre 2 et 50 caractères.</small>",
+            "<div class=\"invalid-feedback\">Ce champ doit contenir entre 2 et 50 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"pseudo\">Ce champ doit contenir entre 2 et 50 caractères.</small>",
+            "<div class=\"invalid-feedback\">Ce champ doit contenir entre 2 et 50 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"email\">L'email n'est pas valide.</small>",
+            "<div class=\"invalid-feedback\">L'email n'est pas valide.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"password\">Ce champ doit contenir entre 6 et 20 caractères.</small>",
+            "<div class=\"invalid-feedback\">Ce champ doit contenir entre 6 et 20 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -459,15 +463,15 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"pseudo\">Le pseudo existe déjà.</small>",
+            "<div class=\"invalid-feedback\">Le pseudo existe déjà.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"email\">L'email existe déjà.</small>",
+            "<div class=\"invalid-feedback\">L'email existe déjà.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"password\">La confirmation du mot de passe n'est pas identique.</small>",
+            "<div class=\"invalid-feedback\">La confirmation du mot de passe n'est pas identique.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -508,13 +512,9 @@ class AuthControllerTest extends TestCase
         $request = Container::getService("request");
 
         $response = (new AuthController())->register();
-
-        ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
-        ob_get_clean();
 
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertEquals(302, http_response_code());
 
         /**
          * @var string $email
@@ -532,6 +532,99 @@ class AuthControllerTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
 
         $this->user = $user;
+
+    }
+
+
+    /**
+     * Test should be to valid email successful.
+     *
+     * @return void
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to valid email successful")]
+    public function itValidEmailSuccessful(): void
+    {
+        $token = UuidV4::generate();
+        $hashToken = Csrf::generateTokenCsrf($token);
+
+        $this->createUser();
+        $this->user
+            ->setEmailValidateToken($hashToken)
+            ->setExpiredEmailTokenAt();
+
+        $this->manager->flush($this->user);
+
+        (new AuthController())->validEmail($token);
+
+        $this->assertEquals(302, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be to valid email failed with bad token.
+     *
+     * @return void
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to valid email failed with bad token")]
+    public function itValidEmailFiledBadToken(): void
+    {
+        $token = UuidV4::generate();
+        $hashToken = Csrf::generateTokenCsrf($token."badtoken");
+
+        $this->createUser();
+        $this->user
+            ->setEmailValidateToken($hashToken)
+            ->setExpiredEmailTokenAt();
+
+        $this->manager->flush($this->user);
+
+        (new AuthController())->validEmail($token);
+
+        $this->assertEquals(404, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be to valid email failed with token expired.
+     *
+     * @return void
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to valid email failed with token expired")]
+    public function itValidEmailFiledTokenExpired(): void
+    {
+        $token = UuidV4::generate();
+        $hashToken = Csrf::generateTokenCsrf($token);
+
+        $this->createUser();
+        $this->user
+            ->setEmailValidateToken($hashToken)
+            ->setExpiredEmailTokenAt();
+
+        $user = Mapper::mapEntityToArray($this->user);
+        $user["expiredEmailTokenAt"] = new DateTime("-3 minutes");
+        Mapper::mapArrayToEntity($user, $this->user);
+
+        $this->manager->flush($this->user);
+        $controller = (new AuthController())->validEmail($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertEquals(200, http_response_code());
+        $this->assertStringContainsString(
+            "<h1>La validation de votre email a échouée</h1>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
 
     }
 
