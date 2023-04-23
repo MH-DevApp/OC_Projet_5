@@ -27,6 +27,7 @@ use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
+use App\Factory\Router\RouterException;
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\Uuid\UuidV4;
 use App\Repository\UserRepository;
@@ -59,6 +60,10 @@ class AuthController extends AbstractController
     #[Route("/auth/login", "app_auth_login", methods: ["GET", "POST"])]
     public function login(): Response
     {
+        if (Auth::$currentUser) {
+            return $this->redirectTo("app_home");
+        }
+
         /**
          * @var Auth $auth
          */
@@ -79,13 +84,14 @@ class AuthController extends AbstractController
 
             $form->setError(
                 "global",
-                "L'Email ou le mot de passe sont incorrects."
+                "L'Email et/ou le mot de passe sont incorrects."
             );
         }
 
         return $this->render("auth/connexion.html.twig", [
             "data" => $form->getData(),
-            "errors" => $form->getErrors()
+            "errors" => $form->getErrors(),
+            "submitted" => $form->isSubmitted()
         ]);
 
     }
@@ -100,6 +106,10 @@ class AuthController extends AbstractController
     #[Route("/auth/register", "app_auth_register", methods: ["GET", "POST"])]
     public function register(): Response
     {
+        if (Auth::$currentUser) {
+            return $this->redirectTo("app_home");
+        }
+
         $user = new User();
 
         $form = new RegisterForm($user);
@@ -174,6 +184,8 @@ class AuthController extends AbstractController
      * Logout page of auth controller
      *
      * @return Response
+     *
+     * @throws RouterException
      */
     #[Route("/auth/logout", "app_auth_logout")]
     public function logout(): Response
@@ -189,7 +201,7 @@ class AuthController extends AbstractController
 
         }
 
-        return new Response("SUCCESS");
+        return $this->redirectTo("app_home");
 
     }
 

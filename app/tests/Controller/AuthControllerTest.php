@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-namespace tests\Database;
+namespace tests\Controller;
 
 
 use App\Auth\Auth;
@@ -131,7 +131,10 @@ class AuthControllerTest extends TestCase
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertStringContainsString(
+            "<title>P5 DAPS BLOG - Connexion</title>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
 
     }
 
@@ -170,11 +173,11 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"email\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertStringContainsString(
-            "<small id=\"password\">Ce champ est requis.</small>",
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -189,7 +192,7 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"email\">L'email n'est pas valide.</small>",
+            "<div class=\"invalid-feedback\">L'email n'est pas valide.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -205,7 +208,7 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<small id=\"global\">L'Email ou le mot de passe sont incorrects.</small>",
+            "<div class=\"col-12 text-center text-danger\">L'Email et/ou le mot de passe sont incorrects.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -236,6 +239,8 @@ class AuthControllerTest extends TestCase
         );
 
         $this->createUser();
+        $this->user->setStatus(true);
+        $this->manager->flush($this->user);
 
         Container::loadServices();
 
@@ -245,11 +250,7 @@ class AuthControllerTest extends TestCase
         $request = Container::getService("request");
 
         $response = (new AuthController())->login();
-
-        ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
-        ob_get_clean();
 
         $this->assertEquals(302, http_response_code());
         $this->assertTrue($request->hasCookie("session"));
@@ -281,6 +282,8 @@ class AuthControllerTest extends TestCase
         );
 
         $this->createUser();
+        $this->user->setStatus(true);
+        $this->manager->flush($this->user);
 
         Container::loadServices();
 
@@ -296,16 +299,11 @@ class AuthControllerTest extends TestCase
         $this->assertNotNull(Auth::$currentUser);
 
         $response = (new AuthController())->logout();
-
-        ob_start();
         $response->send();
-        $content = ob_get_contents() ?: "";
-        ob_get_clean();
-        ob_clean();
 
         $this->assertFalse($request->hasCookie("session"));
         $this->assertNull(Auth::$currentUser);
-        $this->assertStringContainsString("SUCCESS", $content);
+        $this->assertEquals(302, http_response_code());
 
     }
 
@@ -334,7 +332,7 @@ class AuthControllerTest extends TestCase
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        $this->assertStringContainsString("<title>P5 DAPS BLOG - Inscription", $content);
+        $this->assertStringContainsString("<title>P5 DAPS BLOG - Inscription</title>", $content);
 
     }
 
@@ -639,7 +637,6 @@ class AuthControllerTest extends TestCase
         $this->user = (new User())
             ->setLastname("Test")
             ->setFirstname("Test")
-            ->setPseudo("Test")
             ->setPseudo("Test")
             ->setEmail("test@test.fr")
             ->setPassword(password_hash(
