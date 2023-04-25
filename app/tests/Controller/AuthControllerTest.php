@@ -24,6 +24,8 @@ use App\Entity\Session;
 use App\Entity\User;
 use App\Factory\Form\AbstractForm;
 use App\Factory\Form\ConnexionForm;
+use App\Factory\Form\ForgottenPasswordForm;
+use App\Factory\Form\ForgottenPasswordResetForm;
 use App\Factory\Form\RegisterForm;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
@@ -64,6 +66,8 @@ use Twig\Error\SyntaxError;
 #[CoversClass(AbstractForm::class)]
 #[CoversClass(ConnexionForm::class)]
 #[CoversClass(RegisterForm::class)]
+#[CoversClass(ForgottenPasswordForm::class)]
+#[CoversClass(ForgottenPasswordResetForm::class)]
 #[CoversClass(Manager::class)]
 class AuthControllerTest extends TestCase
 {
@@ -239,8 +243,11 @@ class AuthControllerTest extends TestCase
         );
 
         $this->createUser();
-        $this->user->setStatus(true);
-        $this->manager->flush($this->user);
+
+        if ($this->user) {
+            $this->user->setStatus(true);
+            $this->manager->flush($this->user);
+        }
 
         Container::loadServices();
 
@@ -255,6 +262,62 @@ class AuthControllerTest extends TestCase
         $this->assertEquals(302, http_response_code());
         $this->assertTrue($request->hasCookie("session"));
         $this->assertNotNull(Auth::$currentUser);
+
+    }
+
+    /**
+     * Test should be to redirect to home page of auth
+     * controller with session cookie.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to redirect to home page of auth controller with session cookie")]
+    public function itRedirectToHomePageOfAuthControllerWithSessionCookie(): void
+    {
+        $this->initPost("GET");
+        Container::loadServices();
+
+        $this->createUser();
+
+        if ($this->user) {
+            $this->user->setStatus(true);
+            $this->manager->flush($this->user);
+        }
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        // Login page
+
+        $controller = (new AuthController())->login();
+        $controller->send();
+
+        $this->assertEquals(302, http_response_code());
+
+        // Register page
+
+        $controller = (new AuthController())->register();
+        $controller->send();
+
+        $this->assertEquals(302, http_response_code());
+
+        // forgotten password page
+
+        $controller = (new AuthController())->forgottenPassword();
+        $controller->send();
+
+        $this->assertEquals(302, http_response_code());
 
     }
 
@@ -282,8 +345,11 @@ class AuthControllerTest extends TestCase
         );
 
         $this->createUser();
-        $this->user->setStatus(true);
-        $this->manager->flush($this->user);
+
+        if ($this->user) {
+            $this->user->setStatus(true);
+            $this->manager->flush($this->user);
+        }
 
         Container::loadServices();
 
@@ -527,9 +593,9 @@ class AuthControllerTest extends TestCase
             classObject: User::class
         );
 
-        $this->assertInstanceOf(User::class, $user);
-
         $this->user = $user;
+
+        $this->assertInstanceOf(User::class, $this->user);
 
     }
 
@@ -545,14 +611,20 @@ class AuthControllerTest extends TestCase
     public function itValidEmailSuccessful(): void
     {
         $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
         $hashToken = Csrf::generateTokenCsrf($token);
 
         $this->createUser();
-        $this->user
-            ->setEmailValidateToken($hashToken)
-            ->setExpiredEmailTokenAt();
 
-        $this->manager->flush($this->user);
+        if ($this->user) {
+            $this->user
+                ->setEmailValidateToken($hashToken)
+                ->setExpiredEmailTokenAt();
+            $this->manager->flush($this->user);
+        }
 
         (new AuthController())->validEmail($token);
 
@@ -572,14 +644,20 @@ class AuthControllerTest extends TestCase
     public function itValidEmailFiledBadToken(): void
     {
         $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
         $hashToken = Csrf::generateTokenCsrf($token."badtoken");
 
         $this->createUser();
-        $this->user
-            ->setEmailValidateToken($hashToken)
-            ->setExpiredEmailTokenAt();
 
-        $this->manager->flush($this->user);
+        if ($this->user) {
+            $this->user
+                ->setEmailValidateToken($hashToken)
+                ->setExpiredEmailTokenAt();
+            $this->manager->flush($this->user);
+        }
 
         (new AuthController())->validEmail($token);
 
@@ -599,18 +677,21 @@ class AuthControllerTest extends TestCase
     public function itValidEmailFiledTokenExpired(): void
     {
         $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
         $hashToken = Csrf::generateTokenCsrf($token);
 
         $this->createUser();
-        $this->user
-            ->setEmailValidateToken($hashToken)
-            ->setExpiredEmailTokenAt();
 
-        $user = Mapper::mapEntityToArray($this->user);
-        $user["expiredEmailTokenAt"] = new DateTime("-3 minutes");
-        Mapper::mapArrayToEntity($user, $this->user);
+        if ($this->user) {
+            $this->user
+                ->setEmailValidateToken($hashToken)
+                ->setExpiredEmailTokenAt(new DateTime("-3 minutes"));
+            $this->manager->flush($this->user);
+        }
 
-        $this->manager->flush($this->user);
         $controller = (new AuthController())->validEmail($token);
 
         ob_start();
@@ -623,6 +704,392 @@ class AuthControllerTest extends TestCase
             "<h1>La validation de votre email a échouée</h1>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
+
+    }
+
+
+    /**
+     * Test should be to render forgotten password page of auth controller.
+     *
+     * @return void
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render forgotten password page of auth controller")]
+    public function itRenderForgottenPasswordPageOfAuthController(): void
+    {
+        $this->initPost("GET");
+        Container::loadServices();
+
+        $controller = (new AuthController())->forgottenPassword();
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<title>P5 DAPS BLOG - Mot de passe perdu</title>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+    }
+
+
+    /**
+     * Test should be to post forgotten password form invalid.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws LoaderError|RuntimeError|SyntaxError
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post forgotten password form invalid")]
+    public function itPostForgottenPasswordFormNotValid(): void
+    {
+        $this->initPost(
+            "POST",
+            [
+                "email" => "",
+                "_csrf" => Csrf::generateTokenCsrf("forgotten-password") ?: ""
+            ]
+        );
+
+        $this->createUser();
+
+        Container::loadServices();
+
+        $response = (new AuthController())->forgottenPassword();
+
+        ob_start();
+        $response->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+        $this->initPost(
+            "POST",
+            [
+                "email" => "test",
+                "_csrf" => Csrf::generateTokenCsrf("forgotten-password") ?: ""
+            ]
+        );
+
+        Container::loadServices();
+
+        $response = (new AuthController())->forgottenPassword();
+
+        ob_start();
+        $response->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<div class=\"invalid-feedback\">L'email n'est pas valide.</div>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+    }
+
+
+    /**
+     * Test should be to post forgotten password form valid.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws LoaderError|RuntimeError|SyntaxError
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post forgotten password form valid")]
+    public function itPostForgottenPasswordFormValid(): void
+    {
+        $this->initPost(
+            "POST",
+            [
+                "email" => "test@test.fr",
+                "_csrf" => Csrf::generateTokenCsrf("forgotten-password") ?: ""
+            ]
+        );
+
+        $this->createUser();
+
+        Container::loadServices();
+
+        $response = (new AuthController())->forgottenPassword();
+
+        ob_start();
+        $response->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<h1>Email envoyé !</h1>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+    }
+
+
+    /**
+     * Test should be to not found page on forgotten password
+     * reset bad token.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to not found page on forgotten password reset bad token")]
+    public function itNotFoundPageForgottenPasswordResetBadToken(): void
+    {
+        $this->initPost("GET");
+        Container::loadServices();
+        $token = UuidV4::generate();
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+        $controller->send();
+
+        $this->assertEquals(404, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be to render forgotten password reset with
+     * token expired.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render forgotten password reset with token expired")]
+    public function itRenderForgottenPasswordResetTokenExpired(): void
+    {
+        $this->initPost("GET");
+        Container::loadServices();
+        $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
+        $hashToken = Csrf::generateTokenCsrf($token);
+
+        $this->createUser();
+
+        if ($this->user) {
+            $this->user
+                ->setForgottenPasswordToken($hashToken)
+                ->setExpiredTokenAt(new DateTime("-3 minutes"));
+            $this->manager->flush($this->user);
+        }
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<h1>Le lien est expiré !</h1>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+    }
+
+
+    /**
+     * Test should be to render forgotten password reset successfully.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render forgotten password reset successfully")]
+    public function itRenderForgottenPasswordResetSuccessfully(): void
+    {
+        $this->initPost("GET");
+        Container::loadServices();
+        $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
+        $hashToken = Csrf::generateTokenCsrf($token);
+
+        $this->createUser();
+
+        if ($this->user) {
+            $this->user
+                ->setForgottenPasswordToken($hashToken)
+                ->setExpiredTokenAt();
+            $this->manager->flush($this->user);
+        }
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<title>P5 DAPS BLOG - Réinitialiser mot de passe</title>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+    }
+
+
+    /**
+     * Test should be to post forgotten password reset form invalid.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post forgotten password reset form invalid")]
+    public function itPostForgottenPasswordResetFormInvalid(): void
+    {
+        $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
+        $hashToken = Csrf::generateTokenCsrf($token);
+
+        $this->createUser();
+
+        if ($this->user) {
+            $this->user
+                ->setForgottenPasswordToken($hashToken)
+                ->setExpiredTokenAt();
+            $this->manager->flush($this->user);
+        }
+
+        $this->initPost("POST", [
+            "password" => "",
+            "confirmPassword" => ""
+        ]);
+
+        Container::loadServices();
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<div class=\"invalid-feedback\">Ce champ est requis.</div>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+        $this->initPost("POST", [
+            "password" => "12345",
+            "confirmPassword" => ""
+        ]);
+
+        Container::loadServices();
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<div class=\"invalid-feedback\">Ce champ doit contenir entre 6 et 20 caractères.</div>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+        $this->initPost("POST", [
+            "password" => "123456",
+            "confirmPassword" => "1234567"
+        ]);
+
+        Container::loadServices();
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<div class=\"invalid-feedback\">La confirmation du mot de passe n'est pas identique.</div>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+    }
+
+
+    /**
+     * Test should be to post forgotten password reset form valid.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post forgotten password reset form valid")]
+    public function itPostForgottenPasswordResetFormValid(): void
+    {
+        $token = UuidV4::generate();
+
+        /**
+         * @var string $hashToken
+         */
+        $hashToken = Csrf::generateTokenCsrf($token);
+
+        $this->createUser();
+
+        if ($this->user) {
+            $this->user
+                ->setForgottenPasswordToken($hashToken)
+                ->setExpiredTokenAt();
+            $this->manager->flush($this->user);
+        }
+
+        $this->assertTrue(password_verify("password", $this->user?->getPassword() ?: ""));
+
+        $this->initPost("POST", [
+            "password" => "123456",
+            "confirmPassword" => "123456",
+            "_csrf" => Csrf::generateTokenCsrf("forgotten-password-reset") ?: ""
+        ]);
+
+        Container::loadServices();
+
+        $controller = (new AuthController())->resetForgottenPassword($token);
+        $controller->send();
+
+        $this->assertEquals(302, http_response_code());
+
+        /**
+         * @var User $user
+         */
+        $user = (new UserRepository())->findByOne(
+            ["id" => $this->user?->getId() ?: ""],
+            classObject: User::class
+        );
+
+        $this->assertTrue(password_verify("123456", $user->getPassword() ?: ""));
+        $this->assertNull($user->getForgottenPasswordToken());
 
     }
 
