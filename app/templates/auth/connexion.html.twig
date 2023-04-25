@@ -21,6 +21,7 @@
                             name="email"
                             placeholder="Email"
                             value="{{ data.email ?? "" }}"
+                            required
                     >
                     <label for="email">Email</label>
                     {% if errors.email is defined %}
@@ -35,6 +36,7 @@
                             name="password"
                             placeholder="Mot de passe"
                             value=""
+                            required
                     >
                     <label for="password">Mot de passe</label>
                     {% if errors.password is defined %}
@@ -42,7 +44,8 @@
                     {% endif %}
                 </div>
                 <input type="hidden" name="_csrf" value="{{ csrf("authenticate") }}">
-                <div class="my-2 text-end p-2">
+                <div class="d-flex justify-content-between my-2 p-2">
+                    <a class="link-secondary" href="{{ path("app_auth_forgotten_password") }}">Mot de passe perdu ?</a>
                     <button type="submit" class="btn btn-dark">Se connecter</button>
                 </div>
             </form>
