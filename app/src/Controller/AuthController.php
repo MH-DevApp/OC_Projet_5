@@ -493,7 +493,7 @@ class AuthController extends AbstractController
             /**
              * @var string $password
              */
-            $password = $form->getData("password");
+            $password = $form->getData("newPassword");
 
             $user
                 ->setPassword(password_hash($password, PASSWORD_ARGON2ID))
