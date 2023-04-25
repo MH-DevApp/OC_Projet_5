@@ -979,8 +979,8 @@ class AuthControllerTest extends TestCase
         }
 
         $this->initPost("POST", [
-            "password" => "",
-            "confirmPassword" => ""
+            "newPassword" => "",
+            "confirmNewPassword" => ""
         ]);
 
         Container::loadServices();
@@ -998,8 +998,8 @@ class AuthControllerTest extends TestCase
         );
 
         $this->initPost("POST", [
-            "password" => "12345",
-            "confirmPassword" => ""
+            "newPassword" => "12345",
+            "confirmNewPassword" => ""
         ]);
 
         Container::loadServices();
@@ -1017,8 +1017,8 @@ class AuthControllerTest extends TestCase
         );
 
         $this->initPost("POST", [
-            "password" => "123456",
-            "confirmPassword" => "1234567"
+            "newPassword" => "123456",
+            "confirmNewPassword" => "1234567"
         ]);
 
         Container::loadServices();
@@ -1068,8 +1068,8 @@ class AuthControllerTest extends TestCase
         $this->assertTrue(password_verify("password", $this->user?->getPassword() ?: ""));
 
         $this->initPost("POST", [
-            "password" => "123456",
-            "confirmPassword" => "123456",
+            "newPassword" => "123456",
+            "confirmNewPassword" => "123456",
             "_csrf" => Csrf::generateTokenCsrf("forgotten-password-reset") ?: ""
         ]);
 
