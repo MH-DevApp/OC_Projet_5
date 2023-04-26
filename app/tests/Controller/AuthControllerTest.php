@@ -576,9 +576,17 @@ class AuthControllerTest extends TestCase
         $request = Container::getService("request");
 
         $response = (new AuthController())->register();
-        $response->send();
 
-        $this->assertEquals(302, http_response_code());
+        ob_start();
+        $response->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertEquals(200, http_response_code());
+        $this->assertStringContainsString(
+            "<title>P5 DAPS BLOG - Inscription réussi</title>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
 
         /**
          * @var string $email
@@ -626,9 +634,18 @@ class AuthControllerTest extends TestCase
             $this->manager->flush($this->user);
         }
 
-        (new AuthController())->validEmail($token);
+        $controller = (new AuthController())->validEmail($token);
 
-        $this->assertEquals(302, http_response_code());
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertEquals(200, http_response_code());
+        $this->assertStringContainsString(
+            "<title>P5 DAPS BLOG - Email confirmé</title>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
 
     }
 
@@ -701,7 +718,27 @@ class AuthControllerTest extends TestCase
 
         $this->assertEquals(200, http_response_code());
         $this->assertStringContainsString(
-            "<h1>La validation de votre email a échouée</h1>",
+            "<title>P5 DAPS BLOG - Lien d'activation de votre email a expiré</title>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+
+        $this->initPost("POST", [
+            "email" => "test@test.fr",
+            "_csrf" => Csrf::generateTokenCsrf("forgotten-password") ?: ""
+        ]);
+
+        Container::loadServices();
+
+        $controller = (new AuthController())->validEmail($token);
+
+        ob_start();
+        $controller->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertEquals(200, http_response_code());
+        $this->assertStringContainsString(
+            "<title>P5 DAPS BLOG - Nouveau lien envoyé</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 

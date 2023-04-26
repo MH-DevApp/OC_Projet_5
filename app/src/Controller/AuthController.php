@@ -179,7 +179,7 @@ class AuthController extends AbstractController
                 );
             (new Mailer())->send($email);
 
-            return $this->redirectTo("app_auth_login");
+            return $this->render("auth/register-success.html.twig");
 
         }
 
@@ -229,7 +229,8 @@ class AuthController extends AbstractController
     #[Route(
         "/auth/valid-email/:token",
         "app_auth_valid_email",
-        regexs: ["token" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"]
+        regexs: ["token" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        methods: ["GET", "POST"]
     )]
     public function validEmail(string $token): Response
     {
@@ -287,51 +288,64 @@ class AuthController extends AbstractController
 
             $manager->flush($user);
 
-            return $this->redirectTo("app_auth_login");
+            return $this->render("auth/valid-email-success.html.twig");
         }
 
-        $token = UuidV4::generate();
+        $form = new ForgottenPasswordForm();
+        $form->handleRequest();
 
-        /**
-         * @var string $hashToken
-         */
-        $hashToken = Csrf::generateTokenCsrf($token);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $token = UuidV4::generate();
 
-        $urlValidEmail = $this->generateUrl(
-            "app_auth_valid_email",
-            ["token" => $token],
-            true
-        );
+            /**
+             * @var string $hashToken
+             */
+            $hashToken = Csrf::generateTokenCsrf($token);
 
-        $user
-            ->setEmailValidateToken($hashToken)
-            ->setExpiredEmailTokenAt();
-
-        $manager->flush($user);
-
-        /**
-         * @var string $emailUser
-         */
-        $emailUser = $user->getEmail();
-
-        // Send email
-        $email = (new Email())
-            ->setSubject("[P5] P5 DAPS BLOG - Lien de validation de votre email expiré!")
-            ->setTo($emailUser)
-            ->setBody(
-                "<p>Bonjour ".$user->getFirstname().", <br><br>".
-                "Le lien de validation de votre adresse email est expiré. <br><br>".
-                "Pour confirmer votre adresse email et activer votre compte, veuillez cliquer sur le lien ".
-                "ci-dessous (Celui-ci est valide pour une durée de 5 minutes) :<br>".
-                "<a href=\"".$urlValidEmail."\">$urlValidEmail</a><br><br>".
-                "Si vous avez des questions ou des difficultés à confirmer votre adresse email, n'hésitez pas ".
-                "me contacter via le formulaire de contact.<br><br>".
-                "Cordialement, <br>".
-                "Mehdi"
+            $urlValidEmail = $this->generateUrl(
+                "app_auth_valid_email",
+                ["token" => $token],
+                true
             );
-        (new Mailer())->send($email);
 
-        return $this->render("auth/valid-email-failed.html.twig");
+            if ($form->getData("email") === $user->getEmail()) {
+                $user
+                ->setEmailValidateToken($hashToken)
+                ->setExpiredEmailTokenAt();
+
+                $manager->flush($user);
+
+                /**
+                 * @var string $emailUser
+                 */
+                $emailUser = $user->getEmail();
+
+                // Send email
+                $email = (new Email())
+                    ->setSubject("[P5] P5 DAPS BLOG - Nouveau lien d'activation de votre email")
+                    ->setTo($emailUser)
+                    ->setBody(
+                        "<p>Bonjour ".$user->getFirstname().", <br><br>".
+                        "Le lien de validation de votre adresse email a expiré. <br><br>".
+                        "Pour confirmer votre adresse email et activer votre compte, veuillez cliquer sur le lien ".
+                        "ci-dessous (Celui-ci est valide pour une durée de 5 minutes) :<br>".
+                        "<a href=\"".$urlValidEmail."\">$urlValidEmail</a><br><br>".
+                        "Si vous avez des questions ou des difficultés à confirmer votre adresse email, n'hésitez pas ".
+                        "me contacter via le formulaire de contact.<br><br>".
+                        "Cordialement, <br>".
+                        "Mehdi"
+                    );
+                (new Mailer())->send($email);
+            }
+
+            return $this->render("auth/valid-email-send-new-email.html.twig");
+        }
+
+        return $this->render("auth/valid-email-token-expired.html.twig", [
+            "data" => $form->getData(),
+            "errors" => $form->getErrors(),
+            "submitted" => $form->isSubmitted()
+        ]);
 
     }
 
