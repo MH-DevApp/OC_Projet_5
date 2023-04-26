@@ -6,14 +6,25 @@ body {
 }
 
 .body {
+    margin-top: 80px;
     display: flex;
     flex-flow: column;
     flex: 1 auto;
 }
 
+header nav {
+    height: 80px;
+    z-index: 100;
+}
+
 header nav img.img-avatar {
     width: 30px;
     margin: 0 10px 0 10px;
+    border-radius: 50%;
+}
+
+header nav img.img-profile {
+    width: 20px;
     border-radius: 50%;
 }
 
