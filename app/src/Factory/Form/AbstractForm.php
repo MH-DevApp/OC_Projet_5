@@ -42,6 +42,7 @@ abstract class AbstractForm
     const ERROR_MIN_LENGTH = "Ce champ doit contenir au minimum %s caractères.";
     const ERROR_MAX_LENGTH = "Ce champ doit contenir au maximum %s caractères.";
     const ERROR_BAD_FORMAT = "%s n'est pas valide.";
+    const ERROR_BAD_ACTUAL_PASSWORD = "Le mot de passe actuel est incorrect.";
     const ERROR_CONFIRM = "Les mots de passe doivent être identiques.";
     const ERROR_UNIQUE = "%s existe déjà.";
 
