@@ -32,8 +32,8 @@ use App\Factory\Router\Request;
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
-use App\Factory\Utils\Mapper\Mapper;
 use App\Factory\Utils\Uuid\UuidV4;
+use App\Kernel;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
@@ -63,6 +63,7 @@ use Twig\Error\SyntaxError;
  */
 #[CoversClass(AbstractController::class)]
 #[CoversClass(AuthController::class)]
+#[CoversClass(Auth::class)]
 #[CoversClass(AbstractForm::class)]
 #[CoversClass(ConnexionForm::class)]
 #[CoversClass(RegisterForm::class)]
@@ -216,7 +217,6 @@ class AuthControllerTest extends TestCase
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
-
     }
 
 
@@ -245,7 +245,7 @@ class AuthControllerTest extends TestCase
         $this->createUser();
 
         if ($this->user) {
-            $this->user->setStatus(true);
+            $this->user->setStatus(User::STATUS_CODE_REGISTERED);
             $this->manager->flush($this->user);
         }
 
@@ -262,6 +262,33 @@ class AuthControllerTest extends TestCase
         $this->assertEquals(302, http_response_code());
         $this->assertTrue($request->hasCookie("session"));
         $this->assertNotNull(Auth::$currentUser);
+
+        if ($this->user) {
+            $this->user->setStatus(User::STATUS_CODE_DEACTIVATED);
+            $this->manager->flush($this->user);
+        }
+
+        $_SERVER["REQUEST_URI"] = "/auth/login";
+        $_COOKIE = $request->getCookie();
+
+        $response = (new Kernel())->run();
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        ob_start();
+        $response->send();
+        $content = ob_get_contents() ?: "";
+        ob_get_clean();
+
+        $this->assertStringContainsString(
+            "<div class=\"col-12 text-center text-danger\">Votre compte a été désactivé par un membre de notre équipe. N'hésitez pas à nous contacter via notre formulaire si vous souhaitez en savoir plus.</div>",
+            html_entity_decode(htmlspecialchars_decode($content))
+        );
+        $this->assertFalse($request->hasCookie("session"));
+        $this->assertNull(Auth::$currentUser);
 
     }
 
@@ -284,7 +311,7 @@ class AuthControllerTest extends TestCase
         $this->createUser();
 
         if ($this->user) {
-            $this->user->setStatus(true);
+            $this->user->setStatus(User::STATUS_CODE_REGISTERED);
             $this->manager->flush($this->user);
         }
 
@@ -347,7 +374,7 @@ class AuthControllerTest extends TestCase
         $this->createUser();
 
         if ($this->user) {
-            $this->user->setStatus(true);
+            $this->user->setStatus(User::STATUS_CODE_REGISTERED);
             $this->manager->flush($this->user);
         }
 

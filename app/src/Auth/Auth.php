@@ -45,6 +45,7 @@ class Auth implements ContainerInterface
 {
 
     public static ?User $currentUser;
+    public static ?string $messageError;
     private Manager $manager;
     private Request $request;
     private SessionRepository $sessionRepository;
@@ -57,6 +58,7 @@ class Auth implements ContainerInterface
     public function __construct()
     {
         self::$currentUser = null;
+        self::$messageError = null;
 
         /**
          * @var Manager $manager
@@ -86,7 +88,7 @@ class Auth implements ContainerInterface
     {
         if ($credentials["email"] && $credentials["password"]) {
             /**
-             * @var User $user
+             * @var User|false $user
              */
             $user = (new UserRepository())
                 ->findByOne(
@@ -95,8 +97,8 @@ class Auth implements ContainerInterface
                 );
 
             if (
-                is_object($user) &&
-                $user->getStatus() &&
+                $user &&
+                $user->getStatus() === User::STATUS_CODE_REGISTERED &&
                 password_verify(
                     $credentials["password"],
                     $user->getPassword() ?? ""
@@ -104,6 +106,22 @@ class Auth implements ContainerInterface
             ) {
                 $this->isAuthenticateSuccessful($user);
                 return true;
+
+            }
+
+            if (
+                !$user ||
+                !password_verify(
+                    $credentials["password"],
+                    $user->getPassword() ?? ""
+                )
+            ) {
+                self::$messageError = "L'Email et/ou le mot de passe sont incorrects.";
+
+            }
+
+            if ($user && $user->getStatus() === User::STATUS_CODE_DEACTIVATED) {
+                self::$messageError = "Votre compte a été désactivé par un membre de notre équipe. N'hésitez pas à nous contacter via notre formulaire si vous souhaitez en savoir plus.";
 
             }
         }
@@ -206,7 +224,7 @@ class Auth implements ContainerInterface
                             classObject: User::class
                         );
 
-                    if ($user->getStatus()) {
+                    if ($user && $user->getStatus() === User::STATUS_CODE_REGISTERED) {
                         self::$currentUser = $user;
                     } else {
                         // Delete cookie session

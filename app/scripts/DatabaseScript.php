@@ -86,7 +86,7 @@ $pdo->query("
         `email` VARCHAR(255) NOT NULL UNIQUE,
         `createdAt` DATETIME NOT NULL,
         `role` VARCHAR(255) NOT NULL,
-        `status` BOOLEAN,
+        `status` INTEGER NOT NULL DEFAULT 0,
         `forgottenPasswordToken` VARCHAR(255),
         `expiredTokenAt` DATETIME,
         `emailValidateToken` VARCHAR(255),

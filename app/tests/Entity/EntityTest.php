@@ -92,7 +92,7 @@ class EntityTest extends TestCase
         $this->assertEquals("Pseudo", $user->getPseudo());
         $this->assertEquals("mail@test.fr", $user->getEmail());
         $this->assertEquals("ROLE_USER", $user->getRole());
-        $this->assertEquals(false, $user->getStatus());
+        $this->assertEquals(User::STATUS_CODE_REGISTERED_WAITING, $user->getStatus());
         $this->assertEquals("Token", $user->getEmailValidateToken());
         $this->assertEquals("Token", $user->getForgottenPasswordToken());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $user->getCreatedAt());
