@@ -153,7 +153,7 @@ class KernelTest extends TestCase
             ->setLastname("Test")
             ->setPseudo("Test")
             ->setEmail("test@test.com")
-            ->setStatus(true)
+            ->setStatus(User::STATUS_CODE_REGISTERED)
             ->setPassword(password_hash("password", PASSWORD_ARGON2ID));
 
         $manager->flush($user);

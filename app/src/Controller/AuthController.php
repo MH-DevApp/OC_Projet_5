@@ -86,7 +86,7 @@ class AuthController extends AbstractController
 
             $form->setError(
                 "global",
-                "L'Email et/ou le mot de passe sont incorrects."
+                Auth::$messageError ?? ""
             );
         }
 
@@ -284,7 +284,7 @@ class AuthController extends AbstractController
 
             $user
                 ->setEmailValidateToken(null)
-                ->setStatus(true);
+                ->setStatus(User::STATUS_CODE_REGISTERED);
 
             $manager->flush($user);
 

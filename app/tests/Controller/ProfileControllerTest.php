@@ -98,7 +98,7 @@ class ProfileControllerTest extends TestCase
             ->setLastname("Test")
             ->setFirstname("Test")
             ->setPseudo("Test")
-            ->setStatus(true)
+            ->setStatus(User::STATUS_CODE_REGISTERED)
             ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
             ->setEmail("test@test.fr");
         $this->manager->flush($this->user);

@@ -33,8 +33,10 @@ use Exception;
  */
 class User extends AbstractEntity
 {
-
     const TABLE_NAME = "user";
+    const STATUS_CODE_REGISTERED_WAITING = 0;
+    const STATUS_CODE_REGISTERED = 1;
+    const STATUS_CODE_DEACTIVATED = 2;
 
     private ?string $lastname = null;
     private ?string $firstname = null;
@@ -42,7 +44,7 @@ class User extends AbstractEntity
     private ?string $password = null;
     private ?string $email = null;
     private string $role = "ROLE_USER";
-    private ?bool $status = null;
+    private ?int $status = 0;
     private DateTime|string|null $createdAt = null;
     private ?string $emailValidateToken = null;
     private Datetime|string|null $expiredEmailTokenAt = null;
@@ -245,9 +247,9 @@ class User extends AbstractEntity
     /**
      * Get the status of the User
      *
-     * @return bool
+     * @return int
      */
-    public function getStatus(): bool
+    public function getStatus(): int
     {
         return $this->status;
 
@@ -257,11 +259,11 @@ class User extends AbstractEntity
     /**
      * Set the status of the User.
      *
-     * @param bool $status Status of the user
+     * @param int $status Status of the user
      *
      * @return self
      */
-    public function setStatus(bool $status): self
+    public function setStatus(int $status): self
     {
         $this->status = $status;
         return $this;
