@@ -1,0 +1,132 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+    <section id="profile" class="mb-4 d-flex flex-column align-items-center">
+        <h3 class="text-center mb-2 bg-dark text-light py-5 w-100">
+            <img class="me-2" src="{{ asset("images/logos/user-solid.svg") }}" alt="Logo ID card">
+            <span>MON PROFIL</span>
+        </h3>
+        <div class="col-12 d-flex flex-column align-items-center mt-2">
+            <div class="col-12 d-flex flex-column align-items-center mb-2">
+                <div class="col-12 col-md-8 col-xl-6 p-2">
+                    <h5 class="d-flex justify-content-center align-items-center p-3 bg-secondary text-light m-0 rounded-top">
+                        <img class="me-2" width="25px" src="{{ asset("images/logos/circle-info-solid.svg") }}" alt="Logo Key">
+                        <span class="text-center">Mes informations personnelles</span>
+                    </h5>
+                    <div class="border shadow rounded-bottom p-3 d-flex flex-column align-items-center gap-2">
+                        <div class="col-10 d-flex flex-row align-items-center gap-2">
+                            <div class="col-4 text-end">
+                                <span>Email : </span>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" value="{{ app.user.email }}" aria-label="Email user" disabled readonly>
+                            </div>
+                        </div>
+                        <div class="col-10 d-flex flex-row align-items-center gap-2">
+                            <div class="col-4 text-end">
+                                <span>Nom : </span>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" value="{{ app.user.lastname }}" aria-label="Lastname user" disabled readonly>
+                            </div>
+                        </div>
+                        <div class="col-10 d-flex flex-row align-items-center gap-2">
+                            <div class="col-4 text-end">
+                                <span>Prénom : </span>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" value="{{ app.user.firstname }}" aria-label="Firstname user" disabled readonly>
+                            </div>
+                        </div>
+                        <div class="col-10 d-flex flex-row align-items-center gap-2">
+                            <div class="col-4 text-end">
+                                <span>Pseudo : </span>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" type="text" value="{{ app.user.pseudo }}" aria-label="Pseudo user" disabled readonly>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex flex-row justify-content-end mt-3">
+                            <p class="text-muted small text-center">
+                                Compte
+                                <span class="badge badge-pill bg-secondary p-2">
+                                    {{ app.user.role == "ROLE_ADMIN" ? "Administrateur" : "Utilisateur"  }}
+                                </span>, créé le
+                                {{ app.user.createdAt|date("d/m/Y", "Europe/Paris") }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="reset-password" class="col-12 col-md-8 col-xl-6 p-2">
+                <h5 class="d-flex justify-content-center align-items-center p-3 bg-secondary text-light m-0 rounded-top">
+                    <img class="me-2" width="25px" src="{{ asset("images/logos/key-solid.svg") }}" alt="Logo Key">
+                    <span class="text-center">Modifier mon mot de passe</span>
+                </h5>
+                <form class="border shadow rounded-bottom p-3" method="post">
+                    <div class="col-12 form-floating mb-2">
+                        <input
+                                type="password"
+                                class="form-control {% if submitted %}{{ errors.actualPassword is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                                id="actualPassword"
+                                name="actualPassword"
+                                placeholder="Mot de passe"
+                                value="{{ data.actualPassword ?? "" }}"
+                                required
+                        >
+                        <label for="actualPassword">Mot de passe actuel</label>
+                        {% if errors.actualPassword is defined %}
+                            <div class="invalid-feedback">{{ errors.actualPassword }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12 form-floating mb-2">
+                        <input
+                                type="password"
+                                class="form-control {% if submitted %}{{ errors.newResetPassword is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                                id="newResetPassword"
+                                name="newResetPassword"
+                                placeholder="Mot de passe"
+                                value="{{ data.newResetPassword ?? "" }}"
+                                required
+                        >
+                        <label for="newResetPassword">Nouveau mot de passe</label>
+                        {% if errors.newResetPassword is defined %}
+                            <div class="invalid-feedback">{{ errors.newResetPassword }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-12 form-floating mb-2">
+                        <input
+                                type="password"
+                                class="form-control"
+                                id="confirmNewResetPassword"
+                                name="confirmNewResetPassword"
+                                placeholder="Mot de passe"
+                                value=""
+                                required
+                        >
+                        <label for="confirmNewResetPassword">Confirmation nouveau mot de passe</label>
+                    </div>
+                    <input type="hidden" name="_csrf" value="{{ csrf("profile-password-reset") }}">
+                    <div class="d-flex justify-content-end my-2 p-2">
+                        <button type="submit" class="btn btn-dark text-light">
+                            <img width="15px" class="me-1 text-light" src="{{ asset("images/logos/pen-to-square-solid.svg") }}" alt="Logo Pen In Square">
+                            <span>Modifier</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    {% if submitted %}
+        <script type="text/javascript">
+            window.addEventListener("load", () => {
+                const sectionEl = document.getElementById("reset-password");
+                const positionY = sectionEl.offsetTop;
+                window.scrollTo(0, positionY);
+            });
+        </script>
+    {% endif %}
+{% endblock %}
