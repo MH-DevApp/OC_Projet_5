@@ -2,7 +2,7 @@
     <ul>
         {% if app.user and app.user.role == "ROLE_ADMIN" %}
             <li>
-                <a class="link-light" href="#">Panneau d'administration</a>
+                <a class="link-light" href="{{ path("app_admin_dashboard") }}">Panneau d'administration</a>
             </li>
             <hr class="bg-light w-25 m-2">
         {% endif %}

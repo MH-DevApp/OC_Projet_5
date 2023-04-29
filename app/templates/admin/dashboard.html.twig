@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Tableau de bord &laquo;{{ page }}&raquo;{% endblock %}
+
+{% block body %}
+    <section id="admin-dashboard" class="d-flex flex-column align-items-center h-100">
+        <h3 class="d-flex justify-content-center align-items-center gap-3 bg-dark text-light py-5 px-2 w-100 m-0">
+            <img src="{{ asset("images/logos/table-columns-solid.svg") }}" alt="Logo ID card">
+            <span class="text-center">TABLEAU DE BORD - {{ page|upper }}</span>
+        </h3>
+        <div class="d-flex flex-column flex-lg-row w-100 gap-1 h-100">
+            <div class="d-flex flex-column gap-2 gap-lg-3 align-items-center text-light bg-secondary px-3 px-lg-5 py-3 shadow">
+                {% if page == "users" %}
+                    <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Utilisateurs</p>
+                {% else %}
+                    <a class="btn btn-light px-3 w-100" href="{{ path("app_admin_page", {page: "users"}) }}">Utilisateurs</a>
+                {% endif %}
+
+                {% if page == "posts" %}
+                    <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Posts</p>
+                {% else %}
+                    <a class="btn btn-light px-3 w-100" href="{{ path("app_admin_page", {page: "posts"}) }}">Posts</a>
+                {% endif %}
+
+                {% if page == "comments" %}
+                    <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Commentaires</p>
+                {% else %}
+                    <a class="btn btn-light px-3 mb-3 w-100" href="{{ path("app_admin_page", {page: "comments"}) }}">Commentaires</a>
+                {% endif %}
+            </div>
+            <div class="d-flex flex-column flex-fill px-5 pt-3">
+                {% include("admin/partials/_"~page~".html.twig") %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
