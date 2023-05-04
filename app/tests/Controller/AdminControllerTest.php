@@ -20,15 +20,20 @@ namespace tests\Controller;
 use App\Auth\Auth;
 use App\Controller\AbstractController;
 use App\Controller\AdminController;
+use App\Entity\Comment;
+use App\Entity\Post;
 use App\Entity\Session;
 use App\Entity\User;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
+use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
+use App\Factory\Utils\Uuid\UuidV4;
 use App\Kernel;
 use App\Repository\SessionRepository;
+use App\Repository\UserRepository;
 use App\Service\Container\Container;
 use Exception;
 use PHPUnit\Framework\Attributes\After;
@@ -52,6 +57,11 @@ use ReflectionException;
  */
 #[CoversClass(AbstractController::class)]
 #[CoversClass(AdminController::class)]
+#[CoversClass(UserRepository::class)]
+#[CoversClass(Manager::class)]
+#[CoversClass(User::class)]
+#[CoversClass(Post::class)]
+#[CoversClass(Comment::class)]
 class AdminControllerTest extends TestCase
 {
 
@@ -166,7 +176,7 @@ class AdminControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<span class=\"text-center\">TABLEAU DE BORD - USERS</span>",
+            "TABLEAU DE BORD - USERS",
             html_entity_decode(htmlspecialchars_decode($content))
         );
 
@@ -210,6 +220,424 @@ class AdminControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be to render not found page of admin
+     * controller with bad page.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render not found page of get entities request with bad page")]
+    public function itNotFoundOfGetEntitiesRequestWithBadPage(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/dashboard/entities/badpage";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+        $response->send();
+
+        $this->assertEquals(404, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be to render json of get entities
+     * request with page users.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of get entities request with page users")]
+    public function itNotFoundOfGetEntitiesRequestWithPageUsers(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/dashboard/entities/users";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(1, count($content["entities"]));
+
+    }
+
+
+    /**
+     * Test should be to render json of request of
+     * toggle status user failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle status user failed")]
+    public function itRequestOfToggleStatusUserFailed(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $badId = UuidV4::generate();
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/user/".$badId."/toggle-status";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le status de cet utilisateur, celui-ci n'a pas été trouvé dans la base de données.",
+            $content["message"]
+        );
+
+        $id = $this->user?->getId() ?: "";
+        $_SERVER["REQUEST_URI"] = "/admin/user/".$id."/toggle-status";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le status de votre compte.",
+            $content["message"]
+        );
+
+    }
+
+
+    /**
+     * Test should be to render json of request of
+     * toggle status user success.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle status user success")]
+    public function itRequestOfToggleStatusUserSuccess(): void
+    {
+        $newUser =(new User())
+            ->setLastname("Test1")
+            ->setFirstname("Test1")
+            ->setPseudo("Test1")
+            ->setEmail("test1@test.fr")
+            ->setRole("ROLE_USER")
+            ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
+            ->setStatus(User::STATUS_CODE_REGISTERED);
+
+        $this->manager->flush($newUser);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $id = $newUser->getId() ?: "";
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/user/".$id."/toggle-status";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le status de l'utilisateur a été désactivé avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var User $newUser
+         */
+        $newUser = (new UserRepository())->findByOne(
+            ["id" => $id],
+            classObject: User::class
+        );
+
+        $this->assertTrue($newUser->getStatus() === User::STATUS_CODE_DEACTIVATED);
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le status de l'utilisateur a été activé avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var User $newUser
+         */
+        $newUser = (new UserRepository())->findByOne(
+            ["id" => $id],
+            classObject: User::class
+        );
+
+        $this->assertTrue($newUser->getStatus() === User::STATUS_CODE_REGISTERED);
+
+        $this->manager->delete($newUser);
+
+    }
+
+
+    /**
+     * Test should be to render json of request of
+     * toggle role user failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle role user failed")]
+    public function itRequestOfToggleRoleUserFailed(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $badId = UuidV4::generate();
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/user/".$badId."/toggle-role";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le role de cet utilisateur, celui-ci n'a pas été trouvé dans la base de données.",
+            $content["message"]
+        );
+
+        $id = $this->user?->getId() ?: "";
+        $_SERVER["REQUEST_URI"] = "/admin/user/".$id."/toggle-role";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le role de votre compte.",
+            $content["message"]
+        );
+
+    }
+
+
+    /**
+     * Test should be to render json of request of
+     * toggle role user success.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle role user success")]
+    public function itRequestOfToggleRoleUserSuccess(): void
+    {
+        $newUser =(new User())
+            ->setLastname("Test1")
+            ->setFirstname("Test1")
+            ->setPseudo("Test1")
+            ->setEmail("test1@test.fr")
+            ->setRole("ROLE_USER")
+            ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
+            ->setStatus(User::STATUS_CODE_REGISTERED);
+
+        $this->manager->flush($newUser);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $id = $newUser->getId() ?: "";
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/user/".$id."/toggle-role";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le rôle de l'utilisateur a été modifié avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var User $newUser
+         */
+        $newUser = (new UserRepository())->findByOne(
+            ["id" => $id],
+            classObject: User::class
+        );
+
+        $this->assertTrue($newUser->getRole() === "ROLE_ADMIN");
+
+        (new Kernel())->run();
+
+        /**
+         * @var User $newUser
+         */
+        $newUser = (new UserRepository())->findByOne(
+            ["id" => $id],
+            classObject: User::class
+        );
+
+        $this->assertTrue($newUser->getRole() === "ROLE_USER");
+
+        $this->manager->delete($newUser);
 
     }
 
