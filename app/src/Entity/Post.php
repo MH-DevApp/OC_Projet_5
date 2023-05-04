@@ -41,6 +41,8 @@ class Post extends AbstractEntity
     private ?string $title = null;
     private ?string $chapo = null;
     private ?string $content = null;
+    private ?bool $isPublished = false;
+    private ?bool $isFeatured = false;
     private DateTime|string|null $createdAt = null;
     private DateTime|string|null $updatedAt = null;
 
@@ -170,6 +172,60 @@ class Post extends AbstractEntity
     public function setContent(string $contentPost): self
     {
         $this->content = $contentPost;
+        return $this;
+
+    }
+
+
+    /**
+     * Get the status publish of the post
+     *
+     * @return bool
+     */
+    public function getIsPublished(): bool
+    {
+        return $this->isPublished ?? false;
+
+    }
+
+
+    /**
+     * Set the status publish of the post
+     *
+     * @param bool $isPublished Status published of the post
+     *
+     * @return self
+     */
+    public function setIsPublished(bool $isPublished): self
+    {
+        $this->isPublished = $isPublished;
+        return $this;
+
+    }
+
+
+    /**
+     * Get the status featured of the post
+     *
+     * @return bool
+     */
+    public function getIsFeatured(): bool
+    {
+        return $this->isFeatured ?? false;
+
+    }
+
+
+    /**
+     * Set the status featured of the post
+     *
+     * @param bool $isFeatured Status featured of the post
+     *
+     * @return self
+     */
+    public function setIsFeatured(bool $isFeatured): self
+    {
+        $this->isFeatured = $isFeatured;
         return $this;
 
     }

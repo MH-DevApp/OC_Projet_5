@@ -109,6 +109,8 @@ abstract class Mapper
                         $value = $value->format(DATE_ATOM);
                     } else if (is_bool($value)) {
                         $value = $value ? 1 : 0;
+                    } else if ($value instanceof AbstractEntity) {
+                        $value = $value->getId();
                     }
 
                     $obj[$props->getName()] = $value;

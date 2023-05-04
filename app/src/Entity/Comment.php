@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 
+use App\Repository\UserRepository;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -40,6 +41,9 @@ class Comment extends AbstractEntity
     private ?string $userId = null;
     private ?string $postId = null;
     private ?string $content = null;
+    private ?bool $isValid = false;
+    private ?string $validByUserId = null;
+    private ?string $validAt = null;
     private Datetime|string|null $createdAt = null;
     private Datetime|string|null $updatedAt = null;
 
@@ -142,6 +146,118 @@ class Comment extends AbstractEntity
     public function setContent(string $commentContent): self
     {
         $this->content = $commentContent;
+        return $this;
+
+    }
+
+
+    /**
+     * Get the status valid of the comment
+     *
+     * @return bool
+     */
+    public function getIsValid(): bool
+    {
+        return $this->isValid ?? false;
+
+    }
+
+
+    /**
+     * Set the status valid of the comment
+     *
+     * @param bool $isValid Status of the comment
+     *
+     * @return self
+     */
+    public function setIsValid(bool $isValid): self
+    {
+        $this->isValid = $isValid;
+        return $this;
+
+    }
+
+
+    /**
+     * Get the admin user who valid the comment
+     *
+     * @return ?User
+     */
+    public function getValidByUserId(): ?User
+    {
+        $user = null;
+
+        if ($this->validByUserId) {
+            /**
+             * @var User|false $user
+             */
+            $user = (new UserRepository())->findByOne(
+                ["id" => $this->validByUserId],
+                classObject: User::class
+            );
+
+            if (!$user) {
+                $user = null;
+            }
+
+        }
+
+        return $user;
+
+    }
+
+
+    /**
+     * Set the admin user who valid the comment
+     *
+     * @param string|User $validByUserId Admin user who valid the comment
+     *
+     * @return self
+     */
+    public function setValidByUserId(string|User $validByUserId): self
+    {
+        if ($validByUserId instanceof User) {
+            $validByUserId = $validByUserId->getId();
+        }
+
+        $this->validByUserId = $validByUserId;
+        return $this;
+
+    }
+
+
+    /**
+     * Get the date when the comment has validated
+     *
+     * @return ?DateTime
+     * @throws Exception
+     */
+    public function getValidAt(): ?DateTime
+    {
+        if ($this->validAt) {
+            return new DateTime($this->validAt);
+        }
+
+        return null;
+
+    }
+
+
+    /**
+     * Set the date when the comment has validated
+     *
+     * @param string|DateTime $validAt Date when the comment has validated
+     *
+     * @return self
+     */
+    public function setValidAt(string|DateTime $validAt): self
+    {
+        if ($validAt instanceof DateTime) {
+            $validAt = $validAt->format(DATE_ATOM);
+
+        }
+
+        $this->validAt = $validAt;
         return $this;
 
     }
