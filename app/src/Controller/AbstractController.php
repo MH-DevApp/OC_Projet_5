@@ -96,10 +96,32 @@ abstract class AbstractController
 
 
     /**
+     * Return a JSON Response
+     *
+     * @param array<int|string, array<int, object>|int|string|object|bool> $value
+     * @param int $statusCode
+     *
+     * @return Response
+     */
+    protected function json(
+        array $value,
+        int $statusCode = 200
+    ): Response
+    {
+        return new Response(
+            json_encode($value) ?: "",
+            $statusCode,
+            ["Content-Type: application/json; charset=utf-8"]
+        );
+
+    }
+
+
+    /**
      * Generate url
      *
      * @param string $name
-     * @param array $params
+     * @param array<string, int|string> $params
      * @param bool $isAbsolute
      *
      * @return string
@@ -125,7 +147,7 @@ abstract class AbstractController
      * Redirect to URL
      *
      * @param string $name
-     * @param array $params
+     * @param array<string, int|string> $params
      *
      * @return Response
      *
