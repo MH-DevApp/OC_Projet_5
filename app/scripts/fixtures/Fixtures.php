@@ -43,7 +43,7 @@ try {
     Container::loadServices();
 } catch (DotEnvException|ReflectionException $e) {
     echo $e;
-    die();
+    return;
 }
 
 /**
@@ -53,7 +53,7 @@ $manager = Container::getService("manager");
 
 if (!$manager->getPDO() instanceof PDO) {
     echo "- Database not exists, execute the command : 'composer run make:database' for create database.\n\n";
-    die();
+    return;
 }
 
 // DROP ALL DATA IN DATABASE
