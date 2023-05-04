@@ -178,7 +178,7 @@ for ($i=0; $i < 3; $i++) {
 
     } catch (Exception $e) {
         echo "$e";
-        die();
+        return;
     }
 }
 
@@ -206,7 +206,7 @@ for ($i=0; $i < 40; $i++) {
 
     } catch (Exception $e) {
         echo "$e";
-        die();
+        return;
     }
 }
 
@@ -252,7 +252,7 @@ if ($users) {
 
         } catch (Exception $e) {
             echo "$e";
-            die();
+            return;
         }
     }
 }
@@ -335,7 +335,7 @@ if ($users && $posts) {
 
         } catch (Exception $e) {
             echo "$e";
-            die();
+            return;
         }
     }
 }
