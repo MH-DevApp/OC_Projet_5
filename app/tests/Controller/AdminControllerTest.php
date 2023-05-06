@@ -26,12 +26,12 @@ use App\Entity\Session;
 use App\Entity\User;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
-use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Factory\Utils\Uuid\UuidV4;
 use App\Kernel;
+use App\Repository\PostRepository;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
@@ -58,6 +58,7 @@ use ReflectionException;
 #[CoversClass(AbstractController::class)]
 #[CoversClass(AdminController::class)]
 #[CoversClass(UserRepository::class)]
+#[CoversClass(PostRepository::class)]
 #[CoversClass(Manager::class)]
 #[CoversClass(User::class)]
 #[CoversClass(Post::class)]
@@ -266,8 +267,8 @@ class AdminControllerTest extends TestCase
 
 
     /**
-     * Test should be to render json of get entities
-     * request with page users.
+     * Test should be to render json of get entities request
+     * of Admin controller.
      *
      * @return void
      *
@@ -276,8 +277,8 @@ class AdminControllerTest extends TestCase
      * @throws Exception
      */
     #[Test]
-    #[TestDox("should be to render json of get entities request with page users")]
-    public function itNotFoundOfGetEntitiesRequestWithPageUsers(): void
+    #[TestDox("should be to render json of get entities request of Admin controller")]
+    public function itGetEntitiesRequestOfAdminController(): void
     {
         /**
          * @var Auth $auth
@@ -308,6 +309,21 @@ class AdminControllerTest extends TestCase
         $this->assertIsArray($content);
         $this->assertTrue($content["success"]);
         $this->assertEquals(1, count($content["entities"]));
+
+        $_SERVER["REQUEST_URI"] = "/admin/dashboard/entities/posts";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(0, count($content["entities"]));
 
     }
 
@@ -638,6 +654,345 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($newUser->getRole() === "ROLE_USER");
 
         $this->manager->delete($newUser);
+
+    }
+
+
+    /**
+     * Test should be to render json of request of toggle
+     * published post failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle published post failed")]
+    public function itRequestOfTogglePublishedPostFailed(): void
+    {
+        $newPost =(new Post())
+            ->setTitle("Test")
+            ->setChapo("Test")
+            ->setContent("Test")
+            ->setIsPublished(true)
+            ->setIsFeatured(true)
+            ->setUserId($this->user?->getId() ?? "")
+        ;
+
+        $this->manager->flush($newPost);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $id = UuidV4::generate();
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/post/".$id."/toggle-published";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le status de publication de ce post, celui-ci n'a pas été trouvé dans la base de données.",
+            $content["message"]
+        );
+
+        $id = $newPost->getId() ?: "";
+        $_SERVER["REQUEST_URI"] = "/admin/post/".$id."/toggle-published";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Il n'est pas possible de désactiver la publication d'un post une fois qu'il est mis en avant.",
+            $content["message"]
+        );
+
+        $this->manager->delete($newPost);
+
+    }
+
+
+    /**
+     * Test should be to render json of request of toggle
+     * published post failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle published post success")]
+    public function itRequestOfTogglePublishedPostSuccess(): void
+    {
+        $newPost =(new Post())
+            ->setTitle("Test")
+            ->setChapo("Test")
+            ->setContent("Test")
+            ->setUserId($this->user?->getId() ?? "")
+        ;
+
+        $this->manager->flush($newPost);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        $id = $newPost->getId() ?: "";
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/post/".$id."/toggle-published";
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le status de publication du post a été modifié avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var Post $postUpdated
+         */
+        $postUpdated = (new PostRepository())->findByOne(
+            ["id" => $id],
+            classObject: Post::class
+        );
+
+        $this->assertTrue($postUpdated->getIsPublished());
+
+        $this->manager->delete($newPost);
+
+    }
+
+
+    /**
+     * Test should be to render json of request of toggle
+     * featured post failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle featured post failed")]
+    public function itRequestOfToggleFeaturedPostFailed(): void
+    {
+        /**
+         * @var array<int, Post>
+         */
+        $posts = [];
+
+        for ($i=0; $i<6; $i++) {
+            $posts[] =(new Post())
+                ->setTitle("Test ".$i)
+                ->setChapo("Test ".$i)
+                ->setContent("Test ".$i)
+                ->setIsPublished($i !== 0)
+                ->setIsFeatured($i !== 0)
+                ->setUserId($this->user?->getId() ?? "")
+            ;
+        }
+
+        $this->manager->flush(...$posts);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $badId = UuidV4::generate();
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/post/".$badId."/toggle-featured";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le status de la mise en avant de ce post, celui-ci n'a pas été trouvé dans la base de données.",
+            $content["message"]
+        );
+
+        $id = $posts[0]->getId() ?: "";
+        $_SERVER["REQUEST_URI"] = "/admin/post/".$id."/toggle-featured";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Le nombre maximum de posts pour la mise en avant a été atteint.",
+            $content["message"]
+        );
+
+        $posts[1]->setIsFeatured(false);
+        $this->manager->flush($posts[1]);
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Le post doit être au statut publié pour qu'il soit mis en avant.",
+            $content["message"]
+        );
+
+        foreach ($posts as $post) {
+            $this->manager->delete($post);
+        }
+
+    }
+
+
+    /**
+     * Test should be to render json of request of toggle
+     * featured post failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle featured post success")]
+    public function itRequestOfToggleFeaturedPostSuccess(): void
+    {
+        $newPost =(new Post())
+            ->setTitle("Test")
+            ->setChapo("Test")
+            ->setContent("Test")
+            ->setIsPublished(true)
+            ->setUserId($this->user?->getId() ?? "")
+        ;
+
+        $this->manager->flush($newPost);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        $id = $newPost->getId() ?: "";
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/post/".$id."/toggle-featured";
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le status de la mise en avant du post a été modifié avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var Post $postUpdated
+         */
+        $postUpdated = (new PostRepository())->findByOne(
+            ["id" => $id],
+            classObject: Post::class
+        );
+
+        $this->assertTrue($postUpdated->getIsFeatured());
+
+        $this->manager->delete($newPost);
 
     }
 
