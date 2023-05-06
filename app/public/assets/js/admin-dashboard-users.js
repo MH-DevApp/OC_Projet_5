@@ -1,5 +1,7 @@
 import {addSpinnerElement, removeSpinnerElement} from "./utils/spinner.js";
 import {addNotification} from "./utils/notification.js";
+import {filterEntities} from "./utils/filter.js";
+import {entities} from "./admin-dashboard.js";
 
 export const constructTableUsers = (users, showModal) => {
     const tBody = document.querySelector("table tbody");
@@ -80,6 +82,11 @@ export const constructTableUsers = (users, showModal) => {
             tdNbComments.className = "d-none d-xxl-table-cell";
             tdNbComments.textContent = user["countComments"];
 
+            const tdCreatedAt = document.createElement("td");
+            tdCreatedAt.dataset.col = "col-createdAt";
+            tdCreatedAt.className = "d-none d-sm-table-cell";
+            tdCreatedAt.textContent = user["createdAt"] !== "" ? new Date(user["createdAt"]+" UTC").toLocaleDateString() : "-";
+
             tr.append(
                 thNumElement,
                 tdLastname,
@@ -89,7 +96,8 @@ export const constructTableUsers = (users, showModal) => {
                 tdRole,
                 tdStatus,
                 tdNbPosts,
-                tdNbComments
+                tdNbComments,
+                tdCreatedAt
             );
 
             tBody.append(tr);
@@ -105,11 +113,7 @@ export const initUsers = (modal) => {
     const roleModalElement = modal.querySelector("[data-col=col-role]");
 
     statusModalElement.addEventListener("DOMSubtreeModified", () => {
-        const id = modal.dataset.entityId;
-        const statusTableElement = document.querySelector("tbody tr[data-entity-id='"+id+"'] td[data-col='col-status']");
         const btnUpdateStatus = modal.querySelector("div.modal-footer button[data-action=update-status]");
-
-        statusTableElement.textContent = statusModalElement.textContent;
 
         if (statusModalElement.textContent === "En attente") {
             statusModalElement.className = "badge badge-pill bg-warning text-dark p-2";
@@ -127,11 +131,7 @@ export const initUsers = (modal) => {
     });
 
     roleModalElement.addEventListener("DOMSubtreeModified", () => {
-        const id = modal.dataset.entityId;
-        const roleTableElement = document.querySelector("tbody tr[data-entity-id='"+id+"'] td[data-col='col-role']");
         const btnUpdateRole = modal.querySelector("div.modal-footer button[data-action=update-role]");
-
-        roleTableElement.textContent = roleModalElement.textContent;
 
         if (roleModalElement.textContent === "Admin") {
             btnUpdateRole.textContent = "Passer User";
@@ -153,16 +153,29 @@ export const initUsers = (modal) => {
                 if (response.success) {
                     switch (response.action) {
                         case "update-status":
+                            entities.map((entity) => {
+                                if (entity["id"] === id) {
+                                    entity["status"] = entity["status"] === 1 ? 2 : 1;
+                                }
+                                return entity;
+                            });
                             statusModalElement.textContent = statusModalElement.textContent === "Enregistré" ?
                                 "Désactivé" :
                                 "Enregistré";
                             break;
                         case "update-role":
+                            entities.map((entity) => {
+                                if (entity["id"] === id) {
+                                    entity["role"] = entity["role"] === "ROLE_ADMIN" ? "ROLE_USER" : "ROLE_ADMIN";
+                                }
+                                return entity;
+                            });
                             roleModalElement.textContent = roleModalElement.textContent === "Admin" ?
                                 "User" :
                                 "Admin";
                             break;
                     }
+                    filterEntities();
                 }
             }).catch(() => {
                 addNotification({
