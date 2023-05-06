@@ -4,21 +4,25 @@
             <div class="d-flex flex-row align-items-center">
                 <img class="img-avatar" src="{{ asset("images/avatar.png") }}" alt="image avatar" />
                 <a class="nav-link link-dark ms-3" href="{{ path("app_home") }}">Page d'accueil</a>
+                <a class="nav-link link-dark ms-3" aria-current="page" href="{{ path("app_posts") }}">Articles</a>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse my-3" id="navbarText">
                 <ul class="navbar-nav ms-3 me-lg-auto">
-                    <li class="nav-item d-flex justify-content-center mx-5 mx-lg-0">
-                        <a class="nav-link link-dark" aria-current="page" href="{{ path("app_posts") }}">Articles</a>
-                    </li>
                     <li class="nav-item d-flex justify-content-center mx-lg-0">
                         <hr class="d-lg-none w-50 text-dark" />
                     </li>
                 </ul>
                 <ul class="navbar-nav d-flex flex-column flex-lg-row gap-2 me-lg-4 text-center">
                     {% if app.user %}
+                        <li class="nav-item d-flex justify-content-center mx-5 mx-lg-0">
+                            <a class="btn btn-dark w-100" href="{{ path("app_admin_dashboard") }}">
+                                <img width="25px" class="me-2" src="{{ asset("images/logos/table-columns-solid.svg") }}" alt="Logo profil user"/>
+                                <span>Panneau d'administration</span>
+                            </a>
+                        </li>
                         <li class="nav-item d-flex justify-content-center mx-5 mx-lg-0">
                             <a class="btn btn-dark w-100" href="{{ path("app_profile") }}">
                                 <img class="me-2 img-profile" src="{{ asset("images/logos/user-solid.svg") }}" alt="Logo profil user"/>
