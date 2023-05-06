@@ -98,7 +98,7 @@ abstract class AbstractController
     /**
      * Return a JSON Response
      *
-     * @param array<int|string, array<int, object>|int|string|object|bool> $value
+     * @param array<int|string, mixed> $value
      * @param int $statusCode
      *
      * @return Response

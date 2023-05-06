@@ -80,7 +80,7 @@ class UserRepository extends AbstractRepository
         $statement = $this->pdo->prepare($query);
         $statement->execute();
 
-        return $statement->fetchAll();
+        return $statement->fetchAll() ?: [];
 
     }
 
