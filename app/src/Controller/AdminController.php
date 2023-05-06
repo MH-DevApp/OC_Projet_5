@@ -24,6 +24,7 @@ use App\Factory\Manager\Manager;
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
 use App\Factory\Router\RouterException;
+use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
 use Exception;
@@ -131,6 +132,9 @@ class AdminController extends AbstractController
 
         }
 
+        /**
+         * @var array<int, object> $entities
+         */
         $entities = [];
 
         switch ($page) {
@@ -138,6 +142,8 @@ class AdminController extends AbstractController
                 $entities = (new UserRepository())->getUsersForDashboard();
                 break;
             case "posts":
+                $entities = (new PostRepository())->getPostsForDashboard();
+                break;
             case "comments":
                 break;
         }
@@ -268,6 +274,125 @@ class AdminController extends AbstractController
                 "success" => true,
                 "message" => "Le rôle de l'utilisateur a été modifié avec succès.",
                 "action" => "update-role"
+            ]
+        );
+    }
+
+
+    /**
+     * Update status published post
+     *
+     * @throws Exception
+     */
+    #[Route(
+        "/admin/post/:id/toggle-published",
+        "admin_post_toggle_published",
+        regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        granted: "ROLE_ADMIN"
+    )]
+    public function togglePublishedPost(string $id): Response
+    {
+        /**
+         * @var Post|false $post
+         */
+        $post = (new PostRepository())
+            ->findByOne(
+                ["id" => $id],
+                classObject: Post::class
+            );
+
+        if (!$post) {
+            return $this->json(
+                [
+                "success" => false,
+                "message" => "Impossible de modifier le status de publication de ce post, celui-ci n'a pas été trouvé dans la base de données."
+                ]
+            );
+        }
+
+        if ($post->getIsFeatured() && $post->getIsPublished()) {
+            return $this->json(
+                [
+                "success" => false,
+                "message" => "Il n'est pas possible de désactiver la publication d'un post une fois qu'il est mis en avant."
+                ]
+            );
+        }
+
+        $post->setIsPublished(!$post->getIsPublished());
+        $this->manager->flush($post);
+
+        return $this->json(
+            [
+                "success" => true,
+                "message" => "Le status de publication du post a été modifié avec succès.",
+                "action" => "update-published"
+            ]
+        );
+    }
+
+
+    /**
+     * Update status featured post
+     *
+     * @throws Exception
+     */
+    #[Route(
+        "/admin/post/:id/toggle-featured",
+        "admin_post_toggle_featured",
+        regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        granted: "ROLE_ADMIN"
+    )]
+    public function toggleFeaturedPost(string $id): Response
+    {
+        $postRepo = new PostRepository();
+
+        /**
+         * @var Post|false $post
+         */
+        $post = $postRepo
+            ->findByOne(
+                ["id" => $id],
+                classObject: Post::class
+            );
+
+        if (!$post) {
+            return $this->json(
+                [
+                "success" => false,
+                "message" => "Impossible de modifier le status de la mise en avant de ce post, celui-ci n'a pas été trouvé dans la base de données."
+                ]
+            );
+        }
+
+        $countPostsIsFeatured = $postRepo->getCountFeaturedPosts();
+
+        if (!$post->getIsFeatured() && $countPostsIsFeatured === 5) {
+            return $this->json(
+                [
+                    "success" => false,
+                    "message" => "Le nombre maximum de posts pour la mise en avant a été atteint."
+                ]
+            );
+        }
+
+        if (!$post->getIsPublished()) {
+            return $this->json(
+                [
+                    "success" => false,
+                    "message" => "Le post doit être au statut publié pour qu'il soit mis en avant."
+                ]
+            );
+        }
+
+        $post->setIsFeatured(!$post->getIsFeatured());
+        $this->manager->flush($post);
+
+        return $this->json(
+            [
+                "success" => true,
+                "message" => "Le status de la mise en avant du post a été modifié avec succès.",
+                "action" => "update-featured"
             ]
         );
     }
