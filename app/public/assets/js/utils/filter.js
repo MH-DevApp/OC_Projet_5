@@ -1,6 +1,7 @@
 import {entities} from "../admin-dashboard.js";
 import {constructTableUsers} from "../admin-dashboard-users.js";
 import {hiddenLoadingPage, showLoadingPage} from "./loading-page.js";
+import {constructTablePosts} from "../admin-dashboard-posts.js";
 
 let entitiesFilter = [];
 let entitiesType = "";
@@ -29,49 +30,92 @@ export const initFilter = (type, listenerModal = null) => {
 }
 
 export const filterEntities = () => {
+    const filterInputSearch = (entity) => {
+        /** @type {HTMLSelectElement} */
+        const typeEntity = document.querySelector("select#selectTypeEntity");
+        /** @type {HTMLInputElement} */
+        const inputSearchEntity = document.querySelector("input#inputSearchEntity");
+
+        if (inputSearchEntity) {
+            return entity[typeEntity.value]
+                .toLowerCase()
+                .includes(inputSearchEntity.value.toLowerCase());
+        }
+
+        return true;
+    };
+
+    const filterUsers = () => {
+        /** @type {HTMLInputElement} */
+        const inputRoleAdmin = document.querySelector("input#roleAdmin");
+        /** @type {HTMLInputElement} */
+        const inputRoleUser = document.querySelector("input#roleUser");
+        /** @type {HTMLInputElement} */
+        const inputStatusWaiting = document.querySelector("input#statusWaiting");
+        /** @type {HTMLInputElement} */
+        const inputStatusRegistered = document.querySelector("input#statusRegistered");
+        /** @type {HTMLInputElement} */
+        const inputStatusDeactivated = document.querySelector("input#statusDeactivated");
+
+        entitiesFilter = entities.filter((entity) => {
+            if (!filterInputSearch(entity)) {
+                return false;
+            }
+
+            if (
+                (entity["role"] === "ROLE_ADMIN" && !inputRoleAdmin.checked) ||
+                (entity["role"] === "ROLE_USER" && !inputRoleUser.checked)
+            ) {
+                return false;
+            }
+
+            if (
+                (entity["status"] === 0 && !inputStatusWaiting.checked) ||
+                (entity["status"] === 1 && !inputStatusRegistered.checked) ||
+                (entity["status"] === 2 && !inputStatusDeactivated.checked)
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
+    const filterPosts = () => {
+        /** @type {HTMLInputElement} */
+        const inputAllPosts = document.querySelector("input#allPosts");
+        /** @type {HTMLInputElement} */
+        const inputPublished = document.querySelector("input#published");
+        /** @type {HTMLInputElement} */
+        const inputFeatured = document.querySelector("input#featured");
+
+        entitiesFilter = entities.filter((entity) => {
+            if (!filterInputSearch(entity)) {
+                return false;
+            }
+
+            if (
+                (!inputAllPosts.checked) &&
+                (
+                    (inputPublished.checked && entity["isPublished"] === 0) ||
+                    (inputFeatured.checked && entity["isFeatured"] === 0)
+                )
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
     switch (entitiesType) {
         case "users":
-            /** @type {HTMLSelectElement} */
-            const typeEntity = document.querySelector("select#selectTypeEntity");
-            /** @type {HTMLInputElement} */
-            const inputSearchEntity = document.querySelector("input#inputSearchEntity");
-            /** @type {HTMLInputElement} */
-            const inputRoleAdmin = document.querySelector("input#roleAdmin");
-            /** @type {HTMLInputElement} */
-            const inputRoleUser = document.querySelector("input#roleUser");
-            /** @type {HTMLInputElement} */
-            const inputStatusWaiting = document.querySelector("input#statusWaiting");
-            /** @type {HTMLInputElement} */
-            const inputStatusRegistered = document.querySelector("input#statusRegistered");
-            /** @type {HTMLInputElement} */
-            const inputStatusDeactivated = document.querySelector("input#statusDeactivated");
-
-            entitiesFilter = entities.filter(function(entity) {
-                if (inputSearchEntity) {
-                    if (!entity[typeEntity.value].toLowerCase().includes(inputSearchEntity.value.toLowerCase())) {
-                        return false;
-                    }
-                }
-
-                if (
-                    (entity["role"] === "ROLE_ADMIN" && !inputRoleAdmin.checked) ||
-                    (entity["role"] === "ROLE_USER" && !inputRoleUser.checked)
-                ) {
-                    return false;
-                }
-
-                if (
-                    (entity["status"] === 0 && !inputStatusWaiting.checked) ||
-                    (entity["status"] === 1 && !inputStatusRegistered.checked) ||
-                    (entity["status"] === 2 && !inputStatusDeactivated.checked)
-                ) {
-                    return false;
-                }
-
-                return true;
-            });
-
+            filterUsers();
             constructTableUsers(entitiesFilter, showModal);
+            break;
+        case "posts":
+            filterPosts();
+            constructTablePosts(entitiesFilter, showModal);
             break;
     }
 
@@ -113,6 +157,7 @@ const addListenersOnFilterElement = () => {
                     });
                     break;
                 case "checkbox":
+                case "radio":
                     element.addEventListener("change", (event) => {
                         const img = document.querySelector("label[for="+event.currentTarget.id+"] img");
                         if (event.currentTarget.checked) {
@@ -122,7 +167,6 @@ const addListenersOnFilterElement = () => {
                             img.src = img.src.replace("check", "xmark");
                             img.style.filter = "invert(0.4)";
                         }
-                        console.log(img);
                         search();
                     });
                     break;

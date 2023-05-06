@@ -1,0 +1,79 @@
+<button type="button" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#modalPosts"></button>
+
+<div class="modal modal-lg fade" id="modalPosts" tabindex="-1" data-entity="post" aria-labelledby="modalPosts" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalUsersLabel">Infos Post</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="notification d-flex flex-row justify-content-center w-100">
+
+                </div>
+                <div class="d-flex flex-column gap-3">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Auteur : </div>
+                        <div data-col="col-author" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Titre : </div>
+                        <div data-col="col-title" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Chapo : </div>
+                        <div data-col="col-chapo" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Contenu : </div>
+                        <div data-col="col-content" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Publié : </div>
+                        <div class="col-12 col-sm-8 col-lg-6 text-center text-sm-start">
+                            <span class="badge badge-pill" data-col="col-isPublished"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Mis en avant : </div>
+                        <div class="col-12 col-sm-8 col-lg-6 text-center text-sm-start">
+                            <span class="badge badge-pill" data-col="col-isFeatured"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Nombre de comments : </div>
+                        <div data-col="col-countComments" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Créé le : </div>
+                        <div data-col="col-createdAt" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Modifié le : </div>
+                        <div data-col="col-updatedAt" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-center justify-content-sm-end w-100">
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-dark"
+                            data-api-url="/admin/post/__ID__/toggle-published"
+                            data-action="update-published"
+                    >
+                        Modifier la publication
+                    </button>
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-dark"
+                            data-api-url="/admin/post/__ID__/toggle-featured"
+                            data-action="update-featured"
+                    >
+                        Modifier la mise en avant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
