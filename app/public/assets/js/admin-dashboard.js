@@ -1,5 +1,6 @@
 import {initUsers} from "./admin-dashboard-users.js";
 import {initPosts} from "./admin-dashboard-posts.js";
+import {initComments} from "./admin-dashboard-comments.js";
 import {initFilter} from "./utils/filter.js";
 import {showLoadingPage, hiddenLoadingPage} from "./utils/loading-page.js";
 import {clearNotification} from "./utils/notification.js";
@@ -36,6 +37,8 @@ if (modal) {
         initUsers(modal);
     } else if (typeEntities === "posts") {
         initPosts(modal);
+    } else if (typeEntities === "comments") {
+        initComments(modal);
     }
 
     fetch("/admin/dashboard/entities/"+typeEntities)

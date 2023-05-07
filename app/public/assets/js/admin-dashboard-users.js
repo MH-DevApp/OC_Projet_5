@@ -85,7 +85,7 @@ export const constructTableUsers = (users, showModal) => {
             const tdCreatedAt = document.createElement("td");
             tdCreatedAt.dataset.col = "col-createdAt";
             tdCreatedAt.className = "d-none d-sm-table-cell";
-            tdCreatedAt.textContent = user["createdAt"] !== "" ? new Date(user["createdAt"]+" UTC").toLocaleDateString() : "-";
+            tdCreatedAt.textContent = user["createdAt"] !== null ? new Date(user["createdAt"]+" UTC").toLocaleDateString() : "-";
 
             tr.append(
                 thNumElement,

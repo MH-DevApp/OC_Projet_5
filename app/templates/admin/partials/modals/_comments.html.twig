@@ -1,0 +1,65 @@
+<button type="button" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#modalComments"></button>
+
+<div class="modal modal-lg fade" id="modalComments" tabindex="-1" data-entity="comment" aria-labelledby="modalComments" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalUsersLabel">Infos Commentaire</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="notification d-flex flex-row justify-content-center w-100">
+
+                </div>
+                <div class="d-flex flex-column gap-3">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Auteur : </div>
+                        <div data-col="col-author" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Contenu : </div>
+                        <div data-col="col-content" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Statut : </div>
+                        <div class="col-12 col-sm-8 col-lg-6 text-center text-sm-start">
+                            <span class="badge badge-pill" data-col="col-isValid"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Validé/Refusé le : </div>
+                        <div data-col="col-validAt" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Valideur : </div>
+                        <div data-col="col-validBy" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Titre du post : </div>
+                        <div data-col="col-titlePost" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Créé le : </div>
+                        <div data-col="col-createdAt" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Modifié le : </div>
+                        <div data-col="col-updatedAt" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-center justify-content-sm-end w-100">
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-dark"
+                            data-api-url="/admin/comment/__ID__/toggle-status"
+                            data-action="update-isValid"
+                    >
+                        Valider le commentaire
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

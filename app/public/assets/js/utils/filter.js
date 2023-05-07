@@ -1,7 +1,8 @@
 import {entities} from "../admin-dashboard.js";
-import {constructTableUsers} from "../admin-dashboard-users.js";
 import {hiddenLoadingPage, showLoadingPage} from "./loading-page.js";
+import {constructTableUsers} from "../admin-dashboard-users.js";
 import {constructTablePosts} from "../admin-dashboard-posts.js";
+import {constructTableComments} from "../admin-dashboard-comments.js";
 
 let entitiesFilter = [];
 let entitiesType = "";
@@ -36,7 +37,11 @@ export const filterEntities = () => {
         /** @type {HTMLInputElement} */
         const inputSearchEntity = document.querySelector("input#inputSearchEntity");
 
-        if (inputSearchEntity) {
+        if (inputSearchEntity && inputSearchEntity.value !== "") {
+            if (entity[typeEntity.value] === null) {
+                return false;
+            }
+
             return entity[typeEntity.value]
                 .toLowerCase()
                 .includes(inputSearchEntity.value.toLowerCase());
@@ -108,6 +113,36 @@ export const filterEntities = () => {
         });
     };
 
+    const filterComments = () => {
+        /** @type {HTMLInputElement} */
+        const inputAllPosts = document.querySelector("input#allComments");
+        /** @type {HTMLInputElement} */
+        const inputWaiting = document.querySelector("input#waiting");
+        /** @type {HTMLInputElement} */
+        const inputValid = document.querySelector("input#valid");
+        /** @type {HTMLInputElement} */
+        const inputNotValid = document.querySelector("input#notValid");
+
+        entitiesFilter = entities.filter((entity) => {
+            if (!filterInputSearch(entity)) {
+                return false;
+            }
+
+            if (
+                (!inputAllPosts.checked) &&
+                (
+                    (inputValid.checked && entity["isValid"] === 0) ||
+                    (inputWaiting.checked && entity["validBy"] !== null) ||
+                    ((inputNotValid.checked && entity["isValid"] === 1) || (inputNotValid.checked && entity["validBy"] === null))
+                )
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
     switch (entitiesType) {
         case "users":
             filterUsers();
@@ -116,6 +151,10 @@ export const filterEntities = () => {
         case "posts":
             filterPosts();
             constructTablePosts(entitiesFilter, showModal);
+            break;
+        case "comments":
+            filterComments();
+            constructTableComments(entitiesFilter, showModal);
             break;
     }
 

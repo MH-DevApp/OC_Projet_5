@@ -90,12 +90,12 @@ export const constructTablePosts = (posts, showModal) => {
             const tdCreatedAt = document.createElement("td");
             tdCreatedAt.dataset.col = "col-createdAt";
             tdCreatedAt.className = "d-none d-sm-table-cell";
-            tdCreatedAt.textContent = post["createdAt"] !== "" ? new Date(post["createdAt"]+" UTC").toLocaleDateString() : "-";
+            tdCreatedAt.textContent = post["createdAt"] !== null ? new Date(post["createdAt"]+" UTC").toLocaleDateString() : "-";
 
             const tdUpdatedAt = document.createElement("td");
             tdUpdatedAt.dataset.col = "col-updatedAt";
             tdUpdatedAt.className = "d-none d-sm-table-cell";
-            tdUpdatedAt.textContent = post["updatedAt"] !== "" ? new Date(post["updatedAt"]+" UTC").toLocaleDateString() : "-";
+            tdUpdatedAt.textContent = post["updatedAt"] !== null ? new Date(post["updatedAt"]+" UTC").toLocaleDateString() : "-";
 
             tr.append(
                 thNumElement,
@@ -121,6 +121,7 @@ export const initPosts = (modal) => {
     const btnActions = modal.querySelectorAll("div.modal-footer button[data-action]");
     const publishedModalElement = modal.querySelector("[data-col=col-isPublished]");
     const featuredModalElement = modal.querySelector("[data-col=col-isFeatured]");
+    const updatedAtModalElement = modal.querySelector("[data-col=col-updatedAt]");
 
     publishedModalElement.addEventListener("DOMSubtreeModified", () => {
         const btnUpdatePublished = modal.querySelector("div.modal-footer button[data-action=update-published]");
@@ -168,7 +169,6 @@ export const initPosts = (modal) => {
                                 if (entity["id"] === id) {
                                     entity["isPublished"] = entity["isPublished"] === 0 ? 1 : 0;
                                     entity["updatedAt"] = new Date().toUTCString();
-                                    console.log(entity["updatedAt"])
                                 }
                                 return entity;
                             });
@@ -180,7 +180,7 @@ export const initPosts = (modal) => {
                             entities.map((entity) => {
                                 if (entity["id"] === id) {
                                     entity["isFeatured"] = entity["isFeatured"] === 0 ? 1 : 0;
-                                    entity["updatedAt"] = new Date();
+                                    entity["updatedAt"] = new Date().toUTCString();
                                 }
                                 return entity;
                             });
@@ -189,6 +189,7 @@ export const initPosts = (modal) => {
                                 "Oui";
                             break;
                     }
+                    updatedAtModalElement.textContent = new Date().toLocaleDateString();
                     filterEntities();
                 }
             }).catch(() => {
