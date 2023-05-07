@@ -3,6 +3,7 @@ import {hiddenLoadingPage, showLoadingPage} from "./loading-page.js";
 import {constructTableUsers} from "../admin-dashboard-users.js";
 import {constructTablePosts} from "../admin-dashboard-posts.js";
 import {constructTableComments} from "../admin-dashboard-comments.js";
+import {updatePositionTopForStickyElements} from "./sticky-elements.js";
 
 let entitiesFilter = [];
 let entitiesType = "";
@@ -172,6 +173,7 @@ const addListenersOnFilterElement = () => {
         timeOut = setTimeout(() => {
             filterEntities();
             hiddenLoadingPage();
+            updatePositionTopForStickyElements();
         }, 500);
     }
 

@@ -4,10 +4,16 @@ import {initComments} from "./admin-dashboard-comments.js";
 import {initFilter} from "./utils/filter.js";
 import {showLoadingPage, hiddenLoadingPage} from "./utils/loading-page.js";
 import {clearNotification} from "./utils/notification.js";
+import {initStickyElements} from "./utils/sticky-elements.js";
 
 export let entities = [];
 
 showLoadingPage();
+
+
+// STICKY ELEMENTS
+
+initStickyElements();
 
 // SHOW MODAL
 
