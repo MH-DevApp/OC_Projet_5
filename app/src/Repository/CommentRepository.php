@@ -42,12 +42,33 @@ class CommentRepository extends AbstractRepository
     /**
      * Construct
      *
-     * @throws RepositoryException
      */
     public function __construct()
     {
         parent::__construct(Comment::class);
 
+    }
+
+
+    /**
+     * Get all comments for dashboard
+     *
+     * @return array<string, string|int|bool>
+     */
+    public function getCommentsForDashboard(): array
+    {
+        $query = "
+            SELECT c.id, u.pseudo as `author`, p.title as `titlePost`, c.content, c.isValid, (SELECT pseudo FROM user WHERE id = c.validByUserId) as `validBy`, c.validAt, c.createdAt, c.updatedAt
+            FROM comment as c
+            JOIN user u on c.userId = u.id
+            JOIN post p on c.postId = p.id
+            ORDER BY c.createdAt DESC
+        ";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->execute();
+
+        return $statement->fetchAll() ?: [];
     }
 
 

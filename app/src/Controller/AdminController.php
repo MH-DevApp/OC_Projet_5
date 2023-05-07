@@ -24,6 +24,8 @@ use App\Factory\Manager\Manager;
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
 use App\Factory\Router\RouterException;
+use App\Factory\Utils\Mapper\Mapper;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
@@ -145,6 +147,7 @@ class AdminController extends AbstractController
                 $entities = (new PostRepository())->getPostsForDashboard();
                 break;
             case "comments":
+                $entities = (new CommentRepository())->getCommentsForDashboard();
                 break;
         }
 
@@ -393,6 +396,62 @@ class AdminController extends AbstractController
                 "success" => true,
                 "message" => "Le status de la mise en avant du post a été modifié avec succès.",
                 "action" => "update-featured"
+            ]
+        );
+    }
+
+
+    /**
+     * Update status featured post
+     *
+     * @throws Exception
+     */
+    #[Route(
+        "/admin/comment/:id/toggle-status",
+        "admin_comment_toggle_status",
+        regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        granted: "ROLE_ADMIN"
+    )]
+    public function toggleStatusComment(string $id): Response
+    {
+        $commentRepo = new CommentRepository();
+
+        /**
+         * @var Comment|false $comment
+         */
+        $comment = $commentRepo
+            ->findByOne(
+                ["id" => $id],
+                classObject: Comment::class
+            );
+
+        if (!$comment) {
+            return $this->json(
+                [
+                "success" => false,
+                "message" => "Impossible de modifier le status du commentaire, celui-ci n'a pas été trouvé dans la base de données."
+                ]
+            );
+        }
+
+        $comment->setIsValid(!$comment->getIsValid());
+        $comment->setValidByUserId($this->user() ?? "");
+        $comment->setValidAt();
+
+        $this->manager->flush($comment);
+
+        return $this->json(
+            [
+                "success" => true,
+                "message" => "Le commentaire a été ".
+                    ($comment->getIsValid() ? "validé" : "refusé").
+                    " avec succès.",
+                "action" => "update-isValid",
+                "updated-details" => [
+                    "validBy" => $comment->getValidByUserId()?->getPseudo(),
+                    "validAt" => $comment->getValidAt()?->format("Y/m/d H:i:s"),
+                    "updatedAt" => $comment->getUpdatedAt()?->format("Y/m/d H:i:s")
+                ]
             ]
         );
     }
