@@ -31,6 +31,7 @@ use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Factory\Utils\Uuid\UuidV4;
 use App\Kernel;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
@@ -59,6 +60,7 @@ use ReflectionException;
 #[CoversClass(AdminController::class)]
 #[CoversClass(UserRepository::class)]
 #[CoversClass(PostRepository::class)]
+#[CoversClass(CommentRepository::class)]
 #[CoversClass(Manager::class)]
 #[CoversClass(User::class)]
 #[CoversClass(Post::class)]
@@ -311,6 +313,21 @@ class AdminControllerTest extends TestCase
         $this->assertEquals(1, count($content["entities"]));
 
         $_SERVER["REQUEST_URI"] = "/admin/dashboard/entities/posts";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(0, count($content["entities"]));
+
+        $_SERVER["REQUEST_URI"] = "/admin/dashboard/entities/comments";
 
         Container::loadServices();
 
@@ -993,6 +1010,190 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($postUpdated->getIsFeatured());
 
         $this->manager->delete($newPost);
+
+    }
+
+
+    /**
+     * Test should be to render json of request of toggle
+     * status comment failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of toggle status comment failed")]
+    public function itRequestOfToggleStatusCommentFailed(): void
+    {
+        $post = (new Post())
+            ->setTitle("Test")
+            ->setChapo("Test")
+            ->setContent("Test")
+            ->setIsPublished(true)
+            ->setUserId($this->user?->getId() ?? "");
+
+        $this->manager->persist($post);
+
+        $comment =(new Comment())
+            ->setContent("Test")
+            ->setUserId($this->user?->getId() ?? "")
+            ->setPostId($post->getId() ?? "")
+        ;
+
+        $this->manager->persist($comment);
+        $this->manager->flush();
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+
+        $badId = UuidV4::generate();
+
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/comment/".$badId."/toggle-status";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertFalse($content["success"]);
+        $this->assertEquals(
+            "Impossible de modifier le status du commentaire, celui-ci n'a pas été trouvé dans la base de données.",
+            $content["message"]
+        );
+
+        $this->manager->delete($comment);
+        $this->manager->delete($post);
+
+    }
+
+
+    /**
+     * Test should be to render json of request of toggle
+     * status comment failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to render json of request of status comment success")]
+    public function itRequestOfToggleStatusCommentSuccess(): void
+    {
+        $post = (new Post())
+            ->setTitle("Test")
+            ->setChapo("Test")
+            ->setContent("Test")
+            ->setIsPublished(true)
+            ->setUserId($this->user?->getId() ?? "");
+
+        $this->manager->persist($post);
+
+        $comment =(new Comment())
+            ->setContent("Test")
+            ->setUserId($this->user?->getId() ?? "")
+            ->setPostId($post->getId() ?? "")
+        ;
+
+        $this->manager->persist($comment);
+        $this->manager->flush();
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        $id = $comment->getId() ?: "";
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/comment/".$id."/toggle-status";
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le commentaire a été validé avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var Comment $commentUpdated
+         */
+        $commentUpdated = (new CommentRepository())->findByOne(
+            ["id" => $id],
+            classObject: Comment::class
+        );
+
+        $this->assertTrue($commentUpdated->getIsValid());
+        $this->assertNotNull($commentUpdated->getValidAt());
+        $this->assertNotNull($commentUpdated->getValidByUserId());
+        $this->assertEquals($this->user?->getId(), $commentUpdated->getValidByUserId()->getId());
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertIsArray($content);
+        $this->assertTrue($content["success"]);
+        $this->assertEquals(
+            "Le commentaire a été refusé avec succès.",
+            $content["message"]
+        );
+
+        /**
+         * @var Comment $commentUpdated
+         */
+        $commentUpdated = (new CommentRepository())->findByOne(
+            ["id" => $id],
+            classObject: Comment::class
+        );
+
+        $this->assertFalse($commentUpdated->getIsValid());
+        $this->assertNotNull($commentUpdated->getValidAt());
+        $this->assertNotNull($commentUpdated->getValidByUserId());
+        $this->assertEquals($this->user?->getId(), $commentUpdated->getValidByUserId()->getId());
+
+        $this->manager->delete($commentUpdated);
+        $this->manager->delete($post);
 
     }
 
