@@ -109,10 +109,30 @@ class PostRepository extends AbstractRepository
     /**
      * Get all posts for dashboard
      *
+     * @param string|null $id
      * @return array<string, string|int>
      */
-    public function getPostsForDashboard(): array
+    public function getPostsForDashboard(?string $id = null): array
     {
+        if ($id) {
+            $query = "
+                SELECT p.id, p.title, p.chapo, p.content, p.isPublished, p.isFeatured, p.createdAt, p.updatedAt, u.pseudo as `author`, (SELECT COUNT(*) FROM comment WHERE postId = p.id) as `countComments`
+                FROM post as p
+                JOIN user u on p.userId = u.id
+                WHERE p.id = :id
+                ORDER BY p.createdAt DESC
+            ";
+
+            $statement = $this->pdo->prepare($query);
+            $statement->bindValue(":id", $id);
+            $statement->execute();
+
+            /**
+             * @var array<string, string|int>
+             */
+            return $statement->fetch() ?: [];
+        }
+
         $query = "
             SELECT p.id, p.title, p.chapo, p.content, p.isPublished, p.isFeatured, p.createdAt, p.updatedAt, u.pseudo as `author`, (SELECT COUNT(*) FROM comment WHERE postId = p.id) as `countComments`
             FROM post as p

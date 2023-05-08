@@ -18,7 +18,6 @@ namespace App\Entity;
 
 
 use DateTime;
-use DateTimeZone;
 use Exception;
 
 /**
@@ -54,17 +53,11 @@ class Post extends AbstractEntity
     public function __construct()
     {
         if ($this->createdAt && is_string($this->createdAt)) {
-            $this->createdAt = new DateTime(
-                $this->createdAt,
-                new DateTimeZone("Europe/Paris")
-            );
+            $this->createdAt = new DateTime($this->createdAt);
         }
 
         if ($this->updatedAt && is_string($this->updatedAt)) {
-            $this->updatedAt = new DateTime(
-                $this->updatedAt,
-                new DateTimeZone("Europe/Paris")
-            );
+            $this->updatedAt = new DateTime($this->updatedAt);
         }
     }
 
@@ -257,7 +250,7 @@ class Post extends AbstractEntity
     public function setCreatedAt(DateTime|string $createdAtPost): self
     {
         if (is_string($createdAtPost)) {
-            $createdAtPost = new DateTime($createdAtPost, new DateTimeZone('Europe/Paris'));
+            $createdAtPost = new DateTime($createdAtPost);
         }
 
         $this->createdAt = $createdAtPost;
@@ -292,7 +285,7 @@ class Post extends AbstractEntity
     public function setUpdatedAt(DateTime|string $updatedAtPost): self
     {
         if (is_string($updatedAtPost)) {
-            $updatedAtPost = new DateTime($updatedAtPost, new DateTimeZone('Europe/Paris'));
+            $updatedAtPost = new DateTime($updatedAtPost);
         }
 
         $this->updatedAt = $updatedAtPost;

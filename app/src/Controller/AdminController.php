@@ -20,11 +20,11 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Factory\Form\PostForm;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
 use App\Factory\Router\RouterException;
-use App\Factory\Utils\Mapper\Mapper;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
@@ -454,6 +454,49 @@ class AdminController extends AbstractController
                 ]
             ]
         );
+    }
+
+
+    /**
+     * Add post
+     *
+     * @throws Exception
+     */
+    #[Route(
+        "/admin/post/add",
+        "admin_post_add",
+        methods: ["POST"],
+        granted: "ROLE_ADMIN"
+    )]
+    public function addPost(): Response
+    {
+        $post = new Post();
+
+        $form = new PostForm($post);
+        $form->handleRequest();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->user() && $this->user()->getId()) {
+                $post->setUserId($this->user()->getId());
+            }
+
+            $this->manager->flush($post);
+
+            $postUpdated = (new PostRepository())->getPostsForDashboard($post->getId());
+
+            return $this->json([
+                "success" => true,
+                "message" => "Le post a été ajouté avec succès.",
+                "postUpdated" => $postUpdated
+            ]);
+
+        }
+
+        return $this->json([
+            "success" => false,
+            "errors" => $form->getErrors()
+        ]);
+
     }
 
 
