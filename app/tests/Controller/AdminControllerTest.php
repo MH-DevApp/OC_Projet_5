@@ -24,9 +24,11 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\Session;
 use App\Entity\User;
+use App\Factory\Form\PostForm;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
 use App\Factory\Router\RouterException;
+use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Factory\Utils\Uuid\UuidV4;
@@ -62,6 +64,7 @@ use ReflectionException;
 #[CoversClass(PostRepository::class)]
 #[CoversClass(CommentRepository::class)]
 #[CoversClass(Manager::class)]
+#[CoversClass(PostForm::class)]
 #[CoversClass(User::class)]
 #[CoversClass(Post::class)]
 #[CoversClass(Comment::class)]
@@ -1193,6 +1196,226 @@ class AdminControllerTest extends TestCase
         $this->assertEquals($this->user?->getId(), $commentUpdated->getValidByUserId()->getId());
 
         $this->manager->delete($commentUpdated);
+        $this->manager->delete($post);
+
+    }
+
+
+    /**
+     * Test should be to post request of add post with
+     * form failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post request of add post with form failed")]
+    public function itPostRequestOfAddPostFailed(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+        $_SERVER["REQUEST_URI"] = "/admin/post/add";
+        $_SERVER["REQUEST_METHOD"] = "POST";
+
+        $_POST["title"] = "";
+        $_POST["chapo"] = "";
+        $_POST["content"] = "";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, string|int|bool|array<string, string>> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertFalse($content["success"]);
+        $this->assertEquals([
+            "global" => "Le token CSRF n'est pas valide.",
+            "title" => "Ce champ est requis.",
+            "chapo" => "Ce champ est requis.",
+            "content" => "Ce champ est requis."
+        ], $content["errors"]);
+
+        $_POST["title"] = "test";
+        $_POST["chapo"] = "test";
+        $_POST["content"] = "testteste";
+        $_POST["isPublished"] = "test";
+        $_POST["isFeatured"] = "test";
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-add-post");
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, string|int|bool|array<string, string>> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertFalse($content["success"]);
+        $this->assertEquals([
+            "title" => "Ce champ doit contenir entre 5 et 255 caractères.",
+            "chapo" => "Ce champ doit contenir au minimum 5 caractères.",
+            "content" => "Ce champ doit contenir au minimum 10 caractères.",
+            "isPublished" => "La valeur n'est pas valide.",
+            "isFeatured" => "La valeur n'est pas valide.",
+        ], $content["errors"]);
+
+        /**
+         * @var array<int, Post> $posts
+         */
+        $posts = [];
+
+        for ($i=0; $i<5; $i++) {
+            $posts[] = (new Post())
+                ->setTitle("Test".$i)
+                ->setChapo("Test".$i)
+                ->setContent("Test".$i)
+                ->setUserId($this->user?->getId() ?? "")
+                ->setIsPublished(true)
+                ->setIsFeatured(true);
+        }
+
+        $this->manager->flush(...$posts);
+
+        $_POST = [];
+
+        $_POST["title"] = "teste";
+        $_POST["chapo"] = "teste";
+        $_POST["content"] = "testtestestest";
+        $_POST["isFeatured"] = "on";
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-add-post");
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, string|int|bool|array<string, string>> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertFalse($content["success"]);
+        $this->assertEquals([
+            "isFeatured" => "Pour mettre en avant ce post, veuillez cocher la case 'publier'.",
+        ], $content["errors"]);
+
+        $_POST["isPublished"] = "on";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, string|int|bool|array<string, string>> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertFalse($content["success"]);
+        $this->assertEquals([
+            "isFeatured" => "Le nombre de posts mis en avant a été atteint.",
+        ], $content["errors"]);
+
+        foreach ($posts as $post) {
+            $this->manager->delete($post);
+        }
+
+
+    }
+
+
+    /**
+     * Test should be to post request of add post with
+     * form success.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post request of add post with form success")]
+    public function itPostRequestOfAddPostSuccess(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+        $_POST = [];
+        $_SERVER["REQUEST_URI"] = "/admin/post/add";
+        $_SERVER["REQUEST_METHOD"] = "POST";
+
+        $_POST["title"] = "Ceci est un test";
+        $_POST["chapo"] = "Ceci est un test";
+        $_POST["content"] = "Ceci est un contenu qui fait plus de 10 caractères";
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-add-post");
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, array<string, string>|string|int|bool> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertTrue($content["success"]);
+        $this->assertEquals("Le post a été ajouté avec succès.", $content["message"]);
+
+        /**
+         * @var Post $post
+         */
+        $post = (new PostRepository())->findByOne([
+            "title" => $_POST["title"],
+            "chapo" => $_POST["chapo"],
+            "content" => $_POST["content"]
+        ], classObject: Post::class);
+
+        $this->assertEquals($post->getId() ?? "", $content["postUpdated"]["id"] ?? null);
+
         $this->manager->delete($post);
 
     }
