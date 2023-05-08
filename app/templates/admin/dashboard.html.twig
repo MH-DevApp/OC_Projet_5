@@ -45,6 +45,10 @@
         </div>
     </section>
 
+    {% if page == "posts" %}
+        {% include ("admin/partials/modals/_add-post.html.twig") %}
+    {% endif %}
+
     {% include ("admin/partials/modals/_"~page~".html.twig") %}
 {% endblock %}
 
