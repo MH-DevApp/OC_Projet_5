@@ -7,7 +7,7 @@ export const constructTableComments = (comments, showModal) => {
     const tBody = document.querySelector("table tbody");
     tBody.innerHTML = "";
     const spanCountEntities = document.querySelector("span.count-entities");
-    spanCountEntities.textContent = comments.length.toString();
+    spanCountEntities.innerHTML = comments.length.toString();
 
     if (comments.length) {
         let countElement = 0;
@@ -24,20 +24,20 @@ export const constructTableComments = (comments, showModal) => {
                 "";
 
             const thNumElement = document.createElement("th");
-            thNumElement.textContent = countElement.toString();
+            thNumElement.innerHTML = countElement.toString();
             thNumElement.scope = "row";
 
             const tdAuthor = document.createElement("td");
             tdAuthor.dataset.col = "col-author";
-            tdAuthor.textContent = comment["author"];
+            tdAuthor.innerHTML = comment["author"];
 
             const tdContent = document.createElement("td");
             tdContent.dataset.col = "col-content";
-            tdContent.textContent = comment["content"];
+            tdContent.innerHTML = comment["content"];
 
             const tdIsValid = document.createElement("td");
             tdIsValid.dataset.col = "col-isValid";
-            tdIsValid.textContent = (comment["isValid"] === 0 && comment["validBy"] !== null && comment["validAt"] !== null) ?
+            tdIsValid.innerHTML = (comment["isValid"] === 0 && comment["validBy"] !== null && comment["validAt"] !== null) ?
                 "Refusé" :
                 (comment["isValid"] === 0 && comment["validBy"] === null && comment["validAt"] === null) ?
                     "En attente" :
@@ -59,32 +59,32 @@ export const constructTableComments = (comments, showModal) => {
             const tdValidAt = document.createElement("td");
             tdValidAt.dataset.col = "col-validAt";
             tdValidAt.className = "d-none d-sm-table-cell";
-            tdValidAt.textContent = comment["validAt"] !== null ?
+            tdValidAt.innerHTML = comment["validAt"] !== null ?
                 new Date(comment["validAt"]+" UTC").toLocaleDateString() :
                 "-";
 
             const tdValidBy = document.createElement("td");
             tdValidBy.dataset.col = "col-validBy";
-            tdValidBy.textContent = comment["validBy"] !== null ?
+            tdValidBy.innerHTML = comment["validBy"] !== null ?
                 comment["validBy"] :
                 "-";
 
             const tdTitlePost = document.createElement("td");
             tdTitlePost.dataset.col = "col-titlePost";
             tdTitlePost.className = "d-none d-lg-table-cell";
-            tdTitlePost.textContent = comment["titlePost"];
+            tdTitlePost.innerHTML = comment["titlePost"];
 
             const tdCreatedAt = document.createElement("td");
             tdCreatedAt.dataset.col = "col-createdAt";
             tdCreatedAt.className = "d-none d-lg-table-cell";
-            tdCreatedAt.textContent = comment["createdAt"] !== null ?
+            tdCreatedAt.innerHTML = comment["createdAt"] !== null ?
                 new Date(comment["createdAt"]+" UTC").toLocaleDateString() :
                 "-";
 
             const tdUpdatedAt = document.createElement("td");
             tdUpdatedAt.dataset.col = "col-updatedAt";
             tdUpdatedAt.className = "d-none d-lg-table-cell";
-            tdUpdatedAt.textContent = comment["updatedAt"] !== null ?
+            tdUpdatedAt.innerHTML = comment["updatedAt"] !== null ?
                 new Date(comment["updatedAt"]+" UTC").toLocaleDateString() :
                 "-";
 
@@ -117,17 +117,17 @@ export const initComments = (modal) => {
     isValidModalElement.addEventListener("DOMSubtreeModified", () => {
         const btnUpdateIsValid = modal.querySelector("div.modal-footer button[data-action=update-isValid]");
 
-        if (isValidModalElement.textContent === "En attente") {
+        if (isValidModalElement.innerHTML === "En attente") {
             isValidModalElement.className = "badge badge-pill bg-warning text-dark p-2";
-            btnUpdateIsValid.textContent = "Valider le commentaire";
+            btnUpdateIsValid.innerHTML = "Valider le commentaire";
             btnUpdateIsValid.className = "btn btn-sm btn-success";
-        } else if (isValidModalElement.textContent === "Refusé") {
+        } else if (isValidModalElement.innerHTML === "Refusé") {
             isValidModalElement.className = "badge badge-pill bg-danger text-light p-2";
-            btnUpdateIsValid.textContent = "Valider le commentaire";
+            btnUpdateIsValid.innerHTML = "Valider le commentaire";
             btnUpdateIsValid.className = "btn btn-sm btn-success";
         } else {
             isValidModalElement.className = "badge badge-pill bg-dark text-light p-2";
-            btnUpdateIsValid.textContent = "Refuser le commentaire";
+            btnUpdateIsValid.innerHTML = "Refuser le commentaire";
             btnUpdateIsValid.className = "btn btn-sm btn-danger";
         }
     });
@@ -152,10 +152,10 @@ export const initComments = (modal) => {
                         }
                         return entity;
                     });
-                    isValidModalElement.textContent = isValidModalElement.textContent === "Validé" ? "Refusé" : "Validé";
-                    validAtModalElement.textContent = new Date().toLocaleDateString();
-                    validByModalElement.textContent = response["validBy"];
-                    updatedAtModalElement.textContent = new Date().toLocaleDateString();
+                    isValidModalElement.innerHTML = isValidModalElement.textContent === "Validé" ? "Refusé" : "Validé";
+                    validAtModalElement.innerHTML = new Date().toLocaleDateString();
+                    validByModalElement.innerHTML = response["validBy"];
+                    updatedAtModalElement.innerHTML = new Date().toLocaleDateString();
                     filterEntities();
                 }
             }).catch(() => {

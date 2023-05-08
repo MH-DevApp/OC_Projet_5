@@ -1,3 +1,23 @@
 table tbody tr {
     cursor: pointer;
 }
+
+textarea {
+    resize: none;
+}
+
+.modal {
+    z-index: 10001;
+}
+
+td[data-col] {
+    max-width: 300px;
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div[data-col] {
+    white-space: pre;
+    text-overflow: ellipsis;
+}

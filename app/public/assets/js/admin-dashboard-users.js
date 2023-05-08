@@ -9,7 +9,7 @@ export const constructTableUsers = (users, showModal) => {
 
     if (users.length) {
         const spanCountEntities = document.querySelector("span.count-entities");
-        spanCountEntities.textContent = users.length.toString();
+        spanCountEntities.innerHTML = users.length.toString();
 
         let countElement = 0;
         users.forEach((user) => {
@@ -25,35 +25,35 @@ export const constructTableUsers = (users, showModal) => {
                 "";
 
             const thNumElement = document.createElement("th");
-            thNumElement.textContent = countElement.toString();
+            thNumElement.innerHTML = countElement.toString();
             thNumElement.scope = "row";
 
             const tdLastname = document.createElement("td");
             tdLastname.dataset.col = "col-lastname";
             tdLastname.className = "d-none d-sm-table-cell";
-            tdLastname.textContent = user["lastname"];
+            tdLastname.innerHTML = user["lastname"];
 
             const tdFirstname = document.createElement("td");
             tdFirstname.dataset.col = "col-firstname";
             tdFirstname.className = "d-none d-sm-table-cell";
-            tdFirstname.textContent = user["firstname"];
+            tdFirstname.innerHTML = user["firstname"];
 
             const tdPseudo = document.createElement("td");
             tdPseudo.dataset.col = "col-pseudo";
-            tdPseudo.textContent = user["pseudo"];
+            tdPseudo.innerHTML = user["pseudo"];
 
             const tdEmail = document.createElement("td");
             tdEmail.dataset.col = "col-email";
-            tdEmail.textContent = user["email"];
+            tdEmail.innerHTML = user["email"];
 
             const tdRole = document.createElement("td");
             tdRole.dataset.col = "col-role";
-            tdRole.textContent = user["role"] === "ROLE_ADMIN" ? "Admin" : "User";
+            tdRole.innerHTML = user["role"] === "ROLE_ADMIN" ? "Admin" : "User";
 
             const tdStatus = document.createElement("td");
             tdStatus.dataset.col = "col-status";
             tdStatus.className = "d-none d-xxl-table-cell";
-            tdStatus.textContent = user["status"] === 0 ?
+            tdStatus.innerHTML = user["status"] === 0 ?
                 "En attente" :
                 user["status"] === 2 ?
                     "Désactivé" :
@@ -75,17 +75,17 @@ export const constructTableUsers = (users, showModal) => {
             const tdNbPosts = document.createElement("td");
             tdNbPosts.dataset.col = "col-countPosts";
             tdNbPosts.className = "d-none d-xxl-table-cell";
-            tdNbPosts.textContent = user["countPosts"];
+            tdNbPosts.innerHTML = user["countPosts"];
 
             const tdNbComments = document.createElement("td");
             tdNbComments.dataset.col = "col-countComments";
             tdNbComments.className = "d-none d-xxl-table-cell";
-            tdNbComments.textContent = user["countComments"];
+            tdNbComments.innerHTML = user["countComments"];
 
             const tdCreatedAt = document.createElement("td");
             tdCreatedAt.dataset.col = "col-createdAt";
             tdCreatedAt.className = "d-none d-sm-table-cell";
-            tdCreatedAt.textContent = user["createdAt"] !== null ? new Date(user["createdAt"]+" UTC").toLocaleDateString() : "-";
+            tdCreatedAt.innerHTML = user["createdAt"] !== null ? new Date(user["createdAt"]+" UTC").toLocaleDateString() : "-";
 
             tr.append(
                 thNumElement,
@@ -115,17 +115,17 @@ export const initUsers = (modal) => {
     statusModalElement.addEventListener("DOMSubtreeModified", () => {
         const btnUpdateStatus = modal.querySelector("div.modal-footer button[data-action=update-status]");
 
-        if (statusModalElement.textContent === "En attente") {
+        if (statusModalElement.innerHTML === "En attente") {
             statusModalElement.className = "badge badge-pill bg-warning text-dark p-2";
-            btnUpdateStatus.textContent = "Activer le compte";
+            btnUpdateStatus.innerHTML = "Activer le compte";
             btnUpdateStatus.className = "btn btn-sm btn-success";
-        } else if (statusModalElement.textContent === "Désactivé") {
+        } else if (statusModalElement.innerHTML === "Désactivé") {
             statusModalElement.className = "badge badge-pill bg-danger text-light p-2"
-            btnUpdateStatus.textContent = "Activer le compte";
+            btnUpdateStatus.innerHTML = "Activer le compte";
             btnUpdateStatus.className = "btn btn-sm btn-success";
         } else {
             statusModalElement.className = "badge badge-pill bg-dark text-light p-2";
-            btnUpdateStatus.textContent = "Désactiver le compte";
+            btnUpdateStatus.innerHTML = "Désactiver le compte";
             btnUpdateStatus.className = "btn btn-sm btn-danger";
         }
     });
@@ -133,10 +133,10 @@ export const initUsers = (modal) => {
     roleModalElement.addEventListener("DOMSubtreeModified", () => {
         const btnUpdateRole = modal.querySelector("div.modal-footer button[data-action=update-role]");
 
-        if (roleModalElement.textContent === "Admin") {
-            btnUpdateRole.textContent = "Passer User";
+        if (roleModalElement.innerHTML === "Admin") {
+            btnUpdateRole.innerHTML = "Passer User";
         } else {
-            btnUpdateRole.textContent = "Passer Admin";
+            btnUpdateRole.innerHTML = "Passer Admin";
         }
     });
 
@@ -159,7 +159,7 @@ export const initUsers = (modal) => {
                                 }
                                 return entity;
                             });
-                            statusModalElement.textContent = statusModalElement.textContent === "Enregistré" ?
+                            statusModalElement.innerHTML = statusModalElement.innerHTML === "Enregistré" ?
                                 "Désactivé" :
                                 "Enregistré";
                             break;
@@ -170,7 +170,7 @@ export const initUsers = (modal) => {
                                 }
                                 return entity;
                             });
-                            roleModalElement.textContent = roleModalElement.textContent === "Admin" ?
+                            roleModalElement.innerHTML = roleModalElement.innerHTML === "Admin" ?
                                 "User" :
                                 "Admin";
                             break;

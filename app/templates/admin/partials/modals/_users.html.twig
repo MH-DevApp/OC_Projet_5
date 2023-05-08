@@ -1,6 +1,6 @@
 <button type="button" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#modalUsers"></button>
 
-<div class="modal modal-lg fade" id="modalUsers" tabindex="-1" data-entity="user" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal modal-lg fade" data-modal="showEntities" id="modalUsers" tabindex="-1" data-entity="user" aria-labelledby="modalUsers" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,46 +11,46 @@
                 <div class="notification d-flex flex-row justify-content-center w-100">
 
                 </div>
-                <div class="d-flex flex-column gap-3">
-                    <div class="row align-items-center justify-content-center">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Type de compte : </div>
-                        <div class="col-12 col-sm-8 col-lg-6 text-center text-sm-start">
+                <div class="d-flex flex-column gap-1">
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Type de compte : </div>
+                        <div class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3">
                             <span class="badge badge-pill bg-secondary p-2" data-col="col-role"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Nom : </div>
-                        <div data-col="col-lastname" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Nom : </div>
+                        <div data-col="col-lastname" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Prénom : </div>
-                        <div data-col="col-firstname" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Prénom : </div>
+                        <div data-col="col-firstname" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Pseudo : </div>
-                        <div data-col="col-pseudo" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Pseudo : </div>
+                        <div data-col="col-pseudo" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Email : </div>
-                        <div data-col="col-email" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Email : </div>
+                        <div data-col="col-email" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Status du compte : </div>
-                        <div class="col-12 col-sm-8 col-lg-6 text-center text-sm-start">
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Status du compte : </div>
+                        <div class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3">
                             <span class="badge badge-pill bg-warning text-dark" data-col="col-status"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Nombre de posts : </div>
-                        <div data-col="col-countPosts" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Nombre de posts : </div>
+                        <div data-col="col-countPosts" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Nombre de comments : </div>
-                        <div data-col="col-countComments" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Nombre de comments : </div>
+                        <div data-col="col-countComments" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-lg-6 text-center text-sm-end">Créé le : </div>
-                        <div data-col="col-createdAt" class="col-12 col-sm-8 col-lg-6 text-center text-sm-start"></div>
+                    <div class="row align-items-center justify-content-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Créé le : </div>
+                        <div data-col="col-createdAt" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
                     </div>
                 </div>
             </div>
