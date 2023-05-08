@@ -10,29 +10,28 @@ export let entities = [];
 
 showLoadingPage();
 
-
 // STICKY ELEMENTS
 
 initStickyElements();
 
 // SHOW MODAL
 
-const modal = document.querySelector("div.modal-lg");
+const modalShowEntities = document.querySelector("div.modal[data-modal=showEntities]");
 
-if (modal) {
+if (modalShowEntities) {
     const btnShowModal = document.querySelector("button[type=button][data-bs-toggle=modal]");
-    const typeEntities = modal.id.replace("modal", "").toLowerCase();
+    const typeEntities = modalShowEntities.id.replace("modal", "").toLowerCase();
     let id = null;
 
     const showModal = (event) => {
-        clearNotification();
+        clearNotification(modalShowEntities.querySelector("div.notification"));
         id = event.currentTarget.dataset.entityId;
-        modal.dataset.entityId = id;
+        modalShowEntities.dataset.entityId = id;
 
         const cols = event.currentTarget.querySelectorAll("td[data-col]");
 
         cols.forEach((col) => {
-            const rowModal = modal.querySelector("[data-col="+col.dataset.col+"]");
+            const rowModal = modalShowEntities.querySelector("[data-col="+col.dataset.col+"]");
             rowModal.textContent = col.textContent;
         });
 
@@ -40,11 +39,11 @@ if (modal) {
     }
 
     if (typeEntities === "users") {
-        initUsers(modal);
+        initUsers(modalShowEntities);
     } else if (typeEntities === "posts") {
-        initPosts(modal);
+        initPosts(modalShowEntities);
     } else if (typeEntities === "comments") {
-        initComments(modal);
+        initComments(modalShowEntities);
     }
 
     fetch("/admin/dashboard/entities/"+typeEntities)

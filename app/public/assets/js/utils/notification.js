@@ -1,11 +1,9 @@
-const containerNotification = document.querySelector("div.modal-lg .notification");
-
-export const addNotification = (data) => {
+export const addNotification = (data, containerNotification) => {
     if (data.success !== undefined && data.message !== undefined) {
         const notificationDiv = document.createElement("div");
         const notificationPara = document.createElement("p");
 
-        containerNotification.innerHTML = "";
+        clearNotification(containerNotification);
 
         notificationDiv.className = "p-0 mb-3 w-100 text-center rounded shadow alert alert-" + (data.success === true ? "success" : "danger");
 
@@ -13,7 +11,9 @@ export const addNotification = (data) => {
         notificationPara.className = "m-0 p-1 p-sm-3";
 
         notificationDiv.append(notificationPara);
-        containerNotification.append(notificationDiv);
+        if (containerNotification) {
+            containerNotification.append(notificationDiv);
+        }
 
         setTimeout(() => {
             removeNotification(notificationDiv);
@@ -27,6 +27,8 @@ export const removeNotification = (element) => {
     }
 }
 
-export const clearNotification = () => {
-    containerNotification.innerHTML = "";
+export const clearNotification = (containerNotification) => {
+    if (containerNotification !== null) {
+        containerNotification.innerHTML = "";
+    }
 };
