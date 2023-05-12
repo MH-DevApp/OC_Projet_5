@@ -152,14 +152,20 @@ class PostRepository extends AbstractRepository
      *
      * @return int
      */
-    public function getCountFeaturedPosts(): int
+    public function getCountFeaturedPosts(?string $id = null): int
     {
         $query = "
             SELECT COUNT(*) from post WHERE isFeatured = TRUE
         ";
+        if ($id) {
+            $query .= " AND NOT id = :id";
+        }
 
-        $statement = $this->pdo->query($query);
+        $statement = $this->pdo->prepare($query);
         if ($statement !== false) {
+            if ($id) {
+                $statement->bindValue(":id", $id);
+            }
             $statement->execute();
             $count = $statement->fetchColumn();
 

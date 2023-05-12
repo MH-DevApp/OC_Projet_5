@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Factory\Form;
 
 
+use App\Entity\Post;
 use App\Repository\PostRepository;
 
 /**
@@ -33,7 +34,7 @@ use App\Repository\PostRepository;
  */
 final class PostForm extends AbstractForm
 {
-    protected string $csrfKey = "admin-add-post";
+    protected string $csrfKey = "admin-post-form";
 
     /**
      * Constructor
@@ -154,6 +155,14 @@ final class PostForm extends AbstractForm
                         return false;
                     }
 
+                    if ($value === null) {
+                        /**
+                         * @var Post $post
+                         */
+                        $post = $this->entity;
+                        $post->setIsPublished(false);
+                    }
+
                     return true;
 
                 }
@@ -179,7 +188,11 @@ final class PostForm extends AbstractForm
                         return false;
                     }
 
-                    $countPostsFeatured = (new PostRepository())->getCountFeaturedPosts();
+                    /**
+                     * @var Post $post
+                     */
+                    $post = $this->entity;
+                    $countPostsFeatured = (new PostRepository())->getCountFeaturedPosts($post->getId() ?? "");
                     if ($value === true && $countPostsFeatured === 5) {
                         $this->setError(
                             "isFeatured",
@@ -187,6 +200,10 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
+                    }
+
+                    if ($value === null) {
+                        $post->setIsFeatured(false);
                     }
 
                     return true;

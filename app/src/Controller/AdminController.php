@@ -20,6 +20,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Factory\Form\FormException;
 use App\Factory\Form\PostForm;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Response;
@@ -470,7 +471,50 @@ class AdminController extends AbstractController
     )]
     public function addPost(): Response
     {
+        return $this->postForm();
+    }
+
+
+    /**
+     * Edit post
+     *
+     * @throws Exception
+     */
+    #[Route(
+        "/admin/post/edit/:id",
+        "admin_post_edit",
+        regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        methods: ["POST"],
+        granted: "ROLE_ADMIN"
+    )]
+    public function editPost(string $id): Response
+    {
+        return $this->postForm($id);
+    }
+
+
+    /**
+     * Add or Edit post
+     *
+     * @throws FormException
+     * @throws Exception
+     */
+    private function postForm(?string $id = null): Response
+    {
         $post = new Post();
+
+        if ($id) {
+            /**
+             * @var Post|false $post
+             */
+            $post = (new PostRepository())->findByOne([
+                "id" => $id
+            ], classObject: Post::class);
+
+            if (!$post) {
+                return $this->responseHttpNotFound();
+            }
+        }
 
         $form = new PostForm($post);
         $form->handleRequest();
@@ -482,12 +526,13 @@ class AdminController extends AbstractController
 
             $this->manager->flush($post);
 
-            $postUpdated = (new PostRepository())->getPostsForDashboard($post->getId());
+            $entity = (new PostRepository())->getPostsForDashboard($post->getId());
 
             return $this->json([
                 "success" => true,
-                "message" => "Le post a été ajouté avec succès.",
-                "postUpdated" => $postUpdated
+                "message" => "Le post a été ". ($id === null ? "ajouté" : "modifié") ." avec succès.",
+                "post" => $entity,
+                "formType" => $id === null ? "created-post" : "updated-post"
             ]);
 
         }
@@ -496,7 +541,6 @@ class AdminController extends AbstractController
             "success" => false,
             "errors" => $form->getErrors()
         ]);
-
     }
 
 
