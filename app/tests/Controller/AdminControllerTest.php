@@ -1261,7 +1261,7 @@ class AdminControllerTest extends TestCase
         $_POST["content"] = "testteste";
         $_POST["isPublished"] = "test";
         $_POST["isFeatured"] = "test";
-        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-add-post");
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-post-form");
 
         Container::loadServices();
 
@@ -1307,7 +1307,7 @@ class AdminControllerTest extends TestCase
         $_POST["chapo"] = "teste";
         $_POST["content"] = "testtestestest";
         $_POST["isFeatured"] = "on";
-        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-add-post");
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-post-form");
 
         Container::loadServices();
 
@@ -1388,7 +1388,7 @@ class AdminControllerTest extends TestCase
         $_POST["title"] = "Ceci est un test";
         $_POST["chapo"] = "Ceci est un test";
         $_POST["content"] = "Ceci est un contenu qui fait plus de 10 caractères";
-        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-add-post");
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-post-form");
 
         Container::loadServices();
 
@@ -1414,9 +1414,110 @@ class AdminControllerTest extends TestCase
             "content" => $_POST["content"]
         ], classObject: Post::class);
 
-        $this->assertEquals($post->getId() ?? "", $content["postUpdated"]["id"] ?? null);
+        $this->assertEquals($post->getId() ?? "", $content["post"]["id"] ?? null);
 
         $this->manager->delete($post);
+
+    }
+
+
+    /**
+     * Test should be to post request of edit post with
+     * form success.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to post request of edit post with form success")]
+    public function itPostRequestOfEditPostSuccess(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var array<int, Post> $posts
+         */
+        $posts = [];
+
+        for ($i=0; $i<5; $i++) {
+            $posts[] = (new Post())
+                ->setTitle("Test".$i)
+                ->setChapo("Test".$i)
+                ->setContent("Test".$i)
+                ->setUserId($this->user?->getId() ?? "")
+                ->setIsPublished(true)
+                ->setIsFeatured(true);
+        }
+
+        $this->manager->flush(...$posts);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+
+        $badId = UuidV4::generate();
+
+        $_POST = [];
+        $_SERVER["REQUEST_METHOD"] = "POST";
+        $_SERVER["REQUEST_URI"] = "/admin/post/edit/".$badId;
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+        $response->send();
+
+        $this->assertEquals(404, http_response_code());
+
+        $_SERVER["REQUEST_URI"] = "/admin/post/edit/".$posts[0]->getId();
+
+        $_POST["title"] = "Ceci est un test";
+        $_POST["chapo"] = "Ceci est un test";
+        $_POST["content"] = "Ceci est un contenu qui fait plus de 10 caractères";
+        $_POST["isPublished"] = "on";
+        $_POST["isFeatured"] = "on";
+        $_POST["_csrf"] = Csrf::generateTokenCsrf("admin-post-form");
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, array<string, string>|string|int|bool> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertTrue($content["success"]);
+        $this->assertEquals("Le post a été modifié avec succès.", $content["message"]);
+
+        /**
+         * @var Post $post
+         */
+        $post = (new PostRepository())->findByOne([
+            "title" => $_POST["title"],
+            "chapo" => $_POST["chapo"],
+            "content" => $_POST["content"]
+        ], classObject: Post::class);
+
+        $this->assertEquals($post->getId() ?? "", $content["post"]["id"] ?? null);
+
+        foreach ($posts as $post) {
+            $this->manager->delete($post);
+        }
 
     }
 
