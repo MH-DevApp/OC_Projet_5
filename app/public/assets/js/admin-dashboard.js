@@ -21,14 +21,12 @@ const modalShowEntities = document.querySelector("div.modal[data-modal=showEntit
 if (modalShowEntities) {
     const btnShowModal = document.querySelector("button[type=button][data-bs-toggle=modal]");
     const typeEntities = modalShowEntities.id.replace("modal", "").toLowerCase();
-    let id = null;
 
-    const showModal = (event) => {
+    const showModal = (event, idEntity = null) => {
         clearNotification(modalShowEntities.querySelector("div.notification"));
-        id = event.currentTarget.dataset.entityId;
-        modalShowEntities.dataset.entityId = id;
+        modalShowEntities.dataset.entityId = idEntity = idEntity ?? event.currentTarget.dataset.entityId;
 
-        const cols = event.currentTarget.querySelectorAll("td[data-col]");
+        const cols = document.querySelectorAll("tr[data-entity-id='"+idEntity+"'] td[data-col]");
 
         cols.forEach((col) => {
             const rowModal = modalShowEntities.querySelector("[data-col="+col.dataset.col+"]");
@@ -66,3 +64,38 @@ if (modalShowEntities) {
             hiddenLoadingPage();
         });
 }
+
+export const updateEntities = (newEntities) => {
+    entities = newEntities;
+}
+
+export const constructBtnActions = (btnInfos, elementHTML) => {
+    btnInfos.forEach((btnInfo) => {
+        const btn = document.createElement("button");
+        const img = document.createElement("img");
+
+        btn.className = "btn btn-"+btnInfo.color+" btn-sm px-2";
+        btn.type = "button"
+        btn.style.marginLeft = "2px";
+        btn.style.marginRight = "2px";
+
+        if (btnInfo.dataset) {
+            btnInfo.dataset.forEach((dataset) => {
+                btn.dataset[dataset.key] = dataset.value;
+            });
+        }
+
+        if (btnInfo.events) {
+            btnInfo.events.forEach((event) => {
+                btn.addEventListener(event.event, event.func);
+            });
+        }
+
+        img.src = "/assets/images/logos/"+btnInfo.imgName;
+        img.alt = btnInfo.altName;
+        img.width = 12;
+        btn.append(img);
+
+        elementHTML.append(btn);
+    });
+};

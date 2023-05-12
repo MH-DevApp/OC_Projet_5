@@ -11,7 +11,11 @@
                 (<span class="count-entities">0</span>)
             </p>
         </h3>
-        <div id="admin-dashboard-menu" class="d-flex flex-column flex-lg-row w-100 h-100">
+        <div id="admin-dashboard-menu" class="d-flex flex-column position-relative flex-lg-row w-100 h-100">
+            <div class="d-flex justify-content-center position-absolute w-100" style="top: 2px; z-index: 10000;">
+                <div id="notificationGlobal" class="rounded-0 w-75">
+                </div>
+            </div>
             <div class="d-flex flex-column gap-2 gap-lg-3 align-items-center text-light bg-secondary px-3 px-lg-5 py-3 shadow">
                 {% if page == "users" %}
                     <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Utilisateurs</p>
@@ -46,7 +50,7 @@
     </section>
 
     {% if page == "posts" %}
-        {% include ("admin/partials/modals/_add-post.html.twig") %}
+        {% include ("admin/partials/modals/_post-form.html.twig") %}
     {% endif %}
 
     {% include ("admin/partials/modals/_"~page~".html.twig") %}

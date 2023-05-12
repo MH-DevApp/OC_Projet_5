@@ -1,7 +1,7 @@
 import {addSpinnerElement, removeSpinnerElement} from "./utils/spinner.js";
 import {addNotification} from "./utils/notification.js";
 import {filterEntities} from "./utils/filter.js";
-import {entities} from "./admin-dashboard.js";
+import {constructBtnActions, entities} from "./admin-dashboard.js";
 
 export const constructTableUsers = (users, showModal) => {
     const tBody = document.querySelector("table tbody");
@@ -16,7 +16,7 @@ export const constructTableUsers = (users, showModal) => {
             countElement++;
 
             const tr = document.createElement("tr");
-            tr.addEventListener("click", showModal);
+            tr.addEventListener("dblclick", showModal);
             tr.dataset.entityId = user["id"];
             tr.className = user["status"] === 0 ?
                 "table-warning" :
@@ -44,6 +44,7 @@ export const constructTableUsers = (users, showModal) => {
 
             const tdEmail = document.createElement("td");
             tdEmail.dataset.col = "col-email";
+            tdEmail.className = "d-none d-sm-table-cell";
             tdEmail.innerHTML = user["email"];
 
             const tdRole = document.createElement("td");
@@ -87,6 +88,24 @@ export const constructTableUsers = (users, showModal) => {
             tdCreatedAt.className = "d-none d-sm-table-cell";
             tdCreatedAt.innerHTML = user["createdAt"] !== null ? new Date(user["createdAt"]+" UTC").toLocaleDateString() : "-";
 
+            const tdActions = document.createElement("td");
+            const btnActions = [
+                {
+                    imgName: "eye-solid.svg",
+                    altName: "Logo eye",
+                    color: "dark",
+                    events: [
+                        {
+                            event: "click",
+                            func: (event) => showModal(event, user["id"])
+                        }
+                    ]
+                }
+            ];
+            tdActions.className = "d-flex justify-content-center";
+
+            constructBtnActions(btnActions, tdActions);
+
             tr.append(
                 thNumElement,
                 tdLastname,
@@ -97,7 +116,8 @@ export const constructTableUsers = (users, showModal) => {
                 tdStatus,
                 tdNbPosts,
                 tdNbComments,
-                tdCreatedAt
+                tdCreatedAt,
+                tdActions
             );
 
             tBody.append(tr);
@@ -149,7 +169,10 @@ export const initUsers = (modal) => {
             fetch(url).then((response) => {
                 return response.json();
             }).then((response) => {
-                addNotification(response);
+                addNotification(
+                    response,
+                    modal.querySelector("div.notification")
+                );
                 if (response.success) {
                     switch (response.action) {
                         case "update-status":
@@ -181,7 +204,7 @@ export const initUsers = (modal) => {
                 addNotification({
                     success: false,
                     message: "Une erreur s'est produite, veuillez réessayer plus tard."
-                });
+                }, modal.querySelector("div.notification"));
             }).finally(() => {
                 removeSpinnerElement(btn);
             });

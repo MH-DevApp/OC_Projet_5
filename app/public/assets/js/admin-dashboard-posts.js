@@ -1,6 +1,6 @@
 import {addSpinnerElement, removeSpinnerElement} from "./utils/spinner.js";
 import {addNotification, clearNotification} from "./utils/notification.js";
-import {entities} from "./admin-dashboard.js";
+import {constructBtnActions, entities, updateEntities} from "./admin-dashboard.js";
 import {filterEntities} from "./utils/filter.js";
 
 export const constructTablePosts = (posts, showModal) => {
@@ -16,7 +16,7 @@ export const constructTablePosts = (posts, showModal) => {
             countElement++;
 
             const tr = document.createElement("tr");
-            tr.addEventListener("click", showModal);
+            tr.addEventListener("dblclick", showModal);
             tr.dataset.entityId = post["id"];
             tr.className = post["isFeatured"] === 1 ?
                 "table-success" :
@@ -48,6 +48,7 @@ export const constructTablePosts = (posts, showModal) => {
 
             const tdIsPublished = document.createElement("td");
             tdIsPublished.dataset.col = "col-isPublished";
+            tdIsPublished.className = "d-none d-lg-table-cell";
             tdIsPublished.innerHTML = post["isPublished"] === 1 ? "Oui" : "Non";
             tdIsPublished.addEventListener("DOMSubtreeModified", (event) => {
                 switch (event.currentTarget.textContent) {
@@ -66,6 +67,7 @@ export const constructTablePosts = (posts, showModal) => {
 
             const tdIsFeatured = document.createElement("td");
             tdIsFeatured.dataset.col = "col-isFeatured";
+            tdIsFeatured.className = "d-none d-lg-table-cell";
             tdIsFeatured.innerHTML = post["isFeatured"] === 1 ? "Oui" : "Non";
             tdIsFeatured.addEventListener("DOMSubtreeModified", (event) => {
                 switch (event.currentTarget.textContent) {
@@ -97,6 +99,78 @@ export const constructTablePosts = (posts, showModal) => {
             tdUpdatedAt.className = "d-none d-sm-table-cell";
             tdUpdatedAt.innerHTML = post["updatedAt"] !== null ? new Date(post["updatedAt"]+" UTC").toLocaleDateString() : "-";
 
+            const tdActions = document.createElement("td");
+            const btnActions = [
+                {
+                    imgName: "eye-solid.svg",
+                    altName: "Logo eye",
+                    color: "dark",
+                    events: [
+                        {
+                            event: "click",
+                            func: (event) => showModal(event, post["id"])
+                        }
+                    ]
+                },
+                {
+                    imgName: "pen-solid.svg",
+                    altName: "Logo pen",
+                    color: "dark",
+                    dataset: [
+                        {
+                            key: "bsToggle",
+                            value: "modal"
+                        },
+                        {
+                            key: "bsTarget",
+                            value: "#modalPostForm"
+                        }
+                    ],
+                    events: [
+                        {
+                            event: "click",
+                            func: () => {
+                                const postForm = document.querySelector("form#postForm");
+                                const titleForm = postForm.querySelector("h1#modalTitlePostForm");
+                                const btnPostForm = postForm.querySelector("button#btnPostForm");
+                                const entity = entities.filter((entity) => entity.id === post["id"])[0];
+                                const inputsForm = postForm.querySelectorAll("[data-form='"+postForm.id+"']");
+
+                                clearForm(postForm);
+
+                                inputsForm.forEach((input) => {
+                                    switch (input.type) {
+                                        case "text":
+                                        case "textarea":
+                                            input.value = new DOMParser()
+                                                .parseFromString(entity[input.id], "text/html")
+                                                .documentElement
+                                                .textContent;
+                                            break;
+                                        case "checkbox":
+                                            input.checked = entity[input.id] === 1;
+                                            break;
+                                    }
+                                });
+
+                                titleForm.innerHTML = "Modifier un post";
+                                btnPostForm.innerHTML = "Modifier";
+                                btnPostForm.dataset.apiUrl = "/admin/post/edit/"+post["id"]
+                            }
+                        }
+                    ]
+                },
+                {
+                    imgName: "trash-solid.svg",
+                    altName: "Logo trash",
+                    color: "danger"
+                }
+            ];
+
+            tdActions.className = "d-flex justify-content-center";
+
+            constructBtnActions(btnActions, tdActions);
+
             tr.append(
                 thNumElement,
                 tdAuthor,
@@ -107,7 +181,8 @@ export const constructTablePosts = (posts, showModal) => {
                 tdIsFeatured,
                 tdNbComments,
                 tdCreatedAt,
-                tdUpdatedAt
+                tdUpdatedAt,
+                tdActions
             );
 
             tBody.append(tr);
@@ -203,81 +278,91 @@ export const initPosts = (modal) => {
         });
     });
 
-    // MODAL FORM ADD POST
-    const modalAddPost = document.querySelector("div.modal#modalAddPost");
-    const formAddPost = modalAddPost.querySelector("form#formAddPost");
+    // MODAL FORM POST
+    const modalPostForm = document.querySelector("div.modal#modalPostForm");
+    const postForm = modalPostForm.querySelector("form#postForm");
 
-    formAddPost.addEventListener("submit", (event) => {
+    postForm.addEventListener("submit", (event) => {
         event.preventDefault();
     });
 
-    const btnAddPost = modalAddPost.querySelector("div.modal#modalAddPost button#btnAddPost");
+    const btnPostForm = modalPostForm.querySelector("div.modal#modalPostForm button#btnPostForm");
 
-    btnAddPost.addEventListener("click", (event) => {
+    btnPostForm.addEventListener("click", (event) => {
         const url = event.currentTarget.dataset.apiUrl;
-        addSpinnerElement(btnAddPost);
+        addSpinnerElement(btnPostForm);
 
         fetch(url, {
             method: "POST",
-            body: new FormData(formAddPost)
+            body: new FormData(postForm)
         }).then((response) => {
             if (response.ok) {
                 return response.json();
             }
-            throw new Error("Une erreur s'est produite lors de l'ajout du post. Veuillez réessayer plus tard.");
+            throw new Error("Une erreur s'est produite durant l'opération. Veuillez réessayer plus tard.");
         }).then((response) => {
             if (response.success) {
-                clearForm(formAddPost);
-                entities.push(response["postUpdated"]);
+                if (response["formType"] === "updated-post") {
+                    updateEntities(entities.filter((entity) => entity["id"] !== response["post"]["id"]));
+                    removeValidationOnInputs(postForm.querySelectorAll("[data-form='"+postForm.id+"']"));
+                } else {
+                    clearForm(postForm);
+                }
+
+                entities.push(response["post"]);
                 entities.sort((a, b) => {
                     return new Date(b["createdAt"]) - new Date(a["createdAt"]);
                 });
                 filterEntities();
                 addNotification(
                     response,
-                    modalAddPost.querySelector("div.notification")
+                    modalPostForm.querySelector("div.notification")
                 );
             } else {
                 if (response["errors"]["global"]) {
                     addNotification({
                         success: false,
                         message: response["errors"]["global"]
-                    }, modalAddPost.querySelector("div.notification"));
+                    }, modalPostForm.querySelector("div.notification"));
                 }
 
-                addValidationOnInputs(response["errors"], formAddPost);
+                addValidationOnInputs(response["errors"], postForm);
             }
         }).catch((error) => {
             addNotification({
                 success: false,
                 message: error.message
-            }, modalAddPost.querySelector("div.notification"));
+            }, modalPostForm.querySelector("div.notification"));
         }).finally(() => {
-            removeSpinnerElement(btnAddPost);
+            removeSpinnerElement(btnPostForm);
         });
     });
 
-    const btnShowModalAddPost = document
-        .querySelector("div#actionsContainer button[data-bs-target='#modalAddPost']");
+    const btnShowModalPostForm = document
+        .querySelector("div#actionsContainer button[data-bs-target='#modalPostForm']");
 
-    btnShowModalAddPost.addEventListener("click", () => {
-        clearNotification(modalAddPost.querySelector("div.notification"));
-        clearForm(formAddPost);
+    btnShowModalPostForm.addEventListener("click", () => {
+        const modalTitle = modalPostForm.querySelector("h1#modalTitlePostForm");
+        modalTitle.innerHTML = "Ajouter un post"
+        btnPostForm.dataset.apiUrl = "/admin/post/add";
+        btnPostForm.innerHTML = "Ajouter";
+        clearNotification(modalPostForm.querySelector("div.notification"));
+        clearForm(postForm);
     });
 
-    formAddPost
-        .querySelectorAll("[data-form='"+formAddPost.id+"']")
+    postForm
+        .querySelectorAll("[data-form='"+postForm.id+"']")
         .forEach((element) => {
             switch (element.type) {
                 case "text":
                 case "textarea":
                     element.addEventListener("input", () => {
-                        removeValidationOnInputs(element);
+                        removeValidationOnInputs([element]);
                     });
                     break;
                 case "checkbox":
                     element.addEventListener("change", () => {
-                        removeValidationOnInputs(element);
+                        removeValidationOnInputs([element]);
                     });
             }
         });
@@ -286,8 +371,10 @@ export const initPosts = (modal) => {
 
 const clearForm = (form) => {
     const elements = form.querySelectorAll("[data-form='"+form.id+"']");
+
+    removeValidationOnInputs(elements);
+
     elements.forEach((element) => {
-        removeValidationOnInputs(element);
 
         switch (element.type) {
             case "text":
@@ -320,14 +407,16 @@ const addValidationOnInputs = (errors, form) => {
     });
 }
 
-const removeValidationOnInputs = (input) => {
-    const invalidFeedbackElement = document.querySelector("div[data-input-name='"+input.name+"']");
+const removeValidationOnInputs = (inputs) => {
+    inputs.forEach((input) => {
+        const invalidFeedbackElement = document.querySelector("div[data-input-name='"+input.name+"']");
 
-    if (invalidFeedbackElement) {
-        invalidFeedbackElement.innerHTML = "";
-    }
+        if (invalidFeedbackElement) {
+            invalidFeedbackElement.innerHTML = "";
+        }
 
-    if (input.classList.contains("is-valid") || input.classList.contains("is-invalid")) {
-        input.classList.remove("is-valid", "is-invalid");
-    }
+        if (input.classList.contains("is-valid") || input.classList.contains("is-invalid")) {
+            input.classList.remove("is-valid", "is-invalid");
+        }
+    });
 };

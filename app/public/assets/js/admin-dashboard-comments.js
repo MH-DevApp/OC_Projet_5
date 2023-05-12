@@ -1,7 +1,7 @@
 import {addSpinnerElement, removeSpinnerElement} from "./utils/spinner.js";
 import {addNotification} from "./utils/notification.js";
 import {filterEntities} from "./utils/filter.js";
-import {entities} from "./admin-dashboard.js";
+import {constructBtnActions, entities} from "./admin-dashboard.js";
 
 export const constructTableComments = (comments, showModal) => {
     const tBody = document.querySelector("table tbody");
@@ -15,7 +15,7 @@ export const constructTableComments = (comments, showModal) => {
             countElement++;
 
             const tr = document.createElement("tr");
-            tr.addEventListener("click", showModal);
+            tr.addEventListener("dblclick", showModal);
             tr.dataset.entityId = comment["id"];
             tr.className = (comment["isValid"] === 0 && comment["validBy"] !== null && comment["validAt"] !== null) ?
                 "table-danger" :
@@ -88,6 +88,24 @@ export const constructTableComments = (comments, showModal) => {
                 new Date(comment["updatedAt"]+" UTC").toLocaleDateString() :
                 "-";
 
+            const tdActions = document.createElement("td");
+            const btnActions = [
+                {
+                    imgName: "eye-solid.svg",
+                    altName: "Logo eye",
+                    color: "dark",
+                    events: [
+                        {
+                            event: "click",
+                            func: (event) => showModal(event, comment["id"])
+                        }
+                    ]
+                }
+            ];
+            tdActions.className = "d-flex justify-content-center";
+
+            constructBtnActions(btnActions, tdActions);
+
             tr.append(
                 thNumElement,
                 tdAuthor,
@@ -97,7 +115,8 @@ export const constructTableComments = (comments, showModal) => {
                 tdValidBy,
                 tdTitlePost,
                 tdCreatedAt,
-                tdUpdatedAt
+                tdUpdatedAt,
+                tdActions
             );
 
             tBody.append(tr);
@@ -141,7 +160,10 @@ export const initComments = (modal) => {
             fetch(url).then((response) => {
                 return response.json();
             }).then((response) => {
-                addNotification(response);
+                addNotification(
+                    response,
+                    modal.querySelector("div.notification")
+                );
                 if (response.success && response.action === "update-isValid") {
                     entities.map((entity) => {
                         if (entity["id"] === id) {
@@ -162,7 +184,7 @@ export const initComments = (modal) => {
                 addNotification({
                     success: false,
                     message: "Une erreur s'est produite, veuillez réessayer plus tard."
-                });
+                }, modal.querySelector("div.notification"));
             }).finally(() => {
                 removeSpinnerElement(btn);
             });
