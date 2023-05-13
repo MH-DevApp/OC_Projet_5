@@ -102,7 +102,7 @@ export const constructTableUsers = (users, showModal) => {
                     ]
                 }
             ];
-            tdActions.className = "d-flex justify-content-center";
+            tdActions.className = "text-nowrap";
 
             constructBtnActions(btnActions, tdActions);
 
