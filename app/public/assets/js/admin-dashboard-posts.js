@@ -2,6 +2,7 @@ import {addSpinnerElement, removeSpinnerElement} from "./utils/spinner.js";
 import {addNotification, clearNotification} from "./utils/notification.js";
 import {constructBtnActions, entities, updateEntities} from "./admin-dashboard.js";
 import {filterEntities} from "./utils/filter.js";
+import {constructModalConfirm} from "./utils/confirm.js";
 
 export const constructTablePosts = (posts, showModal) => {
     const tBody = document.querySelector("table tbody");
@@ -100,6 +101,67 @@ export const constructTablePosts = (posts, showModal) => {
             tdUpdatedAt.innerHTML = post["updatedAt"] !== null ? new Date(post["updatedAt"]+" UTC").toLocaleDateString() : "-";
 
             const tdActions = document.createElement("td");
+
+            const listenerFuncBtnEditAction = () => {
+                const postForm = document.querySelector("form#postForm");
+                const titleForm = postForm.querySelector("h1#modalTitlePostForm");
+                const btnPostForm = postForm.querySelector("button#btnPostForm");
+                const entity = entities.filter((entity) => entity.id === post["id"])[0];
+                const inputsForm = postForm.querySelectorAll("[data-form='"+postForm.id+"']");
+
+                clearForm(postForm);
+
+                inputsForm.forEach((input) => {
+                    switch (input.type) {
+                        case "text":
+                        case "textarea":
+                            input.value = new DOMParser()
+                                .parseFromString(entity[input.id], "text/html")
+                                .documentElement
+                                .textContent;
+                            break;
+                        case "checkbox":
+                            input.checked = entity[input.id] === 1;
+                            break;
+                    }
+                });
+
+                titleForm.innerHTML = "Modifier un post";
+                btnPostForm.innerHTML = "Modifier";
+                btnPostForm.dataset.apiUrl = "/admin/post/edit/"+post["id"]
+            };
+
+            const listenerFuncBtnDeleteAction = () => {
+                const notificationGlobalContainer = document.querySelector("div#notificationGlobal");
+                const modal = constructModalConfirm(
+                    "Voulez-vous vraiment supprimer ce post ?",
+                    () => {
+                        fetch("/admin/post/delete/"+post["id"], {
+                            method: "DELETE"
+                        })
+                        .then((response) => {
+                            if (response.ok) {
+                                return response.json();
+                            }
+                            throw new Error("Une erreur s'est produite lors de la suppression du post.");
+                        })
+                        .then((response) => {
+                            addNotification(response, notificationGlobalContainer);
+                            updateEntities(entities.filter((entity) => entity.id !== post["id"]));
+                            filterEntities();
+                        })
+                        .catch((error) => {
+                            addNotification({
+                                status: false,
+                                message: error.message
+                            }, notificationGlobalContainer);
+                        });
+                    }
+                );
+
+                modal.show();
+            };
+
             const btnActions = [
                 {
                     imgName: "eye-solid.svg",
@@ -129,41 +191,20 @@ export const constructTablePosts = (posts, showModal) => {
                     events: [
                         {
                             event: "click",
-                            func: () => {
-                                const postForm = document.querySelector("form#postForm");
-                                const titleForm = postForm.querySelector("h1#modalTitlePostForm");
-                                const btnPostForm = postForm.querySelector("button#btnPostForm");
-                                const entity = entities.filter((entity) => entity.id === post["id"])[0];
-                                const inputsForm = postForm.querySelectorAll("[data-form='"+postForm.id+"']");
-
-                                clearForm(postForm);
-
-                                inputsForm.forEach((input) => {
-                                    switch (input.type) {
-                                        case "text":
-                                        case "textarea":
-                                            input.value = new DOMParser()
-                                                .parseFromString(entity[input.id], "text/html")
-                                                .documentElement
-                                                .textContent;
-                                            break;
-                                        case "checkbox":
-                                            input.checked = entity[input.id] === 1;
-                                            break;
-                                    }
-                                });
-
-                                titleForm.innerHTML = "Modifier un post";
-                                btnPostForm.innerHTML = "Modifier";
-                                btnPostForm.dataset.apiUrl = "/admin/post/edit/"+post["id"]
-                            }
+                            func: listenerFuncBtnEditAction
                         }
                     ]
                 },
                 {
                     imgName: "trash-solid.svg",
                     altName: "Logo trash",
-                    color: "danger"
+                    color: "danger",
+                    events: [
+                        {
+                            event: "click",
+                            func: listenerFuncBtnDeleteAction
+                        }
+                    ]
                 }
             ];
 
