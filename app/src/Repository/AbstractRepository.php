@@ -68,7 +68,18 @@ abstract class AbstractRepository
         );
         $statement->execute();
 
-        return $statement->fetchAll(...$returnType);
+        /**
+         * @var int $mode
+         * @var class-string $classObject
+         */
+        [$mode, $classObject] = $returnType;
+
+        if ($mode && $classObject) {
+            return $statement->fetchAll($mode, $classObject);
+
+        }
+
+        return $statement->fetchAll();
 
     }
 
@@ -100,7 +111,19 @@ abstract class AbstractRepository
         }
 
         $statement->execute();
-        return $statement->fetchAll(...$returnType);
+
+        /**
+         * @var int $mode
+         * @var class-string $classObject
+         */
+        [$mode, $classObject] = $returnType;
+
+        if ($mode && $classObject) {
+            return $statement->fetchAll($mode, $classObject);
+
+        }
+
+        return $statement->fetchAll();
 
     }
 

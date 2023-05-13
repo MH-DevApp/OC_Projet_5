@@ -18,7 +18,6 @@ namespace App\Repository;
 
 
 use App\Entity\Post;
-use PDO;
 
 /**
  * Post Repository class
@@ -100,7 +99,80 @@ class PostRepository extends AbstractRepository
         $statement->bindValue(":postId", $postId);
         $statement->execute();
 
+        /**
+         * @var array<string, string|int>
+         */
         return $statement->fetch() ?: [];
+    }
+
+
+    /**
+     * Get all posts for dashboard
+     *
+     * @param string|null $id
+     * @return array<string, string|int>
+     */
+    public function getPostsForDashboard(?string $id = null): array
+    {
+        if ($id) {
+            $query = "
+                SELECT p.id, p.title, p.chapo, p.content, p.isPublished, p.isFeatured, p.createdAt, p.updatedAt, u.pseudo as `author`, (SELECT COUNT(*) FROM comment WHERE postId = p.id) as `countComments`
+                FROM post as p
+                JOIN user u on p.userId = u.id
+                WHERE p.id = :id
+                ORDER BY p.createdAt DESC
+            ";
+
+            $statement = $this->pdo->prepare($query);
+            $statement->bindValue(":id", $id);
+            $statement->execute();
+
+            /**
+             * @var array<string, string|int>
+             */
+            return $statement->fetch() ?: [];
+        }
+
+        $query = "
+            SELECT p.id, p.title, p.chapo, p.content, p.isPublished, p.isFeatured, p.createdAt, p.updatedAt, u.pseudo as `author`, (SELECT COUNT(*) FROM comment WHERE postId = p.id) as `countComments`
+            FROM post as p
+            JOIN user u on p.userId = u.id
+            ORDER BY p.createdAt DESC
+        ";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->execute();
+
+        return $statement->fetchAll() ?: [];
+    }
+
+
+    /**
+     * Get count of featured posts
+     *
+     * @return int
+     */
+    public function getCountFeaturedPosts(?string $id = null): int
+    {
+        $query = "
+            SELECT COUNT(*) from post WHERE isFeatured = TRUE
+        ";
+        if ($id) {
+            $query .= " AND NOT id = :id";
+        }
+
+        $statement = $this->pdo->prepare($query);
+        if ($statement !== false) {
+            if ($id) {
+                $statement->bindValue(":id", $id);
+            }
+            $statement->execute();
+            $count = $statement->fetchColumn();
+
+            return is_numeric($count) ? (int)$count : 0;
+        }
+
+        return 0;
     }
 
 

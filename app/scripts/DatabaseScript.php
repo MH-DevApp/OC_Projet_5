@@ -104,6 +104,8 @@ $pdo->query("
         `title` VARCHAR(255) NOT NULL,
         `chapo` TEXT(500) NOT NULL,
         `content` TEXT NOT NULL,
+        `isPublished` BOOL NOT NULL DEFAULT FALSE,
+        `isFeatured` BOOL NOT NULL DEFAULT FALSE,
         `createdAt` DATETIME NOT NULL,
         `updatedAt` DATETIME,
         PRIMARY KEY(`id`),
@@ -117,13 +119,17 @@ $pdo->query("
     CREATE TABLE `comment` (
         `id` VARCHAR(255) NOT NULL UNIQUE,
         `userId` VARCHAR (255) NOT NULL,
-        `blogPostId` VARCHAR(255) NOT NULL,
+        `postId` VARCHAR(255) NOT NULL,
         `content` TEXT NOT NULL,
+        `isValid` BOOL NOT NULL DEFAULT FALSE,
+        `validByUserId` VARCHAR(255) NULL,
+        `validAt` DATETIME NULL,
         `createdAt` DATETIME NOT NULL,
         `updatedAt` DATETIME NULL,
         PRIMARY KEY(`id`),
         FOREIGN KEY(`userId`) REFERENCES `user`(`id`),
-        FOREIGN KEY(`blogPostId`) REFERENCES `post`(`id`)
+        FOREIGN KEY(`postId`) REFERENCES `post`(`id`),
+        FOREIGN KEY (`validByUserId`) REFERENCES `user`(`id`)
     )
 ");
 echo "- Comment table has created successfully.\n";

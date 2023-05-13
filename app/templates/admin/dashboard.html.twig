@@ -1,0 +1,65 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Tableau de bord &laquo;{{ page }}&raquo;{% endblock %}
+
+{% block body %}
+    <section id="admin-dashboard" class="d-flex flex-column align-items-center h-100">
+        <h3 class="d-flex justify-content-center align-items-center gap-3 bg-dark text-light py-5 px-2 w-100 m-0">
+            <img src="{{ asset("images/logos/table-columns-solid.svg") }}" alt="Logo ID card">
+            <p class="text-center m-0 p-0">
+                TABLEAU DE BORD - {{ page|upper }}
+                (<span class="count-entities">0</span>)
+            </p>
+        </h3>
+        <div id="admin-dashboard-menu" class="d-flex flex-column position-relative flex-lg-row w-100 h-100">
+            <div class="d-flex justify-content-center position-absolute w-100" style="top: 2px; z-index: 10000;">
+                <div id="notificationGlobal" class="rounded-0 w-75">
+                </div>
+            </div>
+            <div class="d-flex flex-column gap-2 gap-lg-3 align-items-center text-light bg-secondary px-3 px-lg-5 py-3 shadow">
+                {% if page == "users" %}
+                    <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Utilisateurs</p>
+                {% else %}
+                    <a class="btn btn-light px-3 w-100" href="{{ path("app_admin_page", {page: "users"}) }}">Utilisateurs</a>
+                {% endif %}
+
+                {% if page == "posts" %}
+                    <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Posts</p>
+                {% else %}
+                    <a class="btn btn-light px-3 w-100" href="{{ path("app_admin_page", {page: "posts"}) }}">Posts</a>
+                {% endif %}
+
+                {% if page == "comments" %}
+                    <p class="bg-dark text-light text-center px-3 py-2 m-0 rounded w-100">Commentaires</p>
+                {% else %}
+                    <a class="btn btn-light px-3 mb-3 w-100" href="{{ path("app_admin_page", {page: "comments"}) }}">Commentaires</a>
+                {% endif %}
+            </div>
+            <div id="admin-dashboard-content" class="d-flex flex-column flex-fill">
+                <div id="filterContainer" class="d-flex flex-column justify-content-center justify-content-lg-start align-items-center gap-2 p-2 bg-white sticky-top">
+                    {% include("admin/partials/filters/_"~page~".html.twig") %}
+                </div>
+                <div id="loading-page" class="d-flex align-items-center justify-content-center bg-light position-relative w-100 h-100">
+                    <div class='spinner-grow m-2' role='status'></div>
+                    <div class='spinner-grow m-2' role='status'></div>
+                    <div class='spinner-grow m-2' role='status'></div>
+                </div>
+                {% include("admin/partials/_"~page~".html.twig") %}
+            </div>
+        </div>
+    </section>
+
+    {% if page == "posts" %}
+        {% include ("admin/partials/modals/_post-form.html.twig") %}
+    {% endif %}
+
+    {% include ("admin/partials/modals/_"~page~".html.twig") %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("styles/admin-dashboard.css") }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset("js/admin-dashboard.js") }}" type="module"></script>
+{% endblock %}
