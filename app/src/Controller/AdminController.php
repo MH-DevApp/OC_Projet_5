@@ -494,6 +494,41 @@ class AdminController extends AbstractController
 
 
     /**
+     * Edit post
+     *
+     * @throws Exception
+     */
+    #[Route(
+        "/admin/post/delete/:id",
+        "admin_post_edit",
+        regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        methods: ["DELETE"],
+        granted: "ROLE_ADMIN"
+    )]
+    public function deletePost(string $id): Response
+    {
+        /**
+         * @var Post|false $post
+         */
+        $post = (new PostRepository())->findByOne([
+            "id" => $id
+        ], classObject: Post::class);
+
+        if (!$post) {
+            return $this->responseHttpNotFound();
+        }
+
+        $this->manager->delete($post);
+
+        return $this->json([
+            "success" => true,
+            "message" => "Le post a été supprimé avec succès."
+        ]);
+
+    }
+
+
+    /**
      * Add or Edit post
      *
      * @throws FormException
