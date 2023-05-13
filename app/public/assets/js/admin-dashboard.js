@@ -30,7 +30,7 @@ if (modalShowEntities) {
 
         cols.forEach((col) => {
             const rowModal = modalShowEntities.querySelector("[data-col="+col.dataset.col+"]");
-            rowModal.textContent = col.textContent;
+            rowModal.innerHTML = col.innerHTML;
         });
 
         btnShowModal.click();
