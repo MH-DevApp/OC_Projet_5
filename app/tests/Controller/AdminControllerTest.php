@@ -1523,6 +1523,109 @@ class AdminControllerTest extends TestCase
 
 
     /**
+     * Test should be to request of delete post failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to request of delete post failed")]
+    public function itRequestOfDeletePostFailed(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+
+        $badId = UuidV4::generate();
+
+        $_POST = [];
+        $_SERVER["REQUEST_METHOD"] = "DELETE";
+        $_SERVER["REQUEST_URI"] = "/admin/post/delete/".$badId;
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+        $response->send();
+
+        $this->assertEquals(404, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be to request of delete post failed.
+     *
+     * @return void
+     *
+     * @throws ReflectionException
+     * @throws RouterException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be to request of delete post success")]
+    public function itRequestOfDeletePostSuccess(): void
+    {
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $auth->authenticate([
+            "email" => "test@test.fr",
+            "password" => "password"
+        ]);
+
+        $post = (new Post())
+            ->setTitle("Test")
+            ->setChapo("Test")
+            ->setContent("Test")
+            ->setUserId($this->user?->getId() ?? "")
+            ->setIsPublished(true)
+            ->setIsFeatured(true);
+
+        $this->manager->flush($post);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+
+        $_SERVER["REQUEST_METHOD"] = "DELETE";
+        $_SERVER["REQUEST_URI"] = "/admin/post/delete/".$post->getId();
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
+
+        ob_start();
+        $response->send();
+        /**
+         * @var array<string, array<string, string>|string|int|bool> $content
+         */
+        $content = json_decode(ob_get_contents() ?: "", true);
+        ob_get_clean();
+
+        $this->assertTrue($content["success"]);
+        $this->assertEquals("Le post a été supprimé avec succès.", $content["message"]);
+
+    }
+
+
+    /**
      * Create user test
      *
      * @throws Exception
