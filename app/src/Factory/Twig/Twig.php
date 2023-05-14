@@ -25,6 +25,7 @@ use Exception;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
@@ -69,6 +70,7 @@ class Twig
         $this->twig->addFunction($this->generateUrl());
         $this->twig->addFunction($this->generateCSRF());
         $this->twig->addFunction($this->getAssetsFolder());
+        $this->twig->addFilter($this->unescape());
         $this->twig->addGlobal("app", self::$app);
 
     }
@@ -165,6 +167,24 @@ class Twig
                 $path = trim($path, "/");
 
                 return "/assets/".$path;
+
+            }
+        );
+
+    }
+
+
+    /**
+     * Unescape value in the template.
+     *
+     * @return TwigFilter
+     */
+    private function unescape(): TwigFilter
+    {
+        return new TwigFilter(
+            "unescape",
+            function (string $value): string {
+                return html_entity_decode($value);
 
             }
         );
