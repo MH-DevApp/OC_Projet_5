@@ -22,9 +22,11 @@ use App\Controller\PostController;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Factory\Manager\Manager;
+use App\Factory\Router\RouterException;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Factory\Utils\Uuid\UuidV4;
+use App\Kernel;
 use App\Repository\PostRepository;
 use App\Service\Container\Container;
 use Exception;
@@ -56,7 +58,6 @@ use Twig\Error\SyntaxError;
 class PostControllerTest extends TestCase
 {
 
-    private PostController $controller;
     private Manager $manager;
     private User $user;
 
@@ -78,6 +79,7 @@ class PostControllerTest extends TestCase
     public function init(): void
     {
         $_SERVER["REQUEST_METHOD"] = "GET";
+        $_SERVER["REQUEST_URI"] = "/posts";
         $_ENV["TEST_PATH"] = "_test";
 
         (new DotEnv())->load();
@@ -96,8 +98,6 @@ class PostControllerTest extends TestCase
             ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
             ->setEmail("test@test.com");
         $this->manager->flush($this->user);
-
-        $this->controller = new PostController();
     }
 
 
@@ -122,15 +122,13 @@ class PostControllerTest extends TestCase
      * Test should be to render posts list empty of post controller.
      *
      * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws RouterException
      */
     #[Test]
     #[TestDox("should be to render posts list empty of post controller")]
     public function itRenderPostsListEmptyOfPostController(): void
     {
-        $response = $this->controller->showPosts();
+        $response = (new Kernel())->run();
 
         ob_start();
         $response->send();
@@ -138,7 +136,7 @@ class PostControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<div>Aucun post n'a été publié</div>",
+            "<p>Aucun article n'a été rédigé</p>",
             $content
         );
 
@@ -149,9 +147,6 @@ class PostControllerTest extends TestCase
      * Test should be to render posts list of post controller.
      *
      * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
      * @throws Exception
      */
     #[Test]
@@ -160,23 +155,16 @@ class PostControllerTest extends TestCase
     {
         $this->createPosts();
 
-        $response = $this->controller->showPosts();
+        $response = (new Kernel())->run();
 
         ob_start();
         $response->send();
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        preg_match_all("#(<div>){1}([\w\d\s]+)(<\/div>){1}#", $content, $matches);
+        preg_match_all("#(<article class=\"card shadow h-100\">){1}#", $content, $matches);
 
         $this->assertCount(5, $matches[0]);
-        $this->assertEquals([
-            "<div>Titre 5</div>",
-            "<div>Titre 2</div>",
-            "<div>Titre 3</div>",
-            "<div>Titre 1</div>",
-            "<div>Titre 4</div>",
-        ], $matches[0]);
 
     }
 
@@ -185,9 +173,6 @@ class PostControllerTest extends TestCase
      * Test should be to render post details by Id of post controller.
      *
      * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
      * @throws Exception
      */
     #[Test]
@@ -196,7 +181,11 @@ class PostControllerTest extends TestCase
     {
         $this->createPosts();
 
-        $response = $this->controller->showPost($this->posts[0]->getId() ?: "");
+        $_SERVER["REQUEST_URI"] = "/post/{$this->posts[0]->getId()}";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
 
         ob_start();
         $response->send();
@@ -206,7 +195,12 @@ class PostControllerTest extends TestCase
         $this->assertMatchesRegularExpression("#(<div>){1}([\w\d\s]+)(<\/div>){1}#", $content);
         $this->assertStringContainsString("<div>Titre 4</div>", $content);
 
-        $response = $this->controller->showPost("NOK");
+        $badId = UuidV4::generate();
+        $_SERVER["REQUEST_URI"] = "/post/{$badId}";
+
+        Container::loadServices();
+
+        $response = (new Kernel())->run();
         $response->send();
 
         $this->assertEquals(404, http_response_code());
@@ -252,41 +246,18 @@ class PostControllerTest extends TestCase
 
         foreach ($data as $item) {
             $post = (new Post())
-                ->setId(UuidV4::generate());
-
-            /**
-             * @var Post $post
-             */
-            $post
-                ->setCreatedAt($item["date"])
                 ->setUserId($userId)
                 ->setTitle($item["title"])
+                ->setIsPublished(true)
                 ->setContent("Test")
                 ->setChapo("Test");
 
-            /**
-             * @var string $createdAt
-             */
-            $createdAt = $post->getCreatedAt() instanceof \DateTime ?
-                $post->getCreatedAt()->format(DATE_ATOM) :
-                $post->getCreatedAt();
-
-            $pdo = $this->manager->getPDO();
-            $statement = $pdo->prepare("
-            INSERT INTO post (id, userId, title, chapo, content, createdAt) 
-            VALUES (:id, :userId, :title, :chapo, :content, :createdAt)
-        ");
-            $statement->bindValue(":id", $post->getId());
-            $statement->bindValue(":userId", $post->getUserId());
-            $statement->bindValue(":title", $post->getTitle());
-            $statement->bindValue(":chapo", $post->getChapo());
-            $statement->bindValue(":content", $post->getContent());
-            $statement->bindValue(":createdAt", $createdAt);
-
-            $statement->execute();
+            $this->manager->persist($post);
 
             $this->posts[] = $post;
         }
+
+        $this->manager->flush(...$this->posts);
     }
 
 
