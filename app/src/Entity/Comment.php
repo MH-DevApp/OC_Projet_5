@@ -165,6 +165,7 @@ class Comment extends AbstractEntity
      */
     public function setIsValid(bool $isValid): self
     {
+        $this->setValidAt();
         $this->isValid = $isValid;
         return $this;
 

@@ -85,7 +85,7 @@ class PostRepository extends AbstractRepository
     public function getPostByIdWithUser(string $postId): array
     {
         $query = "
-            SELECT p.title as `post_title`, p.chapo as `post_chapo`, p.content as `post_content`, p.createdAt as `post_createdAt`, p.updatedAt as `post_updatedAt`, u.pseudo as `author_pseudo`
+            SELECT p.id as `post_id`, p.title as `post_title`, p.chapo as `post_chapo`, p.content as `post_content`, p.createdAt as `post_createdAt`, p.updatedAt as `post_updatedAt`, u.pseudo as `author_pseudo`
             FROM post as p
             JOIN user u on p.userId = u.id
             WHERE p.id = :postId
