@@ -60,7 +60,7 @@ class PostController extends AbstractController
     #[Route("/posts", "app_posts")]
     public function showPosts(): Response
     {
-        $posts = $this->postRepository->getPostsByOrderDate("DESC");
+        $posts = $this->postRepository->getPostsPublishedByOrderDate("DESC");
 
         return $this->render("post/show-posts.html.twig", [
             "posts" => $posts
