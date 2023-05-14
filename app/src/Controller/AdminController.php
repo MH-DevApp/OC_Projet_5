@@ -437,7 +437,6 @@ class AdminController extends AbstractController
 
         $comment->setIsValid(!$comment->getIsValid());
         $comment->setValidByUserId($this->user() ?? "");
-        $comment->setValidAt();
 
         $this->manager->flush($comment);
 

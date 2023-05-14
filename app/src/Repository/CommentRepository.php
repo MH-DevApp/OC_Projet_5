@@ -51,6 +51,29 @@ class CommentRepository extends AbstractRepository
 
 
     /**
+     * Get all comments by Post id
+     *
+     * @return array<string, string|int|bool>
+     */
+    public function getCommentsByPostId(string $postId): array
+    {
+        $query = "
+            SELECT c.id, u.pseudo as `author`, c.content, c.isValid, (SELECT pseudo FROM user WHERE id = c.validByUserId) as `validBy`, c.validAt, c.createdAt, c.updatedAt
+            FROM comment as c
+            JOIN user u on c.userId = u.id
+            WHERE c.postId = :postId
+            ORDER BY c.createdAt DESC
+        ";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->bindValue(":postId", $postId);
+        $statement->execute();
+
+        return $statement->fetchAll() ?: [];
+    }
+
+
+    /**
      * Get all comments for dashboard
      *
      * @return array<string, string|int|bool>

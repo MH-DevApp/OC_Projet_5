@@ -6,16 +6,16 @@
     <style>
         .card {
             cursor: pointer;
-            transition: opacity 0.4s, background-color 0.4s, color 0.4s;
+            transition: opacity 0.3s, background-color 0.3s, color 0.3s, transform 0.3s;
         }
 
         .card:hover {
-            opacity: 0.7;
-            background-color: #1b1e21;
-            color: var(--bs-light);
+            transform: scale(1.02);
         }
 
         .card:hover .card-header, .card:hover .card-footer {
+            background-color: var(--bs-dark);
+            color: var(--bs-light);
             border-color: var(--bs-light);
         }
 

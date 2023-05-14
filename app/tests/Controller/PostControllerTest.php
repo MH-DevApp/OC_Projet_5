@@ -192,8 +192,7 @@ class PostControllerTest extends TestCase
         $content = ob_get_contents() ?: "";
         ob_get_clean();
 
-        $this->assertMatchesRegularExpression("#(<div>){1}([\w\d\s]+)(<\/div>){1}#", $content);
-        $this->assertStringContainsString("<div>Titre 4</div>", $content);
+        $this->assertStringContainsString("<span class=\"text-center m-0 p-0\">Titre 4</span>", $content);
 
         $badId = UuidV4::generate();
         $_SERVER["REQUEST_URI"] = "/post/{$badId}";
