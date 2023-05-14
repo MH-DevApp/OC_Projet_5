@@ -48,3 +48,8 @@ footer ul {
 .bg-secondary {
     background-color: #454545 !important;
 }
+
+.form-floating > textarea.form-control {
+    height: unset;
+    resize: none;
+}
