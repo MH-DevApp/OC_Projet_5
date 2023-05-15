@@ -16,7 +16,7 @@ export const updatePositionTopForStickyElements = () => {
 
     if (table) {
         table.style.top = actionsContainer ?
-            actionsContainer.getBoundingClientRect().bottom + "px" :
+            filterContainer.getBoundingClientRect().bottom + actionsContainer.getBoundingClientRect().height + "px" :
             filterContainer ?
                 filterContainer.getBoundingClientRect().bottom + "px" :
                 navbar.getBoundingClientRect().bottom + "px";

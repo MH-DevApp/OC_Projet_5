@@ -3,39 +3,7 @@
 {% block title %}Articles{% endblock %}
 
 {% block stylesheets %}
-    <style>
-        .card {
-            cursor: pointer;
-            transition: opacity 0.3s, background-color 0.3s, color 0.3s, transform 0.3s;
-        }
-
-        .card:hover {
-            transform: scale(1.02);
-        }
-
-        .card:hover .card-header, .card:hover .card-footer {
-            background-color: var(--bs-dark);
-            color: var(--bs-light);
-            border-color: var(--bs-light);
-        }
-
-        .card .card-footer img {
-            filter: invert(0.7);
-            transition: filter 0.4s;
-        }
-
-        .card:hover .card-footer img {
-            filter: invert(0);
-        }
-
-        .card-header {
-            min-height: 80px;
-        }
-
-        .card-body {
-            min-height: 150px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('styles/posts.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -53,7 +21,7 @@
                             <div class="col-12 col-sm-6 col-xl-4">
                                 <a class="link-dark text-decoration-none" href="{{ path("app_post_details", {id: post.post_id}) }}">
                                     <article class="card shadow h-100">
-                                        <div class="card-header d-flex flex-row align-items-center justify-content-center text-center">
+                                        <div class="card-header d-flex flex-row align-items-center justify-content-center text-center h-auto">
                                             <h5>{{ post.post_title|unescape }}</h5>
                                         </div>
                                         <div class="card-body h-100">
