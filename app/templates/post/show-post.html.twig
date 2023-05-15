@@ -99,6 +99,7 @@
         </div>
     </section>
 
+    {% if form and form.isSubmitted %}
     <script type="text/javascript">
         window.addEventListener("DOMContentLoaded", () => {
             const sectionEl = document.getElementById("formComment");
@@ -106,4 +107,5 @@
             window.scrollTo(0, positionY);
         });
     </script>
+    {% endif %}
 {% endblock %}
