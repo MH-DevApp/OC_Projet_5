@@ -103,9 +103,17 @@ abstract class Mapper
                 $method = "get".$name;
 
                 if ($reflexionClass->hasMethod($method)) {
-                    $obj[$props->getName()] = $entity->$method() instanceof DateTime ?
-                        $entity->$method()->format(DATE_ATOM) :
-                        $entity->$method();
+                    $value = $entity->$method();
+
+                    if ($value instanceof DateTime) {
+                        $value = $value->format(DATE_ATOM);
+                    } else if (is_bool($value)) {
+                        $value = $value ? 1 : 0;
+                    } else if ($value instanceof AbstractEntity) {
+                        $value = $value->getId();
+                    }
+
+                    $obj[$props->getName()] = $value;
 
                 }
 

@@ -16,6 +16,10 @@ declare(strict_types=1);
 
 namespace App\Factory\Router;
 
+use App\Auth\Auth;
+use App\Service\Container\Container;
+use Attribute;
+
 /**
  * Response class
  * Returns a response text with Header and status-code
@@ -29,6 +33,7 @@ namespace App\Factory\Router;
  * @license  MIT Licence
  * @link     https://p5.mehdi-haddou.fr
  */
+#[Attribute]
 class Route
 {
 
@@ -36,6 +41,8 @@ class Route
      * @var array<int, string|int> $params
      */
     private array $params = [];
+    private string $controllerName = "";
+    private string $action = "";
 
 
     /**
@@ -46,12 +53,14 @@ class Route
      * @param string                $name    Name of route (for example app_posts)
      * @param array<string, string> $regexs  [Optional] array of regexs for params
      * @param array<int, string>    $methods [Optional] array of methods, by default GET
+     * @param string                $granted [Optional] role access granted
      */
     public function __construct(
         private string $path,
         private readonly string $name,
         private array $regexs=[],
-        private readonly array $methods=["GET"]
+        private readonly array $methods=["GET"],
+        private string $granted = ""
     ) {
         $this->path = trim($this->path, "/");
 
@@ -93,6 +102,28 @@ class Route
             return false;
         }
 
+        /*
+         * Check if user has role for access to the route
+         */
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+
+        if (
+            $this->granted &&
+            (
+                !$auth::$currentUser ||
+                !array_filter(
+                    ["ROLE_ADMIN", $this->granted],
+                    fn ($value) => $value === $auth::$currentUser?->getRole()
+                )
+            )
+        ) {
+            return false;
+        }
+
         // Remove first item and keep matches word.
         array_shift($matches);
         $this->params = $matches;
@@ -119,6 +150,43 @@ class Route
         // Return default regex value.
         return '([^/]+)';
 
+    }
+
+
+    /**
+     * Make url with the name and params and return string.
+     *
+     * @param array $params
+     * @param bool $isAbsolute
+     *
+     * @return string
+     */
+    public function makeUrl(
+        array $params,
+        bool $isAbsolute = false
+    ): string
+    {
+        $path = $this->path;
+
+        foreach ($params as $k => $v) {
+            $path = str_replace(":$k", $v, $path);
+        }
+
+        if ($isAbsolute) {
+            /**
+             * @var Request $request
+             */
+            $request = Container::getService("request");
+
+            /**
+             * @var string $host
+             */
+            $host = $request->getServer("HTTP_HOST");
+
+            return "http://".$host."/".$path;
+        }
+
+        return "/".$path;
     }
 
 
@@ -167,6 +235,58 @@ class Route
     public function getParams(): array
     {
         return $this->params;
+
+    }
+
+
+    /**
+     * Get Name of controller on this route
+     *
+     * @return string
+     */
+    public function getControllerName(): string
+    {
+        return $this->controllerName;
+
+    }
+
+
+    /**
+     * Set Name of controller on this route
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function setControllerName(string $name): void
+    {
+        $this->controllerName = $name;
+
+    }
+
+
+    /**
+     * Get Name of action into controller on this route
+     *
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+
+    }
+
+
+    /**
+     * Set Name of action into controller on this route
+     *
+     * @param string $action
+     *
+     * @return void
+     */
+    public function setAction(string $action): void
+    {
+        $this->action = $action;
 
     }
 

@@ -1,0 +1,97 @@
+<div class="modal modal-xl fade" id="modalPostForm" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="modalPostForm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="postForm" method="post">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalTitlePostForm"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center">
+                    <div class="col-12 col-lg 10 col-xl-8 col-xxl-6">
+                        <div class="notification d-flex flex-row justify-content-center w-100">
+                        </div>
+                        <div class="col-12 form-floating mb-2">
+                            <input
+                                    data-form="postForm"
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Titre"
+                                    value=""
+                                    required
+                            >
+                            <label for="title">Titre</label>
+                            <div data-input-name="title" class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-12 form-floating mb-2">
+                            <textarea
+                                    data-form="postForm"
+                                    class="form-control"
+                                    id="chapo"
+                                    name="chapo"
+                                    placeholder="Chapo"
+                                    required
+                                    style="height: 80px;"
+                            ></textarea>
+                            <label for="chapo">Chapo</label>
+                            <div data-input-name="chapo" class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-12 form-floating mb-2">
+                            <textarea
+                                    data-form="postForm"
+                                    class="form-control"
+                                    id="content"
+                                    name="content"
+                                    placeholder="Contenu"
+                                    required
+                                    style="height: 240px;"
+                            ></textarea>
+                            <label for="content">Contenu</label>
+                            <div data-input-name="content" class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-12 form-floating mb-2">
+                            <div class="form-check form-switch">
+                                <input
+                                        data-form="postForm"
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        name="isPublished"
+                                        id="isPublished"
+                                >
+                                <label class="form-check-label" for="isPublished">Publier</label>
+                            </div>
+                        </div>
+                        <div class="col-12 form-floating mb-2">
+                            <div class="form-check form-switch">
+                                <input
+                                        data-form="postForm"
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        name="isFeatured"
+                                        id="isFeatured"
+                                >
+                                <label class="form-check-label" for="isFeatured">Mis en avant</label>
+                                <div data-input-name="isFeatured" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="_csrf" value="{{ csrf("admin-post-form") }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-center justify-content-sm-end w-100">
+                        <button
+                                id="btnPostForm"
+                                type="button"
+                                class="btn btn-sm btn-dark"
+                        >
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

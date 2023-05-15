@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Lien d'activation de votre email a expiré{% endblock %}
+
+{% block body %}
+    <section id="valid-email" class="mb-4 d-flex flex-column align-items-center">
+        <h3 class="text-center mb-2 bg-danger text-light py-5 w-100">
+            <img src="{{ asset("images/logos/envelope-solid.svg") }}" alt="Logo Envelope">
+            <span>LIEN D'ACTIVATION DE VOTRE EMAIL EXPIRE</span>
+        </h3>
+        <div class="col-12 col-md-8 col-xl-6 p-2 p-lg-5">
+            {% if errors.global is defined %}
+                <div class="col-12 text-center text-danger">{{ errors.global }}</div>
+            {% endif %}
+            <h4>Veuillez saisir votre adresse email afin de recevoir un nouveau lien d'activation.</h4>
+            <form class="border shadow rounded p-3" method="post">
+                <div class="col-12 form-floating mb-2">
+                    <input
+                            type="email"
+                            class="form-control {% if submitted %}{{ errors.email is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            value="{{ data.email ?? "" }}"
+                            required
+                    >
+                    <label for="email">Email</label>
+                    {% if errors.email is defined %}
+                        <div class="invalid-feedback">{{ errors.email }}</div>
+                    {% endif %}
+                </div>
+                <input type="hidden" name="_csrf" value="{{ csrf("forgotten-password") }}">
+                <div class="text-end my-2 p-2">
+                    <button type="submit" class="btn btn-dark">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}

@@ -106,7 +106,7 @@ class CommentRepositoryTest extends TestCase
             );
 
         $statement = $this->pdo->prepare(
-            "INSERT INTO `comment` (`id`, `userId`, `blogPostId`, `content`, `createdAt`, `updatedAt`)".
+            "INSERT INTO `comment` (`id`, `userId`, `postId`, `content`, `createdAt`, `updatedAt`)".
             " VALUES (:id, :userId, :blogPostId, :content, :createdAt, :updatedAt)"
         );
         $statement->bindValue(":id", $idComment);

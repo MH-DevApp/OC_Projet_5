@@ -14,17 +14,24 @@
 
 declare(strict_types=1);
 
-namespace tests\Factory\Router;
+namespace tests;
 
 
+use App\Auth\Auth;
+use App\Entity\Session;
+use App\Entity\User;
+use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
 use App\Factory\Router\Router;
 use App\Factory\Router\RouterException;
+use App\Factory\Twig\Twig;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Factory\Utils\DotEnv\DotEnvException;
 use App\Kernel;
+use App\Repository\SessionRepository;
 use App\Service\Container\Container;
 use App\Service\Container\ContainerInterface;
+use Exception;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -73,17 +80,19 @@ class KernelTest extends TestCase
     {
         $_SERVER["REQUEST_METHOD"] = "GET";
         $_SERVER["REQUEST_URI"] = "/";
+        $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_SERVER["REMOTE_ADDR"] = "Test";
 
         (new DotEnv())->load();
         $response = (new Kernel())->run();
 
         ob_start();
         $response->send();
-        $content = ob_get_contents();
+        $content = ob_get_contents() ?: "";
         ob_get_clean();
 
         $this->assertEquals(200, http_response_code());
-        $this->assertEquals("SUCCESS", $content);
+        $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $content);
 
     }
 
@@ -101,13 +110,84 @@ class KernelTest extends TestCase
     public function itGetResponseNotFoundFromRouter(): void
     {
         $_SERVER["REQUEST_METHOD"] = "GET";
-        $_SERVER["REQUEST_URI"] = "/posts";
+        $_SERVER["REQUEST_URI"] = "/bad-route";
 
         (new DotEnv())->load();
         $response = (new Kernel())->run();
         $response->send();
 
         $this->assertEquals(404, http_response_code());
+
+    }
+
+
+    /**
+     * Test should be run kernel with authenticated user.
+     *
+     * @return void
+     *
+     * @throws RouterException
+     * @throws DotEnvException
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    #[Test]
+    #[TestDox("should be run kernel with authenticated user")]
+    public function itRunKernelWithAuthenticatedUser(): void
+    {
+        $_COOKIE = [];
+        $_SERVER["REMOTE_ADDR"] = "Test";
+        $_SERVER["HTTP_USER_AGENT"] = "Test";
+        $_ENV["TEST_PATH"] = "_test";
+
+        (new DotEnv())->load();
+        Container::loadServices();
+
+        /**
+         * @var Manager $manager
+         */
+        $manager = Container::getService("manager");
+
+        $user = (new User())
+            ->setFirstname("Test")
+            ->setLastname("Test")
+            ->setPseudo("Test")
+            ->setEmail("test@test.com")
+            ->setStatus(User::STATUS_CODE_REGISTERED)
+            ->setPassword(password_hash("password", PASSWORD_ARGON2ID));
+
+        $manager->flush($user);
+
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+
+        $auth->authenticate([
+            "email" => $user->getEmail() ?: "",
+            "password" => "password"
+        ]);
+
+        /**
+         * @var Request $request
+         */
+        $request = Container::getService("request");
+        $_COOKIE = $request->getCookie();
+
+        (new Kernel())->run();
+
+        $this->assertNotNull(Auth::$currentUser);
+
+        $session = (new SessionRepository())->findByOne(
+            ["userId" => $user->getId() ?: ""],
+            classObject: Session::class
+        );
+
+        if ($session instanceof Session) {
+            $manager->delete($session);
+        }
+
+        $manager->delete($user);
 
     }
 

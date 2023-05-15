@@ -93,7 +93,7 @@ class UserRepositoryTest extends TestCase
          */
         $user = $userRepo->findByOne(["id" => $id, "lastname" => "User1"]);
 
-        $this->assertEquals(10, count($user));
+        $this->assertEquals(13, count($user));
         $this->assertTrue(is_array($user));
 
         $user = $userRepo->findByOne(["id" => $id], classObject: User::class);
@@ -174,34 +174,37 @@ class UserRepositoryTest extends TestCase
     private function createUser(string $id): void
     {
         static::$nbUser++;
+        $user = (new User)
+            ->setLastname("User".static::$nbUser)
+            ->setFirstname("User".static::$nbUser)
+            ->setPseudo("user".static::$nbUser)
+            ->setPassword(password_hash("test", PASSWORD_ARGON2ID))
+            ->setEmail("test".static::$nbUser."@test.com")
+            ->setCreatedAt(
+                (new DateTime(
+                    "now",
+                    new DateTimeZone("Europe/Paris")
+                ))
+            )
+            ->setExpiredTokenAt();
+
         $statement = $this->pdo->prepare(
             "INSERT INTO ".User::TABLE_NAME.
-            " (`id`, `lastname`, `firstname`, `pseudo`, `password`, `email`, `createdAt`, `role`, `expiredTokenAt`) ".
+            " (`id`, `lastname`, `firstname`, `pseudo`, `password`, `email`, `createdAt`, `role`, `expiredTokenAt`, `status`) ".
             "VALUES".
-            " (:id, :lastname, :firstname, :pseudo, :password, :email, :createdAt, :role, :expiredTokenAt)"
+            " (:id, :lastname, :firstname, :pseudo, :password, :email, :createdAt, :role, :expiredTokenAt, :status)"
         );
 
         $statement->bindValue(":id", $id);
-        $statement->bindValue(":lastname", "User".static::$nbUser);
-        $statement->bindValue(":firstname", "User".static::$nbUser);
-        $statement->bindValue(":pseudo", "user".static::$nbUser);
-        $statement->bindValue(":password", password_hash("test", PASSWORD_ARGON2ID));
-        $statement->bindValue(":email", "test".static::$nbUser."@test.com");
-        $statement->bindValue(
-            ":createdAt",
-            (new DateTime(
-                "now",
-                new DateTimeZone("Europe/Paris")
-            ))->format(DATE_ATOM)
-        );
-        $statement->bindValue(
-            ":expiredTokenAt",
-            (new DateTime(
-                "now",
-                new DateTimeZone("Europe/Paris")
-            ))->format(DATE_ATOM)
-        );
-        $statement->bindValue(":role", "ROLE_USER");
+        $statement->bindValue(":lastname", $user->getLastname());
+        $statement->bindValue(":firstname", $user->getFirstname());
+        $statement->bindValue(":pseudo", $user->getPseudo());
+        $statement->bindValue(":password", $user->getPassword());
+        $statement->bindValue(":email", $user->getEmail());
+        $statement->bindValue(":createdAt", $user->getCreatedAt()->format(DATE_ATOM));
+        $statement->bindValue(":expiredTokenAt", $user->getExpiredTokenAt()->format(DATE_ATOM));
+        $statement->bindValue(":role", $user->getRole());
+        $statement->bindValue(":status", $user->getStatus());
         $statement->execute();
     }
 

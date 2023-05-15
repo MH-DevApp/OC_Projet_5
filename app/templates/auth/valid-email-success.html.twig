@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Email confirmé{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column h-100 w-100 justify-content-center align-items-center">
+        <h1>Email confirmé !</h1>
+        <p class="text-center">
+            Votre adresse email a été validé avec succès.<br>
+            Vous pouvez dès à présent vous identifier sur notre site en cliquant sur ce
+            <a class="link-primary" href="{{ path("app_auth_login") }}">lien</a>.
+        </p>
+    </div>
+{% endblock %}

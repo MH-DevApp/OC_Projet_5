@@ -42,6 +42,7 @@ abstract class AbstractForm
     const ERROR_MIN_LENGTH = "Ce champ doit contenir au minimum %s caractères.";
     const ERROR_MAX_LENGTH = "Ce champ doit contenir au maximum %s caractères.";
     const ERROR_BAD_FORMAT = "%s n'est pas valide.";
+    const ERROR_BAD_ACTUAL_PASSWORD = "Le mot de passe actuel est incorrect.";
     const ERROR_CONFIRM = "Les mots de passe doivent être identiques.";
     const ERROR_UNIQUE = "%s existe déjà.";
 
@@ -189,7 +190,10 @@ abstract class AbstractForm
         ) ?: [];
 
         if ($this->request->getPost("_csrf")) {
-            $this->fields["data"]["_csrf"] = $this->request->getPost("_csrf");
+            $this->fields["data"]["_csrf"] = filter_var(
+                $this->request->getPost("_csrf"),
+                FILTER_SANITIZE_SPECIAL_CHARS
+            );
         }
 
         if ($this->fields["data"] && $this->entity) {
@@ -291,10 +295,18 @@ abstract class AbstractForm
      */
     public function getErrors(): array
     {
+        $errors = [];
+
+        foreach ($this->fields["errors"] as $key => $error) {
+            if (!empty($error)) {
+                $errors[$key] = $error;
+            }
+        }
+
         /**
          * @var array<string, string>
          */
-        return $this->fields["errors"];
+        return $errors;
 
     }
 

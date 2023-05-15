@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Article : {{ post.post_title }}{% endblock %}
+
+{% block body %}
+    <section id="articles-details" class="d-flex flex-column align-items-center">
+        <h3 class="d-flex justify-content-center align-items-center gap-3 bg-dark text-light py-5 px-2 w-100 m-0">
+            <span class="text-center m-0 p-0">{{ post.post_title|unescape|nl2br }}</span>
+        </h3>
+        <div class="row p-2 w-100 my-1 m-0 justify-content-center">
+            <div class="col-12 col-lg-11 col-xl-10 col-xxl-8 p-0 my-2">
+                <a class="btn-link link-secondary text-decoration-none" href="{{ path("app_posts") }}">
+                    <img width="15px" src="{{ asset("images/logos/arrow-left-solid.svg") }}" alt="Logo back" />
+                    <span class="ms-2">Retour à la liste</span>
+                </a>
+            </div>
+            <div class="col-12 col-lg-11 col-xl-10 col-xxl-8 shadow rounded p-3 my-3">
+                <div class="d-flex flex-column align-items-start gap-3 w-100">
+                    <div class="d-flex justify-content-between w-100">
+                        <small class="small fst-italic text-muted">
+                            Rédigé le : {{ post.post_createdAt|date("d/m/Y") }}
+                            par : {{ post.author_pseudo }}
+                        </small>
+                        {% if post.post_updatedAt %}
+                            <small class="small fst-italic text-muted">Mis à jour le : {{ post.post_updatedAt|date("d/m/Y") }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="pb-2 my-3 border-0 border-bottom border-dark w-100">
+                        <h4>{{ post.post_chapo|unescape|nl2br }}</h4>
+                    </div>
+                    <div class="d-flex mb-3 justify-content-between w-100">
+                        <p>{{ post.post_content|unescape|nl2br }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-11 col-xl-10 col-xxl-8 mt-4">
+                <h5 class="border-0 border-bottom border-dark w-100 pb-2">Commentaires :</h5>
+            </div>
+            {% if form %}
+                <div class="col-12 col-lg-11 col-xl-10 col-xxl-8 mt-4 mb-2 pt-2">
+                    <form id="formComment" class="py-3 shadow p-3 bg-dark rounded" method="post">
+                        <div class="form-floating mb-2">
+                            <textarea
+                                class="form-control {% if form.isSubmitted %}{{ form.errors.content is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                                id="content"
+                                name="content"
+                                placeholder="content"
+                                rows="5"
+                            >{{ form.data.content ?? "" }}</textarea>
+                            <label for="content">Message</label>
+                            {% if form.errors and form.errors.content %}
+                                <div class="invalid-feedback">{{ form.errors.content }}</div>
+                            {% endif %}
+                        </div>
+                        <input type="hidden" name="_csrf" value="{{ csrf("comment-form") }}">
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-light">Envoyer</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-12 col-lg-11 col-xl-10 col-xxl-8 mb-2 px-5">
+                    <hr>
+                </div>
+            {% endif %}
+            <div class="col-12 col-lg-11 col-xl-10 col-xxl-8 d-flex flex-column justify-content-center">
+                {% if comments|length > 0 %}
+                    {% for comment in comments %}
+                        {% if comment.isValid or (app.user and comment.author == app.user.pseudo) %}
+                        {% set alertStatus = "light" %}
+                        <div class="row justify-content-center">
+                            <div class="col-12 d-flex flex-column">
+                                {% if (app.user and comment.author == app.user.pseudo) and comment.isValid %}
+                                    {% set alertStatus = "success" %}
+                                {% elseif not comment.isValid %}
+                                    {% set alertStatus = "warning" %}
+                                {% endif %}
+                                <div class="alert alert-{{ alertStatus }} shadow rounded">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex justify-content-start p-2">
+                                            <span>{{ comment.content|unescape|nl2br }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-end small text-muted fst-italic border-0 border-top border-secondary pt-1">
+                                            <span>Rédigé le : {{ comment.createdAt|date("d/m/Y") }} par {{ comment.author }}</span>
+                                            {% if not comment.isValid %}
+                                                <span class="ms-1">(En attente de validation)</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center">Aucun commentaire</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if form and form.isSubmitted %}
+    <script type="text/javascript">
+        window.addEventListener("DOMContentLoaded", () => {
+            const sectionEl = document.getElementById("formComment");
+            const positionY = sectionEl.offsetTop;
+            window.scrollTo(0, positionY);
+        });
+    </script>
+    {% endif %}
+{% endblock %}

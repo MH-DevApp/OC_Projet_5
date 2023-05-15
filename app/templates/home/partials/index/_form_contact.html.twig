@@ -1,0 +1,60 @@
+<section id="contact" class="mt-3 mb-4 p-4">
+    <h2 class="text-light text-center my-5">
+        <img src="{{ asset("images/logos/envelope-solid.svg") }}" alt="Logo envelope">
+        <span>FORMULAIRE DE CONTACT</span>
+    </h2>
+    {% if errors.global is defined %}
+        <div class="col-12 text-center text-danger">{{ errors.global }}</div>
+    {% endif %}
+    <div class="col-12 text-center">
+
+    </div>
+    <div class="col-12 col-md-8 col-xl-6">
+        <form class="py-3 mb-5" method="post">
+            <div class="form-floating mb-4">
+                <input
+                        type="email"
+                        class="form-control {% if submitted %}{{ errors.email is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                        id="email"
+                        name="email"
+                        placeholder="email@email.fr"
+                        value="{{ data.email ?? "" }}"
+                >
+                <label for="email">Email</label>
+                {% if errors.email is defined %}
+                    <div class="invalid-feedback">{{ errors.email }}</div>
+                {% endif %}
+            </div>
+            <div class="form-floating mb-2">
+                <input
+                        type="text"
+                        class="form-control {% if submitted %}{{ errors.subject is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                        id="subject"
+                        name="subject"
+                        placeholder="Titre"
+                        value="{{ data.subject ?? "" }}"
+                >
+                <label for="subject">Titre</label>
+                {% if errors.subject is defined %}
+                    <div class="invalid-feedback">{{ errors.subject }}</div>
+                {% endif %}
+            </div>
+            <div class="form-floating mb-2">
+                    <textarea
+                            class="form-control {% if submitted %}{{ errors.message is defined ? "is-invalid" : "is-valid" }}{% endif %}"
+                            id="message"
+                            name="message"
+                            placeholder="Message"
+                    >{{ data.message ?? "" }}</textarea>
+                <label for="message">Message</label>
+                {% if errors and errors.message %}
+                    <div class="invalid-feedback">{{ errors.message }}</div>
+                {% endif %}
+            </div>
+            <input type="hidden" name="_csrf" value="{{ csrf("contact") }}">
+            <div class="mb-2 text-end">
+                <button type="submit" class="btn btn-light">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</section>

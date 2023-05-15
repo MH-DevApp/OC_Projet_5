@@ -1,0 +1,83 @@
+<button type="button" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#modalPosts"></button>
+
+<div class="modal modal-lg fade" data-modal="showEntities" data-bs-backdrop="static" data-bs-keyboard="false" id="modalPosts" tabindex="-1" data-entity="post" aria-labelledby="modalPosts" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalUsersLabel">Infos Post</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="notification d-flex flex-row justify-content-center w-100">
+
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Auteur : </div>
+                        <div data-col="col-author" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Titre : </div>
+                        <div data-col="col-title" class="col-12 col-sm-8 text-center text-wrap rounded border border-secondary p-2 p-lg-3"></div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Chapo : </div>
+                        <div class="col-12 col-sm-8 text-center text-sm-start rounded border border-secondary p-0">
+                            <textarea readonly class="form-control m-0" rows="3" data-col="col-chapo"></textarea>
+                        </div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Contenu : </div>
+                        <div class="col-12 col-sm-8 d-flex rounded border border-secondary p-0">
+                            <textarea readonly class="form-control disabled m-0" rows="5" data-col="col-content"></textarea>
+                        </div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Publié : </div>
+                        <div class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3">
+                            <span class="badge badge-pill" data-col="col-isPublished"></span>
+                        </div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Mis en avant : </div>
+                        <div class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3">
+                            <span class="badge badge-pill" data-col="col-isFeatured"></span>
+                        </div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Nombre de comments : </div>
+                        <div data-col="col-countComments" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Créé le : </div>
+                        <div data-col="col-createdAt" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
+                    </div>
+                    <div class="row align-items-center m-0 mx-lg-3">
+                        <div class="col-12 col-sm-4 text-center text-sm-end fw-bold">Modifié le : </div>
+                        <div data-col="col-updatedAt" class="col-12 col-sm-8 text-center rounded border border-secondary p-2 p-lg-3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-center justify-content-sm-end w-100">
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-dark"
+                            data-api-url="/admin/post/__ID__/toggle-published"
+                            data-action="update-published"
+                    >
+                        Modifier la publication
+                    </button>
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-dark"
+                            data-api-url="/admin/post/__ID__/toggle-featured"
+                            data-action="update-featured"
+                    >
+                        Modifier la mise en avant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

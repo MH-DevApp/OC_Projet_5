@@ -21,7 +21,10 @@
         "analyse": "vendor/bin/phpstan analyse -l 9 public src tests scripts --xdebug;",
         "make:env": "php scripts/DotEnvScript.php",
         "make:database": "php scripts/DatabaseScript.php",
-        "make:database:test": "TEST_PATH=_test php scripts/DatabaseScript.php"
+        "make:database:test": "TEST_PATH=_test php scripts/DatabaseScript.php",
+        "make:load:fixtures" : [
+            "php scripts/fixtures/Fixtures.php"
+        ]
     },
     "require": {
         "php": ">=8.1",

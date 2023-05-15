@@ -1,0 +1,46 @@
+<div class="d-flex flex-column w-100">
+    <label for="inputSearchEntity" class="small mb-1 fw-bold">Rechercher par :</label>
+    <div class="input-group input-group-sm">
+        <div class="d-flex">
+            <select data-filter data-filter-link="inputSearchEntity" id="selectTypeEntity" class="form-select form-select-sm bg-dark text-light rounded-0 rounded-start" aria-label="Sélectionnez la colonne de recherche">
+                <option value="content" aria-label="Contenu" selected>Contenu</option>
+                <option value="author" aria-label="Auteur">Auteur</option>
+                <option value="titlePost" aria-label="Titre de post">Titre de post</option>
+                <option value="validBy" aria-label="Valideur">Valideur</option>
+            </select>
+        </div>
+        <input data-filter id="inputSearchEntity" type="text" class="form-control form-control-sm">
+    </div>
+    <div class="d-flex mt-2">
+        <button class="btn btn-sm btn-dark btn-filter" type="button" data-bs-toggle="collapse" data-bs-target="#filterContainerCollapse" aria-expanded="false" aria-controls="filterContainer">
+            <img width="15px" src="{{ asset("images/logos/filter-on.svg") }}" alt="Logo filter on" />
+            <span>Filtres</span>
+        </button>
+    </div>
+</div>
+<div class="collapse w-100" id="filterContainerCollapse">
+    <div class="d-flex flex-column flex-lg-row gap-2 gap-lg-5">
+        <div class="d-flex gap-2 justify-content-start align-items-center">
+            <input data-filter type="radio" name="valid-notValid" class="btn-check" id="allComments" autocomplete="off">
+            <label class="btn btn-outline-success btn-sm" for="allComments">
+                <span>Tous</span>
+                <img width="10px" style="filter: invert(1);" src="{{ asset("images/logos/check-solid.svg") }}" alt="Logo check" />
+            </label>
+            <input data-filter type="radio" name="valid-notValid" class="btn-check" id="waiting" checked autocomplete="off">
+            <label class="btn btn-outline-success btn-sm" for="waiting">
+                <span>En attente de validation</span>
+                <img width="10px" style="filter: invert(1);" src="{{ asset("images/logos/check-solid.svg") }}" alt="Logo check" />
+            </label>
+            <input data-filter type="radio" name="valid-notValid" class="btn-check" id="valid" autocomplete="off">
+            <label class="btn btn-outline-success btn-sm" for="valid">
+                <span>Validé</span>
+                <img width="10px" style="filter: invert(1);" src="{{ asset("images/logos/check-solid.svg") }}" alt="Logo check" />
+            </label>
+            <input data-filter type="radio" name="valid-notValid" class="btn-check" id="notValid" autocomplete="off">
+            <label class="btn btn-outline-success btn-sm" for="notValid">
+                <span>Refusé</span>
+                <img width="10px" style="filter: invert(1);" src="{{ asset("images/logos/check-solid.svg") }}" alt="Logo check" />
+            </label>
+        </div>
+    </div>
+</div>

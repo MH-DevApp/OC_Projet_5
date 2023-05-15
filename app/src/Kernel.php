@@ -16,8 +16,10 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Auth\Auth;
 use App\Factory\Router\Response;
 use App\Factory\Router\Router;
+use App\Factory\Twig\Twig;
 use App\Service\Container\Container;
 use App\Service\Container\ContainerInterface;
 use ReflectionException;
@@ -39,6 +41,7 @@ use ReflectionException;
 class Kernel
 {
     private Router $router;
+    private Auth $auth;
 
     /**
      * Construct instance
@@ -48,12 +51,17 @@ class Kernel
     {
         Container::loadServices();
 
-        /** @var Router router */
+        /**
+         * @var Router $router
+         */
         $router = Container::getService("router");
+        $this->router = $router;
 
-        if ($router) {
-            $this->router = $router;
-        }
+        /**
+         * @var Auth $auth
+         */
+        $auth = Container::getService("auth");
+        $this->auth = $auth;
 
     }
 
@@ -67,14 +75,24 @@ class Kernel
      */
     public function run(): Response
     {
+        if ($this->auth->isAuthenticated() && $this->auth::$currentUser) {
+            Twig::setCurrentUser($this->auth::$currentUser);
+        }
+
+        /**
+         * @var array<int, callable> $dispatch
+         */
         $dispatch = $this->router->dispatch();
 
         if ($dispatch) {
-            return $dispatch;
+            /** @var Response $response */
+            $response = call_user_func_array(...$dispatch);
+
+            return $response;
+
         }
 
-        header("HTTP/1.0 404 Not Found");
-        return new Response("", 404);
+        return $this->router->httpNotFound();
 
     }
 
