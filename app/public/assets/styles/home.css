@@ -23,8 +23,9 @@
 }
 
 #presentation .presentation-content {
-    border-radius: 15% 2% 15% 2%;
+    /*border-radius: 15% 2% 15% 2%;*/
     padding: 20px;
+    margin-top: 15px;
     margin-bottom: 15px;
 }
 
@@ -43,10 +44,38 @@
     align-items: center;
     justify-content: center;
     background-color: var(--bs-dark);
-    border-radius: 2% 15% 2% 15%;
+    /*border-radius: 2% 15% 2% 15%;*/
 }
 
 #contact textarea {
     resize: none;
     height: 200px;
+}
+
+.carousel-container {
+    padding: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.carousel-container .carousel-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding: 20px;
+    transition: all ease-in-out 0.3s;
+    color: var(--bs-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    text-decoration: none;
+    background-color: #ececec;
+}
+
+.carousel-container .carousel-card:hover {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+    transform: scale(1.05);
+
 }

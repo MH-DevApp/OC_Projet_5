@@ -23,6 +23,7 @@ use App\Factory\Mailer\Mailer;
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
 use App\Factory\Router\RouterException;
+use App\Repository\PostRepository;
 use PHPMailer\PHPMailer\Exception;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -72,10 +73,13 @@ class HomeController extends AbstractController
 
         }
 
+        $postsFeatured = (new PostRepository())->getFeaturedPostsWithUser();
+
         return $this->render("home/index.html.twig", [
             "data" => $form->getData(),
             "errors" => $form->getErrors(),
-            "submitted" => $form->isSubmitted()
+            "submitted" => $form->isSubmitted(),
+            "postsFeatured" => $postsFeatured
         ]);
     }
 

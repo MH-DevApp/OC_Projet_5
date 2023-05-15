@@ -173,4 +173,29 @@ class PostRepository extends AbstractRepository
     }
 
 
+    /**
+     * Get Featured Posts with User
+     *
+     * @return array<string, string|int>
+     */
+    public function getFeaturedPostsWithUser(): array
+    {
+        $query = "
+            SELECT p.id as `post_id`, p.title as `post_title`, p.chapo as `post_chapo`, p.content as `post_content`, p.createdAt as `post_createdAt`, p.updatedAt as `post_updatedAt`, u.pseudo as `author_pseudo`
+            FROM post as p
+            JOIN user u on p.userId = u.id
+            WHERE p.isFeatured = TRUE
+            ORDER BY p.createdAt DESC
+        ";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->execute();
+
+        /**
+         * @var array<string, string|int>
+         */
+        return $statement->fetchAll() ?: [];
+    }
+
+
 }
