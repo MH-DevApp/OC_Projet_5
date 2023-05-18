@@ -54,7 +54,7 @@ The following PHP extensions need to be installed and enabled :
 3. To run the script for creating the .env and .env_test files:
 
     ```bash
-    > composer run make:env
+    > composer run make:env:local
     ```
 
 4. To modify the values of keys in the .env files:
@@ -128,7 +128,7 @@ Once your Docker configuration is up and ready, you can follow the instructions 
 4. To run the script for creating the .env and .env_test files:
 
     ```bash
-    > composer run make:env
+    > composer run make:env:docker
     ```
 
 5. To modify the values of keys in the .env file as follows:
@@ -156,7 +156,19 @@ Once your Docker configuration is up and ready, you can follow the instructions 
     > docker-compose -f ../docker-compose.dev.yml up -d --build --remove-orphans
     ```
 
-7. To destroy/remove a Docker image, you can use the following command:
+7. To run the script for creating the database and tables, with the condition of deleting the existing database if it already exists:
+
+    ```bash
+    > docker exec -it p5-php-1 composer run make:database
+    ```
+
+8. To load the fixtures for users, posts, and comments:
+
+    ```bash
+    > docker exec -it p5-php-1 composer run make:load:fixtures
+    ```
+
+9. To destroy/remove a Docker image, you can use the following command:
 
     ```bash
     > docker-compose -f ../docker-compose.dev.yml down -v --remove-orphans
