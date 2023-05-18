@@ -1,7 +1,6 @@
 [![SymfonyInsight](https://insight.symfony.com/projects/7a73ff23-8423-4951-bbfe-8d7312c5a691/mini.svg)](https://insight.symfony.com/projects/7a73ff23-8423-4951-bbfe-8d7312c5a691) [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 # P5 OC DAPS - BLOG
-___
 
 The project involved developing a blog in native PHP while adhering to OOP (Object-Oriented Programming), MVC (Model-View-Controller) architecture, and PSR (PHP Standards Recommendations).
 
@@ -9,7 +8,6 @@ The project involved developing a blog in native PHP while adhering to OOP (Obje
 _The folder [v1](https://github.com/MH-DevApp/OC_Projet_5/tree/feature/documentation/diagrams/v1) represents to the design before the start of the project, while the folder [v2](https://github.com/MH-DevApp/OC_Projet_5/tree/feature/documentation/diagrams/v2) represents to the design at the end of the project._
 
 ## Specs
-___
 
 * PHP 8.1
 * Bootstrap 5.2.3
@@ -24,13 +22,11 @@ ___
 The website must be responsive & secured. Code quality assessments done via [SymfonyInsight](https://insight.symfony.com/projects/7a73ff23-8423-4951-bbfe-8d7312c5a691).
 
 ## Install, build and run
-___
 
 First clone or download the source code and extract it.
 
 ### Local webserver
 ___
-
 #### Requirements
 - You need to have composer on your computer
 - Your server needs PHP version 8.1
