@@ -51,14 +51,29 @@ abstract class Container
      */
     public static function loadServices(): void
     {
-        $services = yaml_parse_file(__DIR__.'/../../../config/services.yml');
+        /**
+         * @var array<string, array<string, string>> $services
+         */
+        $services = json_decode(
+            file_get_contents(__DIR__.'/../../../config/services.json') ?: "",
+            true
+        ) ?? "";
 
+        /**
+         * @var class-string $service
+         */
         foreach ($services["services"] as $key => $service) {
             $class = new ReflectionClass($service);
-            static::$containers["services"][$key] = $class->newInstance();
+
+            /**
+             * @var ContainerInterface $newInstance
+             */
+            $newInstance = $class->newInstance();
+
+            self::$containers["services"][$key] = $newInstance;
         }
 
-        static::$containers["services"]["router"] = new Router();
+        self::$containers["services"]["router"] = new Router();
 
     }
 
@@ -72,7 +87,7 @@ abstract class Container
      */
     public static function getService(string $name): ?ContainerInterface
     {
-        return static::$containers["services"][$name];
+        return self::$containers["services"][$name];
 
     }
 
@@ -84,7 +99,7 @@ abstract class Container
      */
     public static function getServices(): array
     {
-        return static::$containers["services"];
+        return self::$containers["services"];
 
     }
 
