@@ -19,7 +19,8 @@
             "XDEBUG_MODE=coverage vendor/bin/phpunit -c phpunit.xml"
         ],
         "analyse": "vendor/bin/phpstan analyse -l 9 public src tests scripts --xdebug;",
-        "make:env": "php scripts/DotEnvScript.php",
+        "make:env:local": "ENV_MODE=local php scripts/DotEnvScript.php",
+        "make:env:docker": "ENV_MODE=docker php scripts/DotEnvScript.php",
         "make:database": "php scripts/DatabaseScript.php",
         "make:database:test": "TEST_PATH=_test php scripts/DatabaseScript.php",
         "make:load:fixtures" : [
