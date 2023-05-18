@@ -1,0 +1,7 @@
+{
+  "services": {
+    "request": "App\\Factory\\Router\\Request",
+    "manager": "App\\Factory\\Manager\\Manager",
+    "auth": "App\\Auth\\Auth"
+  }
+}

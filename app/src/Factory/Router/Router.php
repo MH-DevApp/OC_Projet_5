@@ -57,7 +57,10 @@ class Router implements ContainerInterface
         /**
          * @var array<string, array<int, string>> $controllers
          */
-        $controllers = yaml_parse_file(__DIR__."/../../../config/routes.yml");
+        $controllers = json_decode(
+            file_get_contents(__DIR__."/../../../config/routes.json") ?: "",
+            true
+        ) ?? "";
 
         /**
          * @var class-string $controller
