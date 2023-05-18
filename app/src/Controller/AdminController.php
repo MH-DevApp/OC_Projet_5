@@ -517,6 +517,20 @@ class AdminController extends AbstractController
             return $this->responseHttpNotFound();
         }
 
+        /**
+         * @var array<int, Comment> $comments
+         */
+        $comments = (new CommentRepository())->findBy(
+            ["postId" => $id],
+            [\PDO::FETCH_CLASS, Comment::class]
+        );
+
+        if ($comments && count($comments) > 0) {
+            foreach ($comments as $comment) {
+                $this->manager->delete($comment);
+            }
+        }
+
         $this->manager->delete($post);
 
         return $this->json([
