@@ -60,7 +60,7 @@ class PostRepository extends AbstractRepository
             SELECT p.id as `post_id`, p.title as `post_title`, p.chapo as `post_chapo`,
                    p.content as `post_content`, p.createdAt as `post_createdAt`,
                    p.updatedAt as `post_updatedAt`, u.id as `user_id`, u.lastname as `user_lastname`,
-                   u.firstname as `user_firstname`, u.pseudo as `author_pseudo`, (SELECT COUNT(*) FROM comment as c WHERE c.postId = p.id) as `comment_count`
+                   u.firstname as `user_firstname`, u.pseudo as `author_pseudo`, (SELECT COUNT(*) FROM comment as c WHERE c.postId = p.id AND c.isValid = TRUE) as `comment_count`
             FROM post as p
             JOIN user as u on p.userId = u.id
             WHERE p.isPublished = TRUE
