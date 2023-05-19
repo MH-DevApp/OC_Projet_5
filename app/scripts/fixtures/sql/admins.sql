@@ -1,0 +1,3 @@
+INSERT INTO `user` (`id`, `lastname`, `firstname`, `pseudo`, `password`, `email`, `createdAt`, `role`, `status`, `forgottenPasswordToken`, `expiredTokenAt`, `emailValidateToken`, `expiredEmailTokenAt`) VALUES
+('acbce4b1-8dbe-45dd-a22b-592d9dec7c57', 'Admin', 'Admin', 'Admin', '$argon2id$v=19$m=65536,t=4,p=1$M0U4eEJJMU1DTGdURE1IUg$MNQMcnqkpdLSNqnZoufLQPhwnJLZ8orCNOalEatmrv0', 'admin@p5-oc.fr', '2023-05-01 13:34:43', 'ROLE_ADMIN', 1, NULL, NULL, NULL, '2023-05-19 13:39:43'),
+('b705365a-4d2b-40fd-af2a-5a1faf2b9630', 'Haddou', 'Mehdi', 'Styx', '$argon2id$v=19$m=65536,t=4,p=1$Y2FaNGd4ZDBiNkZmcFJXaw$Vjhh3xCe5ePZLkhHNkvitoFzPKn2mGo4L15bMcftCZQ', 'styx@p5-oc.fr', '2023-03-05 10:18:21', 'ROLE_ADMIN', 1, NULL, NULL, NULL, '2023-05-19 10:23:21');

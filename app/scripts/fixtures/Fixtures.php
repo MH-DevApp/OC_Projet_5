@@ -30,8 +30,6 @@ use App\Repository\PostRepository;
 use App\Repository\SessionRepository;
 use App\Repository\UserRepository;
 use App\Service\Container\Container;
-use DateTime;
-use Exception;
 use PDO;
 use ReflectionException;
 
@@ -155,191 +153,22 @@ echo "## DROP ALL DATA SUCCESSFULLY ##\n\n";
 // Create entities
 echo "## CREATE ENTITIES ##\n";
 
-// Admin and users
+$sql = file_get_contents(__DIR__."/sql/admins.sql");
+$manager->getPDO()->exec($sql);
 
-for ($i=0; $i < 3; $i++) {
-    try {
-        $createdAt = (new DateTime("-".random_int(1, 180)."days"))->format(DATE_ATOM);
-        $password = password_hash("123456", PASSWORD_ARGON2ID);
+$sql = file_get_contents(__DIR__."/sql/users.sql");
+$manager->getPDO()->exec($sql);
 
-        $user = (new User())
-            ->setLastname("Admin".($i===0 ? "" : $i))
-            ->setFirstname("Admin".($i===0 ? "" : $i))
-            ->setPseudo("Admin".($i===0 ? "" : $i))
-            ->setEmail("admin".($i===0 ? "" : $i)."@test.fr")
-            ->setPassword($password)
-            ->setRole("ROLE_ADMIN")
-            ->setStatus(User::STATUS_CODE_REGISTERED);
+echo "- Users with role user has created successfully\n";
 
-        $manager->flush($user);
+$sql = file_get_contents(__DIR__."/sql/posts.sql");
+$manager->getPDO()->exec($sql);
 
-        $user->setCreatedAt($createdAt);
-        $manager->flush($user);
+echo "- Posts has created successfully\n";
 
-    } catch (Exception $e) {
-        echo "$e";
-        return;
-    }
-}
+$sql = file_get_contents(__DIR__."/sql/comments.sql");
+$manager->getPDO()->exec($sql);
 
-echo "- Users with role admin has created successfully (x3)\n";
-
-for ($i=0; $i < 40; $i++) {
-    try {
-        $createdAt = (new DateTime("-".random_int(1, 180)."days"))->format(DATE_ATOM);
-        $password = password_hash("123456", PASSWORD_ARGON2ID);
-
-
-
-        $user = (new User())
-            ->setLastname("User".($i===0 ? "" : $i))
-            ->setFirstname("User".($i===0 ? "" : $i))
-            ->setPseudo("User".($i===0 ? "" : $i))
-            ->setEmail("user".($i===0 ? "" : $i)."@test.fr")
-            ->setPassword($password)
-            ->setStatus(random_int(0, 2));
-
-        $manager->flush($user);
-
-        $user->setCreatedAt($createdAt);
-        $manager->flush($user);
-
-    } catch (Exception $e) {
-        echo "$e";
-        return;
-    }
-}
-
-echo "- Users with role user has created successfully (x40)\n";
-
-// POSTS
-
-/**
- * @var array<int, User>|false
- */
-$users = (new UserRepository())->findBy(
-    ["role" => "ROLE_ADMIN"],
-    [PDO::FETCH_CLASS, User::class]
-);
-
-if ($users) {
-    $countFeatured = 0;
-    for ($i=0; $i < 80; $i++) {
-        try {
-            $user = $users[random_int(0, count($users)-1)];
-            $isPublished = random_int(0, 1) === 1;
-            $isFeatured = $countFeatured < 5 && random_int(0, 1) === 1;
-
-            $countFeatured = $isFeatured ?
-                ++$countFeatured :
-                $countFeatured;
-
-            $createdAt = (new DateTime("-".random_int(1, 180)."days"))->format(DATE_ATOM);
-
-            $post = (new Post())
-                ->setTitle("Post ".($i===0?"":$i))
-                ->setChapo("Chapo ".($i===0?"":$i))
-                ->setContent("Contenu ".($i===0?"":$i))
-                ->setUserId($user->getId() ?? "")
-                ->setIsPublished($isPublished)
-                ->setIsFeatured($isFeatured);
-
-            $manager->flush($post);
-
-            $post->setCreatedAt($createdAt);
-
-            $manager->flush($post);
-
-        } catch (Exception $e) {
-            echo "$e";
-            return;
-        }
-    }
-}
-
-echo "- Posts has created successfully (x80)\n";
-
-// COMMENTS
-
-/**
- * @var array<int, User>|false
- */
-$users = (new UserRepository())->findAll([PDO::FETCH_CLASS, User::class]
-);
-
-/**
- * @var array<int, Post>|false
- */
-$posts = (new PostRepository())->findAll([PDO::FETCH_CLASS, Post::class]);
-
-if ($users && $posts) {
-    for ($i=0; $i < 300; $i++) {
-        try {
-            /**
-             * @var array<int, User> $usersWithRoleUser
-             */
-            $usersWithRoleUser = array_values(array_filter(
-                $users,
-                fn ($user) => $user->getRole() === "ROLE_USER"
-            ));
-
-            $user = $usersWithRoleUser[
-                random_int(
-                    0,
-                    count($usersWithRoleUser) > 0 ?
-                        count($usersWithRoleUser)-1 :
-                        0
-                )
-            ];
-
-            $post = $posts[random_int(0, count($posts)-1)];
-            $isValid = random_int(0, 1) === 1;
-
-            $comment = (new Comment())
-                ->setUserId($user->getId() ?: "")
-                ->setPostId($post->getId() ?: "")
-                ->setContent("Comment ".($i===0?"":$i));
-
-            $manager->flush($comment);
-
-            $createdAt = (new DateTime("-".random_int(1, 180)."days"));
-            $comment->setCreatedAt($createdAt);
-
-            if ($isValid) {
-                $comment->setIsValid(true);
-                /**
-                 * @var array<int, User> $usersWithRoleAdmin
-                 */
-                $usersWithRoleAdmin = array_values(array_filter(
-                    $users,
-                    fn ($user) => $user->getRole() === "ROLE_ADMIN"
-                ));
-
-                $validByUserId = $usersWithRoleAdmin[
-                    random_int(
-                        0,
-                        count($usersWithRoleAdmin) > 0 ?
-                            count($usersWithRoleAdmin)-1 :
-                            0
-                    )
-                ];
-                $validAt = $createdAt;
-                $validAt->add(new \DateInterval("P".random_int(0, 2)."D"));
-
-                $comment->setValidAt($validAt->format(DATE_ATOM));
-                $comment->setValidByUserId($validByUserId->getId() ?: "");
-
-            }
-
-            $manager->flush($comment);
-
-        } catch (Exception $e) {
-            echo "$e";
-            return;
-        }
-    }
-}
-
-echo "- Comments has created successfully (x300)\n";
+echo "- Comments has created successfully\n";
 
 echo "## ENTITIES CREATED SUCCESSFULLY ##\n\n";
