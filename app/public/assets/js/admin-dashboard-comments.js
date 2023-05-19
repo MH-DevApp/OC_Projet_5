@@ -134,20 +134,21 @@ export const initComments = (modal) => {
     const updatedAtModalElement = modal.querySelector("[data-col=col-updatedAt]");
 
     isValidModalElement.addEventListener("DOMSubtreeModified", () => {
+        const btnUpdateIsDecline = modal.querySelector("div.modal-footer button[data-action=update-isDecline]");
         const btnUpdateIsValid = modal.querySelector("div.modal-footer button[data-action=update-isValid]");
 
         if (isValidModalElement.innerHTML === "En attente") {
+            btnUpdateIsDecline.className = "btn btn-sm btn-danger"
+            btnUpdateIsValid.className = "btn btn-sm btn-success";
             isValidModalElement.className = "badge badge-pill bg-warning text-dark p-2";
-            btnUpdateIsValid.innerHTML = "Valider le commentaire";
-            btnUpdateIsValid.className = "btn btn-sm btn-success";
         } else if (isValidModalElement.innerHTML === "Refusé") {
-            isValidModalElement.className = "badge badge-pill bg-danger text-light p-2";
-            btnUpdateIsValid.innerHTML = "Valider le commentaire";
+            btnUpdateIsDecline.className = "d-none btn btn-sm btn-danger"
             btnUpdateIsValid.className = "btn btn-sm btn-success";
+            isValidModalElement.className = "badge badge-pill bg-danger text-light p-2";
         } else {
+            btnUpdateIsDecline.className = "btn btn-sm btn-danger"
+            btnUpdateIsValid.className = "d-none btn btn-sm btn-success";
             isValidModalElement.className = "badge badge-pill bg-dark text-light p-2";
-            btnUpdateIsValid.innerHTML = "Refuser le commentaire";
-            btnUpdateIsValid.className = "btn btn-sm btn-danger";
         }
     });
 
@@ -164,19 +165,19 @@ export const initComments = (modal) => {
                     response,
                     modal.querySelector("div.notification")
                 );
-                if (response.success && response.action === "update-isValid") {
+                if (response.success && response.action === "update-status-comment") {
                     entities.map((entity) => {
                         if (entity["id"] === id) {
-                            entity["isValid"] = entity["isValid"] === 1 ? 0 : 1;
+                            entity["isValid"] = response["updated-details"]["isValid"] ? 1 : 0;
                             entity["validBy"] = response["updated-details"]["validBy"];
                             entity["validAt"] = response["updated-details"]["validAt"];
                             entity["updatedAt"] = response["updated-details"]["updatedAt"];
                         }
                         return entity;
                     });
-                    isValidModalElement.innerHTML = isValidModalElement.textContent === "Validé" ? "Refusé" : "Validé";
+                    isValidModalElement.innerHTML = response["updated-details"]["isValid"] ? "Validé" : "Refusé";
                     validAtModalElement.innerHTML = new Date().toLocaleDateString();
-                    validByModalElement.innerHTML = response["validBy"];
+                    validByModalElement.innerHTML = response["updated-details"]["validBy"];
                     updatedAtModalElement.innerHTML = new Date().toLocaleDateString();
                     filterEntities();
                 }

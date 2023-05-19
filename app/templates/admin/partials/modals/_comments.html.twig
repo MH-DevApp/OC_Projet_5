@@ -54,8 +54,16 @@
                 <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-center justify-content-sm-end w-100">
                     <button
                             type="button"
-                            class="btn btn-sm btn-dark"
-                            data-api-url="/admin/comment/__ID__/toggle-status"
+                            class="d-none btn btn-sm btn-danger"
+                            data-api-url="/admin/comment/decline/__ID__"
+                            data-action="update-isDecline"
+                    >
+                        Refuser le commentaire
+                    </button>
+                    <button
+                            type="button"
+                            class="d-none btn btn-sm btn-success"
+                            data-api-url="/admin/comment/valid/__ID__"
                             data-action="update-isValid"
                     >
                         Valider le commentaire

@@ -298,8 +298,7 @@ if ($users && $posts) {
             $comment = (new Comment())
                 ->setUserId($user->getId() ?: "")
                 ->setPostId($post->getId() ?: "")
-                ->setContent("Comment ".($i===0?"":$i))
-                ->setIsValid($isValid);
+                ->setContent("Comment ".($i===0?"":$i));
 
             $manager->flush($comment);
 
@@ -307,6 +306,7 @@ if ($users && $posts) {
             $comment->setCreatedAt($createdAt);
 
             if ($isValid) {
+                $comment->setIsValid(true);
                 /**
                  * @var array<int, User> $usersWithRoleAdmin
                  */
