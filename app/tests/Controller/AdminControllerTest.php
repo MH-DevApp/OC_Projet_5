@@ -1018,7 +1018,7 @@ class AdminControllerTest extends TestCase
 
 
     /**
-     * Test should be to render json of request of toggle
+     * Test should be to render json of request of update
      * status comment failed.
      *
      * @return void
@@ -1028,8 +1028,8 @@ class AdminControllerTest extends TestCase
      * @throws Exception
      */
     #[Test]
-    #[TestDox("should be to render json of request of toggle status comment failed")]
-    public function itRequestOfToggleStatusCommentFailed(): void
+    #[TestDox("should be to render json of request of update status comment failed")]
+    public function itRequestOfUpdateStatusCommentFailed(): void
     {
         $post = (new Post())
             ->setTitle("Test")
@@ -1066,7 +1066,7 @@ class AdminControllerTest extends TestCase
         $badId = UuidV4::generate();
 
         $_COOKIE = $request->getCookie();
-        $_SERVER["REQUEST_URI"] = "/admin/comment/".$badId."/toggle-status";
+        $_SERVER["REQUEST_URI"] = "/admin/comment/valid/".$badId;
 
         Container::loadServices();
 
@@ -1091,7 +1091,7 @@ class AdminControllerTest extends TestCase
 
 
     /**
-     * Test should be to render json of request of toggle
+     * Test should be to render json of request of update
      * status comment failed.
      *
      * @return void
@@ -1101,8 +1101,8 @@ class AdminControllerTest extends TestCase
      * @throws Exception
      */
     #[Test]
-    #[TestDox("should be to render json of request of status comment success")]
-    public function itRequestOfToggleStatusCommentSuccess(): void
+    #[TestDox("should be to render json of request of update status comment success")]
+    public function itRequestOfUpdateStatusCommentSuccess(): void
     {
         $post = (new Post())
             ->setTitle("Test")
@@ -1138,7 +1138,7 @@ class AdminControllerTest extends TestCase
          */
         $request = Container::getService("request");
         $_COOKIE = $request->getCookie();
-        $_SERVER["REQUEST_URI"] = "/admin/comment/".$id."/toggle-status";
+        $_SERVER["REQUEST_URI"] = "/admin/comment/valid/".$id;
         Container::loadServices();
 
         $response = (new Kernel())->run();
@@ -1167,6 +1167,9 @@ class AdminControllerTest extends TestCase
         $this->assertNotNull($commentUpdated->getValidAt());
         $this->assertNotNull($commentUpdated->getValidByUserId());
         $this->assertEquals($this->user?->getId(), $commentUpdated->getValidByUserId()->getId());
+
+        $_SERVER["REQUEST_URI"] = "/admin/comment/decline/".$id;
+        Container::loadServices();
 
         $response = (new Kernel())->run();
 
