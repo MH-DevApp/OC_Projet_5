@@ -408,12 +408,15 @@ class AdminController extends AbstractController
      * @throws Exception
      */
     #[Route(
-        "/admin/comment/:id/toggle-status",
-        "admin_comment_toggle_status",
-        regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
+        "/admin/comment/:status/:id",
+        "admin_comment_update_status",
+        regexs: [
+            "status" => "(valid|decline)",
+            "id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"
+        ],
         granted: "ROLE_ADMIN"
     )]
-    public function toggleStatusComment(string $id): Response
+    public function updateStatusComment(string $status, string $id): Response
     {
         $commentRepo = new CommentRepository();
 
@@ -435,7 +438,7 @@ class AdminController extends AbstractController
             );
         }
 
-        $comment->setIsValid(!$comment->getIsValid());
+        $comment->setIsValid($status === "valid");
         $comment->setValidByUserId($this->user() ?? "");
 
         $this->manager->flush($comment);
@@ -446,8 +449,9 @@ class AdminController extends AbstractController
                 "message" => "Le commentaire a été ".
                     ($comment->getIsValid() ? "validé" : "refusé").
                     " avec succès.",
-                "action" => "update-isValid",
+                "action" => "update-status-comment",
                 "updated-details" => [
+                    "isValid" => $comment->getIsValid(),
                     "validBy" => $comment->getValidByUserId()?->getPseudo(),
                     "validAt" => $comment->getValidAt()?->format("Y/m/d H:i:s"),
                     "updatedAt" => $comment->getUpdatedAt()?->format("Y/m/d H:i:s")
