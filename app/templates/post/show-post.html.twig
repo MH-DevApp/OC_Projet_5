@@ -46,7 +46,7 @@
                                 name="content"
                                 placeholder="content"
                                 rows="5"
-                            >{{ form.data.content ?? "" }}</textarea>
+                            >{{ form.data.content ? form.data.content|unescape :  "" }}</textarea>
                             <label for="content">Message</label>
                             {% if form.errors and form.errors.content %}
                                 <div class="invalid-feedback">{{ form.errors.content }}</div>
