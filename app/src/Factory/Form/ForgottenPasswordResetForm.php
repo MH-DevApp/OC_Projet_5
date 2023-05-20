@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 /**
  * ForgottenPasswordResetForm class
  *
@@ -44,7 +43,6 @@ final class ForgottenPasswordResetForm extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -69,7 +67,6 @@ final class ForgottenPasswordResetForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 6 || strlen($value) > 20) {
@@ -79,11 +76,9 @@ final class ForgottenPasswordResetForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
-                    if (
-                        !isset($this->fields["data"]["newPassword"]) ||
+                    if (!isset($this->fields["data"]["newPassword"]) ||
                         !isset($this->fields["data"]["confirmNewPassword"]) ||
                         $this->fields["data"]["newPassword"] !== $this->fields["data"]["confirmNewPassword"]
                     ) {
@@ -93,19 +88,14 @@ final class ForgottenPasswordResetForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("confirmNewPassword", options: [
                 "mapped" => false
             ])
         ;
-
     }
-
-
 }

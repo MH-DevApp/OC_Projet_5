@@ -70,7 +70,6 @@ class DotEnvThrowExceptionWithoutParams extends TestCase
         );
 
         (new DotEnv())->load();
-
     }
 
     /**

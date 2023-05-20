@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Repository;
 
-
 use App\Database\Database;
 use App\Entity\User;
 use App\Factory\Utils\DotEnv\DotEnv;
@@ -98,7 +97,6 @@ class UserRepositoryTest extends TestCase
 
         $user = $userRepo->findByOne(["id" => $id], classObject: User::class);
         $this->assertInstanceOf(User::class, $user);
-
     }
 
 
@@ -127,11 +125,9 @@ class UserRepositoryTest extends TestCase
 
         $users = $userRepo->findBy(["role" => "ROLE_USER"], [PDO::FETCH_CLASS, User::class]);
 
-        foreach ($users as $user)
-        {
+        foreach ($users as $user) {
             $this->assertInstanceOf(User::class, $user);
         }
-
     }
 
 
@@ -155,11 +151,9 @@ class UserRepositoryTest extends TestCase
         $users = $userRepo->findAll([PDO::FETCH_CLASS, User::class]);
 
         $this->assertEquals(static::$nbUser, count($users));
-        foreach ($users as $user)
-        {
+        foreach ($users as $user) {
             $this->assertInstanceOf(User::class, $user);
         }
-
     }
 
 
@@ -221,6 +215,4 @@ class UserRepositoryTest extends TestCase
         $statement->bindValue(":status", $user->getStatus());
         $statement->execute();
     }
-
-
 }

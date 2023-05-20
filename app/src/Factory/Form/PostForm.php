@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 use App\Entity\Post;
 use App\Repository\PostRepository;
 
@@ -46,7 +45,6 @@ final class PostForm extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -72,7 +70,6 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 5 || strlen($value) > 255) {
@@ -82,11 +79,9 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("chapo", options: [
@@ -99,7 +94,6 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 5) {
@@ -109,11 +103,9 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("content", options: [
@@ -126,7 +118,6 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 10) {
@@ -136,11 +127,9 @@ final class PostForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("isPublished", options: [
@@ -164,7 +153,6 @@ final class PostForm extends AbstractForm
                     }
 
                     return true;
-
                 }
             ])
             ->addField("isFeatured", options: [
@@ -207,12 +195,8 @@ final class PostForm extends AbstractForm
                     }
 
                     return true;
-
                 }
             ])
         ;
-
     }
-
-
 }

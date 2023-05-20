@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Utils\Uuid;
 
-
 use App\Factory\Utils\Uuid\UuidV4;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -62,6 +61,4 @@ class UuidTest extends TestCase
             $this->assertMatchesRegularExpression("#[a-z\d]+#", $idPart);
         }
     }
-
-
 }

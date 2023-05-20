@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Router;
 
-
 use App\Factory\Router\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -61,7 +60,6 @@ class RouterResponseTest extends TestCase
 
         $this->assertStringContainsString(htmlspecialchars("Test"), $obContent);
         $this->assertEquals(200, http_response_code());
-
     }
 
 
@@ -87,7 +85,6 @@ class RouterResponseTest extends TestCase
 
         $this->assertStringContainsString(htmlspecialchars("Not Found"), $obContent);
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -122,8 +119,5 @@ class RouterResponseTest extends TestCase
 
         $this->assertStringContainsString("{\"name\":\"test\",\"id\":123}", $obContent);
         $this->assertEquals(200, http_response_code());
-
     }
-
-
 }

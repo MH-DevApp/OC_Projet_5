@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-
 use DateTime;
 use Exception;
 
@@ -78,7 +77,6 @@ class User extends AbstractEntity
         if ($this->status === null) {
             $this->setStatus(User::STATUS_CODE_REGISTERED_WAITING);
         }
-
     }
 
     /**
@@ -89,7 +87,6 @@ class User extends AbstractEntity
     public function getLastname(): ?string
     {
         return $this->lastname;
-
     }
 
 
@@ -104,7 +101,6 @@ class User extends AbstractEntity
     {
         $this->lastname = $lastname;
         return $this;
-
     }
 
 
@@ -116,7 +112,6 @@ class User extends AbstractEntity
     public function getFirstname(): ?string
     {
         return $this->firstname;
-
     }
 
 
@@ -131,7 +126,6 @@ class User extends AbstractEntity
     {
         $this->firstname = $firstname;
         return $this;
-
     }
 
 
@@ -143,7 +137,6 @@ class User extends AbstractEntity
     public function getPseudo(): ?string
     {
         return $this->pseudo;
-
     }
 
 
@@ -158,7 +151,6 @@ class User extends AbstractEntity
     {
         $this->pseudo = $pseudo;
         return $this;
-
     }
 
 
@@ -170,7 +162,6 @@ class User extends AbstractEntity
     public function getPassword(): ?string
     {
         return $this->password;
-
     }
 
 
@@ -186,7 +177,6 @@ class User extends AbstractEntity
     {
         $this->password = $password;
         return $this;
-
     }
 
 
@@ -198,7 +188,6 @@ class User extends AbstractEntity
     public function getEmail(): ?string
     {
         return $this->email;
-
     }
 
 
@@ -213,7 +202,6 @@ class User extends AbstractEntity
     {
         $this->email = $email;
         return $this;
-
     }
 
 
@@ -225,7 +213,6 @@ class User extends AbstractEntity
     public function getRole(): ?string
     {
         return $this->role;
-
     }
 
 
@@ -240,7 +227,6 @@ class User extends AbstractEntity
     {
         $this->role = $role;
         return $this;
-
     }
 
 
@@ -252,7 +238,6 @@ class User extends AbstractEntity
     public function getStatus(): ?int
     {
         return $this->status;
-
     }
 
 
@@ -267,7 +252,6 @@ class User extends AbstractEntity
     {
         $this->status = $status;
         return $this;
-
     }
 
 
@@ -281,7 +265,6 @@ class User extends AbstractEntity
     public function getCreatedAt(): DateTime|string|null
     {
         return $this->createdAt;
-
     }
 
 
@@ -302,7 +285,6 @@ class User extends AbstractEntity
 
         $this->createdAt = $createdAt;
         return $this;
-
     }
 
 
@@ -315,7 +297,6 @@ class User extends AbstractEntity
     public function getEmailValidateToken(): ?string
     {
         return $this->emailValidateToken;
-
     }
 
 
@@ -331,7 +312,6 @@ class User extends AbstractEntity
     {
         $this->emailValidateToken = $token;
         return $this;
-
     }
 
 
@@ -345,7 +325,6 @@ class User extends AbstractEntity
     public function getExpiredEmailTokenAt(): DateTime|string|null
     {
         return $this->expiredEmailTokenAt;
-
     }
 
 
@@ -367,7 +346,6 @@ class User extends AbstractEntity
         $this->expiredEmailTokenAt = $date;
 
         return $this;
-
     }
 
 
@@ -380,7 +358,6 @@ class User extends AbstractEntity
     public function getForgottenPasswordToken(): ?string
     {
         return $this->forgottenPasswordToken;
-
     }
 
 
@@ -396,7 +373,6 @@ class User extends AbstractEntity
     {
         $this->forgottenPasswordToken = $token;
         return $this;
-
     }
 
 
@@ -410,7 +386,6 @@ class User extends AbstractEntity
     public function getExpiredTokenAt(): DateTime|string|null
     {
         return $this->expiredTokenAt;
-
     }
 
 
@@ -431,8 +406,5 @@ class User extends AbstractEntity
         $this->expiredTokenAt = $date;
 
         return $this;
-
     }
-
-
 }

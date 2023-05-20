@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Service\Container;
 
-
 use App\Auth\Auth;
 use App\Factory\Manager\Manager;
 use App\Factory\Router\Request;
@@ -73,8 +72,5 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Manager::class, Container::getService("manager"));
         $this->assertInstanceOf(Auth::class, Container::getService("auth"));
         $this->assertInstanceOf(Router::class, Container::getService("router"));
-
     }
-
-
 }

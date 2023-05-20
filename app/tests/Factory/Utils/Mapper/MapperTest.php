@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Utils\Mapper;
 
-
 use App\Entity\Post;
 use App\Factory\Utils\Mapper\Mapper;
 use App\Factory\Utils\Uuid\UuidV4;
@@ -96,7 +95,6 @@ class MapperTest extends TestCase
 
         $entity = Mapper::mapArrayToEntity([], UuidV4::class);
         $this->assertNull($entity);
-
     }
 
 
@@ -147,8 +145,5 @@ class MapperTest extends TestCase
         $array = Mapper::mapEntityToArray(new UuidV4());
 
         $this->assertNull($array);
-
     }
-
-
 }

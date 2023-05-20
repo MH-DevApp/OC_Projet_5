@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 use App\Auth\Auth;
 use App\Entity\User;
 use App\Factory\Form\ConnexionForm;
@@ -95,7 +94,6 @@ class AuthController extends AbstractController
             "errors" => $form->getErrors(),
             "submitted" => $form->isSubmitted()
         ]);
-
     }
 
 
@@ -118,7 +116,6 @@ class AuthController extends AbstractController
         $form->handleRequest();
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $tokenEmail = UuidV4::generate();
 
             /**
@@ -172,7 +169,6 @@ class AuthController extends AbstractController
             (new Mailer())->send($email);
 
             return $this->render("auth/register-success.html.twig");
-
         }
 
         return $this->render("auth/register.html.twig", [
@@ -180,7 +176,6 @@ class AuthController extends AbstractController
             "errors" => $form->getErrors(),
             "submitted" => $form->isSubmitted()
         ]);
-
     }
 
 
@@ -202,11 +197,9 @@ class AuthController extends AbstractController
         if ($this->user() && $request->hasCookie("session")) {
             $request->setCookie("session", "", time() - 1);
             Auth::$currentUser = null;
-
         }
 
         return $this->redirectTo("app_home");
-
     }
 
 
@@ -327,7 +320,6 @@ class AuthController extends AbstractController
             "errors" => $form->getErrors(),
             "submitted" => $form->isSubmitted()
         ]);
-
     }
 
 
@@ -343,7 +335,8 @@ class AuthController extends AbstractController
     #[Route(
         "/auth/forgotten-password",
         "app_auth_forgotten_password",
-        methods: ["GET", "POST"])
+        methods: ["GET", "POST"]
+    )
     ]
     public function forgottenPassword(): Response
     {
@@ -414,7 +407,6 @@ class AuthController extends AbstractController
             return $this->render("auth/forgotten-password-send-email.html.twig", [
                 "email" => $email
             ]);
-
         }
 
 
@@ -423,7 +415,6 @@ class AuthController extends AbstractController
             "errors" => $form->getErrors(),
             "submitted" => $form->isSubmitted()
         ]);
-
     }
 
 
@@ -462,12 +453,10 @@ class AuthController extends AbstractController
 
         if (!$user || !Csrf::isTokenCsrfValid($user->getForgottenPasswordToken() ?: "", $token)) {
             return $this->responseHttpNotFound();
-
         }
 
         if ($user->getExpiredTokenAt() < new DateTime("now")) {
             return $this->render("auth/forgotten-password-token-expired.html.twig");
-
         }
 
         $form = new ForgottenPasswordResetForm();
@@ -511,7 +500,6 @@ class AuthController extends AbstractController
             (new Mailer())->send($emailTemplate);
             
             return $this->redirectTo("app_auth_login");
-
         }
 
 
@@ -520,8 +508,5 @@ class AuthController extends AbstractController
             "errors" => $form->getErrors(),
             "submitted" => $form->isSubmitted()
         ]);
-
     }
-
-
 }

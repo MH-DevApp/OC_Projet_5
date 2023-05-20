@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-
 use App\Repository\UserRepository;
 use DateTime;
 use Exception;
@@ -71,7 +70,6 @@ class Comment extends AbstractEntity
     public function getUserId(): ?string
     {
         return $this->userId;
-
     }
 
 
@@ -86,7 +84,6 @@ class Comment extends AbstractEntity
     {
         $this->userId = $userId;
         return $this;
-
     }
 
 
@@ -98,7 +95,6 @@ class Comment extends AbstractEntity
     public function getPostId(): ?string
     {
         return $this->postId;
-
     }
 
 
@@ -113,7 +109,6 @@ class Comment extends AbstractEntity
     {
         $this->postId = $postId;
         return $this;
-
     }
 
 
@@ -125,7 +120,6 @@ class Comment extends AbstractEntity
     public function getContent(): ?string
     {
         return $this->content;
-
     }
 
 
@@ -140,7 +134,6 @@ class Comment extends AbstractEntity
     {
         $this->content = $commentContent;
         return $this;
-
     }
 
 
@@ -152,7 +145,6 @@ class Comment extends AbstractEntity
     public function getIsValid(): bool
     {
         return $this->isValid ?? false;
-
     }
 
 
@@ -168,7 +160,6 @@ class Comment extends AbstractEntity
         $this->setValidAt();
         $this->isValid = $isValid;
         return $this;
-
     }
 
 
@@ -193,11 +184,9 @@ class Comment extends AbstractEntity
             if (!$user) {
                 $user = null;
             }
-
         }
 
         return $user;
-
     }
 
 
@@ -216,7 +205,6 @@ class Comment extends AbstractEntity
 
         $this->validByUserId = $validByUserId;
         return $this;
-
     }
 
 
@@ -233,7 +221,6 @@ class Comment extends AbstractEntity
         }
 
         return null;
-
     }
 
 
@@ -248,14 +235,12 @@ class Comment extends AbstractEntity
     {
         if ($validAt instanceof DateTime) {
             $validAt = $validAt->format(DATE_ATOM);
-
-        } else if ($validAt === null) {
+        } elseif ($validAt === null) {
             $validAt = (new DateTime('now'))->format(DATE_ATOM);
         }
 
         $this->validAt = $validAt;
         return $this;
-
     }
 
 
@@ -269,7 +254,6 @@ class Comment extends AbstractEntity
     public function getCreatedAt(): DateTime|string|null
     {
         return $this->createdAt;
-
     }
 
 
@@ -286,13 +270,12 @@ class Comment extends AbstractEntity
     {
         if (is_string($createdAtComment)) {
             $createdAtComment = new DateTime($createdAtComment);
-        } else if ($createdAtComment === null) {
+        } elseif ($createdAtComment === null) {
             $createdAtComment = new DateTime("now");
         }
 
         $this->createdAt = $createdAtComment;
         return $this;
-
     }
 
 
@@ -307,12 +290,11 @@ class Comment extends AbstractEntity
     {
         if (is_string($this->updatedAt)) {
             return new DateTime($this->updatedAt);
-        } else if ($this->updatedAt instanceof DateTime) {
+        } elseif ($this->updatedAt instanceof DateTime) {
             return $this->updatedAt;
         }
 
         return null;
-
     }
 
 
@@ -329,14 +311,11 @@ class Comment extends AbstractEntity
     {
         if (is_string($updatedAtComment)) {
             $updatedAtComment = new DateTime($updatedAtComment);
-        } else if ($updatedAtComment === null) {
+        } elseif ($updatedAtComment === null) {
             $updatedAtComment = new DateTime("now");
         }
 
         $this->updatedAt = $updatedAtComment;
         return $this;
-
     }
-
-
 }

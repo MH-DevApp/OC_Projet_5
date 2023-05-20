@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Entity;
 
-
 use App\Entity\AbstractEntity;
 use App\Entity\Comment;
 use App\Entity\Post;
@@ -117,7 +116,6 @@ class EntityTest extends TestCase
         $user->setRole("ROLE_ADMIN");
 
         $this->assertEquals("ROLE_ADMIN", $user->getRole());
-
     }
 
 
@@ -142,7 +140,6 @@ class EntityTest extends TestCase
 
         $this->assertEquals($idSession, $session->getId());
         $this->assertEquals($idUser, $session->getUserId());
-
     }
 
 
@@ -185,7 +182,6 @@ class EntityTest extends TestCase
         $this->assertEquals("Content of test", $post->getContent());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $post->getCreatedAt());
         $this->assertEquals(new DateTime($updatedAt->format(DATE_ATOM)), $post->getUpdatedAt());
-
     }
 
 
@@ -227,8 +223,5 @@ class EntityTest extends TestCase
         $this->assertEquals("Content of test", $comment->getContent());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $comment->getCreatedAt());
         $this->assertEquals(new DateTime($updatedAt->format(DATE_ATOM)), $comment->getUpdatedAt());
-
     }
-
-
 }

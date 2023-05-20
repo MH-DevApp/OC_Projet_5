@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 use App\Auth\Auth;
 use App\Entity\User;
 use App\Factory\Router\Response;
@@ -51,7 +50,6 @@ abstract class AbstractController
          */
         $router = Container::getService("router");
         $this->router = $router;
-
     }
 
 
@@ -63,7 +61,6 @@ abstract class AbstractController
     protected function user(): ?User
     {
         return Auth::$currentUser;
-
     }
 
 
@@ -84,14 +81,12 @@ abstract class AbstractController
         string $path,
         array $params = [],
         int $statusCode = 200
-    ): Response
-    {
+    ): Response {
         $twig = new Twig();
         return new Response(
             $twig->getTwig()->render($path, $params),
             $statusCode
         );
-
     }
 
 
@@ -106,14 +101,12 @@ abstract class AbstractController
     protected function json(
         array $value,
         int $statusCode = 200
-    ): Response
-    {
+    ): Response {
         return new Response(
             json_encode($value) ?: "",
             $statusCode,
             ["Content-Type: application/json; charset=utf-8"]
         );
-
     }
 
 
@@ -132,14 +125,12 @@ abstract class AbstractController
         string $name,
         array $params = [],
         bool $isAbsolute = false
-    ): string
-    {
+    ): string {
         return $this->router->generateUrl(
             $name,
             $params,
             $isAbsolute
         );
-
     }
 
 
@@ -156,13 +147,11 @@ abstract class AbstractController
     public function redirectTo(
         string $name,
         array $params = []
-    ): Response
-    {
+    ): Response {
         return $this->router->redirectTo(
             $name,
             $params
         );
-
     }
 
 
@@ -174,7 +163,6 @@ abstract class AbstractController
     public function responseHttpNotFound(): Response
     {
         return $this->router->httpNotFound();
-
     }
 
 
@@ -186,8 +174,5 @@ abstract class AbstractController
     public function responseHttpForbidden(): Response
     {
         return $this->router->httpForbidden();
-
     }
-
-
 }

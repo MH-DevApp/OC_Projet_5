@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Utils\DotEnv;
 
-
 use App\Factory\Router\Request;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Before;
@@ -116,7 +115,6 @@ class RouterRequestTest extends TestCase
         // Delete cookie
         $request->setCookie("name", "", time() - 1);
         $this->assertFalse($request->hasCookie("name"));
-
     }
 
     /**

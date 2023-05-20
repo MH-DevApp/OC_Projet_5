@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Router;
 
-
 use App\Service\Container\Container;
 use App\Service\Container\ContainerInterface;
 use ReflectionClass;
@@ -83,7 +82,6 @@ class Router implements ContainerInterface
                 }
             }
         }
-
     }
 
 
@@ -99,7 +97,6 @@ class Router implements ContainerInterface
             $this->routes[$method][] = $route;
             $this->namedRoutes[$route->getName()] = $route;
         }
-
     }
 
 
@@ -141,7 +138,6 @@ class Router implements ContainerInterface
         }
 
         return false;
-
     }
 
 
@@ -160,8 +156,7 @@ class Router implements ContainerInterface
         string $name,
         array $params = [],
         bool $isAbsolute = false
-    ): string
-    {
+    ): string {
         if (!isset($this->namedRoutes[$name])) {
             throw new RouterException("The route $name doesn't exists, please check this name.");
         }
@@ -170,7 +165,6 @@ class Router implements ContainerInterface
             $params,
             $isAbsolute
         );
-
     }
 
 
@@ -187,8 +181,7 @@ class Router implements ContainerInterface
     public function redirectTo(
         string $name,
         array $params = []
-    ): Response
-    {
+    ): Response {
         $url = $this->generateUrl($name, $params);
 
         return new Response(
@@ -196,7 +189,6 @@ class Router implements ContainerInterface
             302,
             ["Location: $url"]
         );
-
     }
 
 
@@ -228,6 +220,4 @@ class Router implements ContainerInterface
             ["HTTP/1.1 403 Forbidden"]
         );
     }
-
-
 }

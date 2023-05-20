@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Mailer;
 
-
 use App\Factory\Router\Request;
 use App\Service\Container\Container;
 use PHPMailer\PHPMailer\Exception;
@@ -60,7 +59,6 @@ class Mailer
         $this->serverSMTP->CharSet = "UTF-8";
         $this->serverSMTP->Host = $host;
         $this->serverSMTP->Port = $port;
-
     }
 
 
@@ -69,7 +67,8 @@ class Mailer
      *
      * @throws Exception
      */
-    public function send(Email $email): bool {
+    public function send(Email $email): bool
+    {
 
         try {
             $this->serverSMTP->setFrom($email->getFrom(), "Mailer");
@@ -80,13 +79,8 @@ class Mailer
             $this->serverSMTP->send();
 
             return true;
-
         } catch (Exception $exception) {
             throw new Exception("Email could not be send, try again.");
-
         }
-
     }
-
-
 }

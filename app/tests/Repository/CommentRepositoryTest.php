@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Repository;
 
-
 use App\Database\Database;
 use App\Entity\Comment;
 use App\Entity\Post;
@@ -92,7 +91,8 @@ class CommentRepositoryTest extends TestCase
          * @var User $user
          */
         $user = (new UserRepository())
-            ->findByOne(["lastname" => "User1"],
+            ->findByOne(
+                ["lastname" => "User1"],
                 classObject: User::class
             );
 
@@ -101,7 +101,8 @@ class CommentRepositoryTest extends TestCase
          * @var Post $post
          */
         $post = (new PostRepository())
-            ->findByOne(["userId" => $user->getId() ?? ""],
+            ->findByOne(
+                ["userId" => $user->getId() ?? ""],
                 classObject: Post::class
             );
 
@@ -132,8 +133,5 @@ class CommentRepositoryTest extends TestCase
         $comment = (new CommentRepository())->findByOne(["id" => $idComment], classObject: Comment::class);
 
         $this->assertInstanceOf(Comment::class, $comment);
-
     }
-
-
 }

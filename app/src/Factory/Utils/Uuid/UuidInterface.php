@@ -33,5 +33,4 @@ interface UuidInterface
 {
 
     public static function generate(): string;
-
 }

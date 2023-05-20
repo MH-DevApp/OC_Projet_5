@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 use App\Auth\Auth;
 
 /**
@@ -46,7 +45,6 @@ final class ProfileResetPasswordForm extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -71,7 +69,6 @@ final class ProfileResetPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     /**
@@ -79,8 +76,7 @@ final class ProfileResetPasswordForm extends AbstractForm
                      */
                     $currentUserPassword = Auth::$currentUser?->getPassword();
 
-                    if (
-                        !$currentUserPassword ||
+                    if (!$currentUserPassword ||
                         !password_verify($value, $currentUserPassword)
                     ) {
                         $this->setError(
@@ -89,11 +85,9 @@ final class ProfileResetPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("newResetPassword", options: [
@@ -105,7 +99,6 @@ final class ProfileResetPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 6 || strlen($value) > 20) {
@@ -115,11 +108,9 @@ final class ProfileResetPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
-                    if (
-                        !isset($this->fields["data"]["newResetPassword"]) ||
+                    if (!isset($this->fields["data"]["newResetPassword"]) ||
                         !isset($this->fields["data"]["confirmNewResetPassword"]) ||
                         $this->fields["data"]["newResetPassword"] !== $this->fields["data"]["confirmNewResetPassword"]
                     ) {
@@ -129,19 +120,14 @@ final class ProfileResetPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("confirmNewResetPassword", options: [
                 "mapped" => false
             ])
         ;
-
     }
-
-
 }

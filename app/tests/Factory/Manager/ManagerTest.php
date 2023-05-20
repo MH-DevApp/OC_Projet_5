@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Manager;
 
-
 use App\Entity\AbstractEntity;
 use App\Entity\Post;
 use App\Entity\User;
@@ -84,7 +83,6 @@ class ManagerTest extends TestCase
     public function endTests(): void
     {
         $this->deleteEntity($this->user);
-
     }
 
 
@@ -110,7 +108,6 @@ class ManagerTest extends TestCase
         $this->assertNotNull($entity);
 
         $this->deleteEntity($post);
-
     }
 
 
@@ -147,7 +144,6 @@ class ManagerTest extends TestCase
             $this->assertNotNull($entity);
             $this->deleteEntity($post);
         }
-
     }
 
 
@@ -178,7 +174,6 @@ class ManagerTest extends TestCase
         $this->assertNotNull($entity);
 
         $this->deleteEntity($post);
-
     }
 
 
@@ -201,7 +196,6 @@ class ManagerTest extends TestCase
         $entity = $this->createMock(AbstractEntity::class);
 
         $this->manager->flush($entity);
-
     }
 
 
@@ -224,7 +218,6 @@ class ManagerTest extends TestCase
         $entity = new UuidV4();
 
         $this->manager->flush($entity);
-
     }
 
 
@@ -241,7 +234,6 @@ class ManagerTest extends TestCase
             ->setTitle("Test Manager ".$this->countEntity)
             ->setChapo("Test Manager ".$this->countEntity)
             ->setContent("Test Manager ".$this->countEntity);
-
     }
 
 
@@ -258,7 +250,6 @@ class ManagerTest extends TestCase
             ->setPseudo("Test Manager ")
             ->setPassword("Test Manager")
             ->setEmail("test@test.com");
-
     }
 
 
@@ -272,8 +263,5 @@ class ManagerTest extends TestCase
     public function deleteEntity(object $entity): void
     {
         $this->manager->delete($entity);
-
     }
-
-
 }

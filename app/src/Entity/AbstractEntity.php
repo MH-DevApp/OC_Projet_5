@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-
 /**
  * Abstract Entity class
  *
@@ -43,7 +42,6 @@ abstract class AbstractEntity
     public function getId(): ?string
     {
         return $this->id;
-
     }
 
 
@@ -58,8 +56,5 @@ abstract class AbstractEntity
     {
         $this->id = $id;
         return $this;
-
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 /**
  * ContactForm class
  *
@@ -53,7 +52,6 @@ final class ContactForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -63,7 +61,6 @@ final class ContactForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
@@ -79,7 +76,6 @@ final class ContactForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 5 || strlen($value) > 120) {
@@ -89,11 +85,9 @@ final class ContactForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("message", options: [
@@ -106,7 +100,6 @@ final class ContactForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 10) {
@@ -116,16 +109,11 @@ final class ContactForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
         ;
-
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 use App\Entity\Post;
 use App\Repository\PostRepository;
 
@@ -46,7 +45,6 @@ final class CommentForm extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -72,7 +70,6 @@ final class CommentForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) > 1024) {
@@ -82,16 +79,11 @@ final class CommentForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
         ;
-
     }
-
-
 }

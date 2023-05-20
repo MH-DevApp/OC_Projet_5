@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Utils\Csrf;
 
-
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\DotEnv\DotEnv;
 use App\Service\Container\Container;
@@ -77,8 +76,5 @@ class CsrfTest extends TestCase
         $this->assertIsString($token);
         $this->assertTrue(Csrf::isTokenCsrfValid($token, "Test"));
         $this->assertFalse(Csrf::isTokenCsrfValid($token, "test"));
-
     }
-
-
 }

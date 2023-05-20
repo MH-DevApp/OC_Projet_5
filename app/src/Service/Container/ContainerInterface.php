@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Service\Container;
 
-
 /**
  * Container interface.
  * Interface for all services

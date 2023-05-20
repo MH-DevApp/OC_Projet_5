@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Repository;
 
-
 use App\Database\Database;
 use App\Entity\Session;
 use App\Entity\User;
@@ -101,8 +100,5 @@ class SessionRepositoryTest extends TestCase
         $session = (new SessionRepository())->findByOne(["id" => $idSession], classObject: Session::class);
 
         $this->assertInstanceOf(Session::class, $session);
-
     }
-
-
 }

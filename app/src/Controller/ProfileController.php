@@ -48,7 +48,6 @@ class ProfileController extends AbstractController
     public function __construct()
     {
         parent::__construct();
-
     }
 
 
@@ -113,8 +112,5 @@ class ProfileController extends AbstractController
             "errors" => $form->getErrors(),
             "submitted" => $form->isSubmitted()
         ]);
-
     }
-
-
 }

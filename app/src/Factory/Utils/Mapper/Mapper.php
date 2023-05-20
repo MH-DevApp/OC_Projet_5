@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Utils\Mapper;
 
-
 use App\Entity\AbstractEntity;
 use DateTime;
 use ReflectionClass;
@@ -48,8 +47,7 @@ abstract class Mapper
     public static function mapArrayToEntity(
         array $obj,
         string|object $entity
-    ): ?object
-    {
+    ): ?object {
         if (class_exists(is_string($entity) ? $entity : $entity::class)) {
             $entity = is_string($entity) ?
                 new $entity() :
@@ -57,7 +55,6 @@ abstract class Mapper
 
             if (!$entity instanceof AbstractEntity) {
                 return null;
-
             }
 
             foreach ($obj as $key => $value) {
@@ -69,18 +66,14 @@ abstract class Mapper
                         if (method_exists($entity, $method)) {
                             $entity->$method($value);
                         }
-
                     }
-
                 }
             }
 
             return $entity;
-
         }
 
         return null;
-
     }
 
 
@@ -107,25 +100,19 @@ abstract class Mapper
 
                     if ($value instanceof DateTime) {
                         $value = $value->format(DATE_ATOM);
-                    } else if (is_bool($value)) {
+                    } elseif (is_bool($value)) {
                         $value = $value ? 1 : 0;
-                    } else if ($value instanceof AbstractEntity) {
+                    } elseif ($value instanceof AbstractEntity) {
                         $value = $value->getId();
                     }
 
                     $obj[$props->getName()] = $value;
-
                 }
-
             }
 
             return $obj;
-
         }
 
         return null;
-
     }
-
-
 }

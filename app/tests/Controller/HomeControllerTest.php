@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Controller;
 
-
 use App\Controller\AbstractController;
 use App\Controller\HomeController;
 use App\Factory\Form\ContactForm;
@@ -90,7 +89,6 @@ class HomeControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $content);
-
     }
 
 
@@ -157,7 +155,6 @@ class HomeControllerTest extends TestCase
             "<div class=\"invalid-feedback\">Ce champ doit contenir au minimum 10 caractères.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -193,7 +190,6 @@ class HomeControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(302, http_response_code());
-
     }
 
 
@@ -208,7 +204,9 @@ class HomeControllerTest extends TestCase
      * @throws ReflectionException
      */
     #[Test]
-    #[TestDox("should be to use generateUrl, redirectTo, httpNotFound and httpForbidden response in AbstractController")]
+    #[TestDox(
+        "should be to use generateUrl, redirectTo, httpNotFound and httpForbidden response in AbstractController"
+    )]
     public function itSomeFunctionsAbstractController(): void
     {
         $_SERVER["REQUEST_METHOD"] = "GET";
@@ -258,8 +256,5 @@ class HomeControllerTest extends TestCase
         $this->expectExceptionMessage("The route app_bad_route doesn't exists, please check this name.");
 
         $controller->generateUrl("app_bad_route");
-
     }
-
-
 }

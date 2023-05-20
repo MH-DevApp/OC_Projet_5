@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests;
 
-
 use App\Auth\Auth;
 use App\Entity\Session;
 use App\Entity\User;
@@ -93,7 +92,6 @@ class KernelTest extends TestCase
 
         $this->assertEquals(200, http_response_code());
         $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $content);
-
     }
 
 
@@ -117,7 +115,6 @@ class KernelTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -188,8 +185,5 @@ class KernelTest extends TestCase
         }
 
         $manager->delete($user);
-
     }
-
-
 }

@@ -74,7 +74,6 @@ abstract class Container
         }
 
         self::$containers["services"]["router"] = new Router();
-
     }
 
 
@@ -88,7 +87,6 @@ abstract class Container
     public static function getService(string $name): ?ContainerInterface
     {
         return self::$containers["services"][$name];
-
     }
 
 
@@ -100,8 +98,5 @@ abstract class Container
     public static function getServices(): array
     {
         return self::$containers["services"];
-
     }
-
-
 }

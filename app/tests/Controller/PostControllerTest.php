@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Controller;
 
-
 use App\Controller\AbstractController;
 use App\Controller\PostController;
 use App\Entity\Post;
@@ -139,7 +138,6 @@ class PostControllerTest extends TestCase
             "<p>Aucun article n'a été rédigé</p>",
             $content
         );
-
     }
 
 
@@ -165,7 +163,6 @@ class PostControllerTest extends TestCase
         preg_match_all("#(<article class=\"card shadow h-100\">){1}#", $content, $matches);
 
         $this->assertCount(5, $matches[0]);
-
     }
 
 
@@ -203,7 +200,6 @@ class PostControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -258,6 +254,4 @@ class PostControllerTest extends TestCase
 
         $this->manager->flush(...$this->posts);
     }
-
-
 }

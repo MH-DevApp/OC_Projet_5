@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-
 use App\Entity\User;
 
 /**
@@ -46,7 +45,6 @@ class UserRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct(User::class);
-
     }
 
 
@@ -81,8 +79,5 @@ class UserRepository extends AbstractRepository
         $statement->execute();
 
         return $statement->fetchAll() ?: [];
-
     }
-
-
 }

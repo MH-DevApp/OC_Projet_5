@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 use App\Entity\Comment;
 use App\Factory\Form\CommentForm;
 use App\Factory\Form\FormException;
@@ -56,7 +55,6 @@ class PostController extends AbstractController
     {
         parent::__construct();
         $this->postRepository = new PostRepository();
-
     }
 
 
@@ -73,7 +71,6 @@ class PostController extends AbstractController
         return $this->render("post/show-posts.html.twig", [
             "posts" => $posts
         ]);
-
     }
 
 
@@ -85,7 +82,8 @@ class PostController extends AbstractController
      * @throws Exception
      */
     #[Route(
-        "/post/:id", "app_post_details",
+        "/post/:id",
+        "app_post_details",
         regexs: ["id" => "(\w){8}((\-){1}(\w){4}){3}(\-){1}(\w){12}"],
         methods: ["GET", "POST"]
     )]
@@ -128,7 +126,6 @@ class PostController extends AbstractController
                 $manager->flush($comment);
 
                 return $this->redirectTo("app_post_details", ["id" => $postId]);
-
             }
 
             $form = [
@@ -144,6 +141,4 @@ class PostController extends AbstractController
             "form" => $form
         ]);
     }
-
-
 }

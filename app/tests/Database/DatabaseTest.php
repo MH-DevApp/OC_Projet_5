@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Database;
 
-
 use App\Database\Database;
 use App\Database\DatabaseException;
 use App\Factory\Utils\DotEnv\DotEnv;
@@ -66,7 +65,6 @@ class DatabaseTest extends TestCase
         $this->pdo = (new Database())->connect();
 
         $this->assertNotNull($this->pdo);
-
     }
 
 
@@ -87,7 +85,6 @@ class DatabaseTest extends TestCase
         $_ENV["DB_DNS"] = "mysql:host=127.0.0.1:3001;dbname=test";
         Container::loadServices();
         $this->pdo = (new Database())->connect();
-
     }
 
 
@@ -112,8 +109,5 @@ class DatabaseTest extends TestCase
         $_ENV["DB_DNS"] = "mysql:host=127.0.0.1:3001;";
         Container::loadServices();
         new Database();
-
     }
-
-
 }

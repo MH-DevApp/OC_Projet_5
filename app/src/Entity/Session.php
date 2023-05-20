@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -48,7 +47,6 @@ class Session extends AbstractEntity
     public function getUserId(): ?string
     {
         return $this->userId;
-
     }
 
 
@@ -63,8 +61,5 @@ class Session extends AbstractEntity
     {
         $this->userId = $userId;
         return $this;
-
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-
 use App\Entity\AbstractEntity;
 use App\Factory\Manager\Manager;
 use App\Service\Container\Container;
@@ -49,7 +48,6 @@ abstract class AbstractRepository
         /** @var Manager $manager */
         $manager = Container::getService("manager");
         $this->pdo = $manager->getPDO();
-
     }
 
 
@@ -76,11 +74,9 @@ abstract class AbstractRepository
 
         if ($mode && $classObject) {
             return $statement->fetchAll($mode, $classObject);
-
         }
 
         return $statement->fetchAll();
-
     }
 
 
@@ -120,11 +116,9 @@ abstract class AbstractRepository
 
         if ($mode && $classObject) {
             return $statement->fetchAll($mode, $classObject);
-
         }
 
         return $statement->fetchAll();
-
     }
 
     /**
@@ -159,7 +153,6 @@ abstract class AbstractRepository
         }
 
         return $statement->fetch();
-
     }
 
 
@@ -184,8 +177,5 @@ abstract class AbstractRepository
         }
 
         return $query;
-
     }
-
-
 }

@@ -62,7 +62,6 @@ class Kernel
          */
         $auth = Container::getService("auth");
         $this->auth = $auth;
-
     }
 
     /**
@@ -89,12 +88,8 @@ class Kernel
             $response = call_user_func_array(...$dispatch);
 
             return $response;
-
         }
 
         return $this->router->httpNotFound();
-
     }
-
-
 }
