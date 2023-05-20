@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Controller;
 
-
 use App\Auth\Auth;
 use App\Controller\AbstractController;
 use App\Controller\ProfileController;
@@ -102,7 +101,6 @@ class ProfileControllerTest extends TestCase
             ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
             ->setEmail("test@test.fr");
         $this->manager->flush($this->user);
-
     }
 
 
@@ -126,7 +124,6 @@ class ProfileControllerTest extends TestCase
         }
 
         $this->manager->delete($this->user);
-
     }
 
 
@@ -148,7 +145,6 @@ class ProfileControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -191,7 +187,6 @@ class ProfileControllerTest extends TestCase
             "<title>P5 DAPS BLOG - Mon profil</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -283,7 +278,6 @@ class ProfileControllerTest extends TestCase
             "<div class=\"invalid-feedback\">La confirmation du mot de passe n'est pas identique.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -345,8 +339,5 @@ class ProfileControllerTest extends TestCase
         );
 
         $this->assertTrue(password_verify("123456", $user->getPassword() ?? ""));
-
     }
-
-
 }

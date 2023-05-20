@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Twig;
 
-
 use App\Factory\Twig\Twig;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -54,6 +53,4 @@ class TwigTest extends TestCase
         $this->assertInstanceOf(Twig::class, $twig);
         $this->assertInstanceOf(Environment::class, $twig->getTwig());
     }
-
-
 }

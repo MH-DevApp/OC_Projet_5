@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Mailer;
 
-
 use App\Factory\Mailer\Email;
 use App\Factory\Mailer\Mailer;
 use App\Factory\Utils\DotEnv\DotEnv;
@@ -69,7 +68,6 @@ class MailerTest extends TestCase
 
         $this->assertInstanceOf(Mailer::class, $mailer);
         $this->assertTrue($statusMailer);
-
     }
 
 
@@ -98,8 +96,5 @@ class MailerTest extends TestCase
 
         $mailer = new Mailer();
         $mailer->send($email);
-
     }
-
-
 }

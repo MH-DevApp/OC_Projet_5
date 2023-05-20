@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-
 use DateTime;
 use Exception;
 
@@ -70,7 +69,6 @@ class Post extends AbstractEntity
     public function getUserId(): ?string
     {
         return $this->userId;
-
     }
 
 
@@ -85,7 +83,6 @@ class Post extends AbstractEntity
     {
         $this->userId = $userId;
         return $this;
-
     }
 
 
@@ -97,7 +94,6 @@ class Post extends AbstractEntity
     public function getTitle(): ?string
     {
         return $this->title;
-
     }
 
 
@@ -112,7 +108,6 @@ class Post extends AbstractEntity
     {
         $this->title = $title;
         return $this;
-
     }
 
 
@@ -124,7 +119,6 @@ class Post extends AbstractEntity
     public function getChapo(): ?string
     {
         return $this->chapo;
-
     }
 
 
@@ -139,7 +133,6 @@ class Post extends AbstractEntity
     {
         $this->chapo = $chapo;
         return $this;
-
     }
 
 
@@ -151,7 +144,6 @@ class Post extends AbstractEntity
     public function getContent(): ?string
     {
         return $this->content;
-
     }
 
 
@@ -166,7 +158,6 @@ class Post extends AbstractEntity
     {
         $this->content = $contentPost;
         return $this;
-
     }
 
 
@@ -178,7 +169,6 @@ class Post extends AbstractEntity
     public function getIsPublished(): bool
     {
         return $this->isPublished ?? false;
-
     }
 
 
@@ -193,7 +183,6 @@ class Post extends AbstractEntity
     {
         $this->isPublished = $isPublished;
         return $this;
-
     }
 
 
@@ -205,7 +194,6 @@ class Post extends AbstractEntity
     public function getIsFeatured(): bool
     {
         return $this->isFeatured ?? false;
-
     }
 
 
@@ -220,7 +208,6 @@ class Post extends AbstractEntity
     {
         $this->isFeatured = $isFeatured;
         return $this;
-
     }
 
 
@@ -234,7 +221,6 @@ class Post extends AbstractEntity
     public function getCreatedAt(): DateTime|string|null
     {
         return $this->createdAt;
-
     }
 
 
@@ -255,7 +241,6 @@ class Post extends AbstractEntity
 
         $this->createdAt = $createdAtPost;
         return $this;
-
     }
 
 
@@ -269,7 +254,6 @@ class Post extends AbstractEntity
     public function getUpdatedAt(): DateTime|string|null
     {
         return $this->updatedAt;
-
     }
 
 
@@ -290,8 +274,5 @@ class Post extends AbstractEntity
 
         $this->updatedAt = $updatedAtPost;
         return $this;
-
     }
-
-
 }

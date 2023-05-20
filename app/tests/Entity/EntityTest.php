@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Entity;
 
-
 use App\Entity\AbstractEntity;
 use App\Entity\Comment;
 use App\Entity\Post;
@@ -97,13 +96,26 @@ class EntityTest extends TestCase
         $this->assertEquals("Token", $user->getForgottenPasswordToken());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $user->getCreatedAt());
         $this->assertTrue(password_verify("TEST", $user->getPassword() ?? ""));
-        $this->assertEquals($expiredAt, $user->getExpiredTokenAt()?->format(DATE_ATOM) ?? "");
-        $this->assertEquals($expiredAt, $user->getExpiredEmailTokenAt()?->format(DATE_ATOM) ?? "");
+        $this->assertEquals(
+            $expiredAt,
+            $user->getExpiredTokenAt() ?
+                $user->getExpiredTokenAt() instanceof DateTime ?
+                    $user->getExpiredTokenAt()->format(DATE_ATOM) :
+                    $user->getExpiredTokenAt() :
+                ""
+        );
+        $this->assertEquals(
+            $expiredAt,
+            $user->getExpiredEmailTokenAt() ?
+                $user->getExpiredEmailTokenAt() instanceof DateTime ?
+                    $user->getExpiredEmailTokenAt()->format(DATE_ATOM) :
+                    $user->getExpiredEmailTokenAt() :
+                ""
+        );
 
         $user->setRole("ROLE_ADMIN");
 
         $this->assertEquals("ROLE_ADMIN", $user->getRole());
-
     }
 
 
@@ -128,7 +140,6 @@ class EntityTest extends TestCase
 
         $this->assertEquals($idSession, $session->getId());
         $this->assertEquals($idUser, $session->getUserId());
-
     }
 
 
@@ -171,7 +182,6 @@ class EntityTest extends TestCase
         $this->assertEquals("Content of test", $post->getContent());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $post->getCreatedAt());
         $this->assertEquals(new DateTime($updatedAt->format(DATE_ATOM)), $post->getUpdatedAt());
-
     }
 
 
@@ -213,8 +223,5 @@ class EntityTest extends TestCase
         $this->assertEquals("Content of test", $comment->getContent());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $comment->getCreatedAt());
         $this->assertEquals(new DateTime($updatedAt->format(DATE_ATOM)), $comment->getUpdatedAt());
-
     }
-
-
 }

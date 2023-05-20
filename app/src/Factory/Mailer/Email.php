@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Mailer;
 
-
 use App\Factory\Twig\Twig;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -51,7 +50,6 @@ class Email
     public function getFrom(): string
     {
         return $this->from;
-
     }
 
 
@@ -66,7 +64,6 @@ class Email
     {
         $this->from = $from;
         return $this;
-
     }
 
 
@@ -79,7 +76,6 @@ class Email
     public function getTo(): string
     {
         return $this->to;
-
     }
 
 
@@ -94,7 +90,6 @@ class Email
     {
         $this->to = $to;
         return $this;
-
     }
 
 
@@ -106,7 +101,6 @@ class Email
     public function getSubject(): string
     {
         return $this->subject;
-
     }
 
 
@@ -121,7 +115,6 @@ class Email
     {
         $this->subject = $subject;
         return $this;
-
     }
 
 
@@ -133,7 +126,6 @@ class Email
     public function getBody(): string
     {
         return $this->body;
-
     }
 
 
@@ -148,7 +140,6 @@ class Email
     {
         $this->body = $body;
         return $this;
-
     }
 
     /**
@@ -168,6 +159,4 @@ class Email
 
         return $this;
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\User;
@@ -86,7 +85,6 @@ class AdminController extends AbstractController
         return $this->redirectTo("app_admin_page", [
             "page" => "users"
         ]);
-
     }
 
 
@@ -110,13 +108,11 @@ class AdminController extends AbstractController
     {
         if (!in_array($page, self::PAGES_DASHBOARD)) {
             return $this->responseHttpNotFound();
-
         }
 
         return $this->render("admin/dashboard.html.twig", [
             "page" => $page
         ]);
-
     }
 
     /**
@@ -132,7 +128,6 @@ class AdminController extends AbstractController
     {
         if (!in_array($page, self::PAGES_DASHBOARD)) {
             return $this->responseHttpNotFound();
-
         }
 
         /**
@@ -529,7 +524,7 @@ class AdminController extends AbstractController
             [\PDO::FETCH_CLASS, Comment::class]
         );
 
-        if ($comments && count($comments) > 0) {
+        if (!empty($comments)) {
             foreach ($comments as $comment) {
                 $this->manager->delete($comment);
             }
@@ -541,7 +536,6 @@ class AdminController extends AbstractController
             "success" => true,
             "message" => "Le post a été supprimé avec succès."
         ]);
-
     }
 
 
@@ -586,7 +580,6 @@ class AdminController extends AbstractController
                 "post" => $entity,
                 "formType" => $id === null ? "created-post" : "updated-post"
             ]);
-
         }
 
         return $this->json([
@@ -594,6 +587,4 @@ class AdminController extends AbstractController
             "errors" => $form->getErrors()
         ]);
     }
-
-
 }

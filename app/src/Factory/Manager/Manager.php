@@ -54,7 +54,6 @@ class Manager implements ContainerInterface
     {
 
         $this->pdo = (new Database())->connect();
-
     }
 
 
@@ -66,7 +65,6 @@ class Manager implements ContainerInterface
     public function getPDO(): PDO
     {
         return $this->pdo;
-
     }
 
 
@@ -96,7 +94,6 @@ class Manager implements ContainerInterface
 
             if ($action === "CREATE") {
                 $entity->setId(UuidV4::generate());
-
             }
 
             $this->tasks[] = [
@@ -119,7 +116,6 @@ class Manager implements ContainerInterface
     {
         if ($entities) {
             $this->persist(...$entities);
-
         }
 
         foreach ($this->tasks as $task) {
@@ -141,16 +137,13 @@ class Manager implements ContainerInterface
                 if ($arrayEntity) {
                     $this->createEntity($arrayEntity, $entity::TABLE_NAME);
                 }
-
             } else {
-                if (
-                    !$this->isInCreateTasksOfList($entity) &&
+                if (!$this->isInCreateTasksOfList($entity) &&
                     method_exists($entity, "setUpdatedAt")
                 ) {
                     $entity->setUpdatedAt(
                         new DateTime("now")
                     );
-
                 }
 
                 $arrayEntity = Mapper::mapEntityToArray($entity);
@@ -158,7 +151,6 @@ class Manager implements ContainerInterface
                 if ($arrayEntity) {
                     $this->updateEntity($arrayEntity, $entity::TABLE_NAME);
                 }
-
             }
         }
 
@@ -169,7 +161,7 @@ class Manager implements ContainerInterface
     /**
      * Create an entity in the db
      *
-     * @param array<string, string|int> $obj
+     * @param array<string, string|int|bool> $obj
      * @param string $tableName
      *
      * @return void
@@ -192,7 +184,6 @@ class Manager implements ContainerInterface
             }
 
             $statement->bindValue(":val_".$key, $value);
-
         }
 
         $statement->execute();
@@ -202,7 +193,7 @@ class Manager implements ContainerInterface
     /**
      * Update an entity in the DB by ID
      *
-     * @param array<string, string|int> $obj
+     * @param array<string, string|int|bool> $obj
      * @param string $tableName
      *
      * @return void
@@ -219,8 +210,10 @@ class Manager implements ContainerInterface
         $query .= join(
             ", ",
             array_map(
-                fn ($key) => $key." = :".$key, $keys
-            ));
+                fn ($key) => $key." = :".$key,
+                $keys
+            )
+        );
         $query .= " WHERE id = :id";
 
         $statement = $this->pdo->prepare($query);
@@ -234,11 +227,9 @@ class Manager implements ContainerInterface
             }
 
             $statement->bindValue(":".$key, $value);
-
         }
 
         $statement->execute();
-
     }
 
 
@@ -261,7 +252,6 @@ class Manager implements ContainerInterface
         $statement = $this->pdo->prepare($query);
         $statement->bindValue(":id", $entity->getId());
         $statement->execute();
-
     }
 
 
@@ -284,10 +274,7 @@ class Manager implements ContainerInterface
 
                 return $task["action"] === "CREATE" &&
                     $entityTask->getId() === $entity->getId();
-
-            })) > 0;
-
+            })
+        ) > 0;
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Database;
 
-
 use App\Factory\Router\Request;
 use App\Service\Container\Container;
 use PDO;
@@ -51,7 +50,6 @@ class Database
     public function __construct()
     {
         $this->init();
-
     }
 
 
@@ -95,7 +93,6 @@ class Database
 
         $this->user = $user;
         $this->pwd = $pwd;
-
     }
 
 
@@ -110,8 +107,5 @@ class Database
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
-
     }
-
-
 }

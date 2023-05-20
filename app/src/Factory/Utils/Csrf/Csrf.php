@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Utils\Csrf;
 
-
 use App\Factory\Router\Request;
 use App\Service\Container\Container;
 
@@ -64,13 +63,11 @@ abstract class Csrf
          */
         $httpUserAgent = $request->getServer("HTTP_USER_AGENT");
 
-        if (
-            !$secretKey ||
+        if (!$secretKey ||
             !$remoteAddr ||
             !$httpUserAgent
         ) {
             return false;
-
         }
 
         return hash_hmac(
@@ -95,8 +92,7 @@ abstract class Csrf
     public static function isTokenCsrfValid(
         string $token,
         string $key
-    ): bool
-    {
+    ): bool {
         $tokenKey = self::generateTokenCsrf($key);
 
         if ($tokenKey) {
@@ -107,8 +103,5 @@ abstract class Csrf
         }
 
         return false;
-
     }
-
-
 }

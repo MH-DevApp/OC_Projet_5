@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 use App\Entity\User;
 use App\Repository\UserRepository;
 
@@ -49,7 +48,6 @@ final class RegisterForm extends AbstractForm
     {
         parent::__construct($entity);
         $this->userRepository = new UserRepository();
-
     }
 
 
@@ -75,7 +73,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 2 || strlen($value) > 50) {
@@ -85,11 +82,9 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("firstname", options: [
@@ -102,7 +97,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 2 || strlen($value) > 50) {
@@ -112,11 +106,9 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("pseudo", options: [
@@ -129,7 +121,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 2 || strlen($value) > 50) {
@@ -139,7 +130,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     $user = $this->userRepository->findByOne(
@@ -154,11 +144,9 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("email", options: [
@@ -171,7 +159,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -181,7 +168,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     $user = $this->userRepository->findByOne(
@@ -196,7 +182,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
@@ -211,7 +196,6 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 6 || strlen($value) > 20) {
@@ -221,11 +205,9 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
-                    if (
-                        !isset($this->fields["data"]["password"]) ||
+                    if (!isset($this->fields["data"]["password"]) ||
                         !isset($this->fields["data"]["confirmPassword"]) ||
                         $this->fields["data"]["password"] !== $this->fields["data"]["confirmPassword"]
                     ) {
@@ -235,19 +217,14 @@ final class RegisterForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField("confirmPassword", options: [
                 "mapped" => false
             ])
         ;
-
     }
-
-
 }

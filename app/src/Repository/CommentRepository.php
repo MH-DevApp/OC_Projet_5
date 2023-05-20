@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-
 use App\Entity\Comment;
 
 /**
@@ -46,7 +45,6 @@ class CommentRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct(Comment::class);
-
     }
 
 
@@ -93,6 +91,4 @@ class CommentRepository extends AbstractRepository
 
         return $statement->fetchAll() ?: [];
     }
-
-
 }

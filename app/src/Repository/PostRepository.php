@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-
 use App\Entity\Post;
 
 /**
@@ -45,7 +44,6 @@ class PostRepository extends AbstractRepository
     public function __construct()
     {
         parent::__construct(Post::class);
-
     }
 
 
@@ -71,7 +69,6 @@ class PostRepository extends AbstractRepository
         $statement->execute();
 
         return $statement->fetchAll() ?: [];
-
     }
 
 
@@ -196,6 +193,4 @@ class PostRepository extends AbstractRepository
          */
         return $statement->fetchAll() ?: [];
     }
-
-
 }

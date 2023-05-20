@@ -58,8 +58,8 @@ class Route
     public function __construct(
         private string $path,
         private readonly string $name,
-        private array $regexs=[],
-        private readonly array $methods=["GET"],
+        private array $regexs = [],
+        private readonly array $methods = ["GET"],
         private string $granted = ""
     ) {
         $this->path = trim($this->path, "/");
@@ -68,7 +68,6 @@ class Route
         foreach ($this->regexs as $key => $value) {
             $this->regexs[$key] = str_replace('(', '(?:', $value);
         }
-
     }
 
 
@@ -111,8 +110,7 @@ class Route
          */
         $auth = Container::getService("auth");
 
-        if (
-            $this->granted &&
+        if ($this->granted &&
             (
                 !$auth::$currentUser ||
                 !array_filter(
@@ -129,7 +127,6 @@ class Route
         $this->params = $matches;
 
         return true;
-
     }
 
 
@@ -149,14 +146,13 @@ class Route
 
         // Return default regex value.
         return '([^/]+)';
-
     }
 
 
     /**
      * Make url with the name and params and return string.
      *
-     * @param array $params
+     * @param array<string, string> $params
      * @param bool $isAbsolute
      *
      * @return string
@@ -164,8 +160,7 @@ class Route
     public function makeUrl(
         array $params,
         bool $isAbsolute = false
-    ): string
-    {
+    ): string {
         $path = $this->path;
 
         foreach ($params as $k => $v) {
@@ -198,7 +193,6 @@ class Route
     public function getPath(): string
     {
         return $this->path;
-
     }
 
 
@@ -210,7 +204,6 @@ class Route
     public function getName(): string
     {
         return $this->name;
-
     }
 
 
@@ -223,7 +216,6 @@ class Route
     public function getMethods(): array
     {
         return $this->methods;
-
     }
 
 
@@ -235,7 +227,6 @@ class Route
     public function getParams(): array
     {
         return $this->params;
-
     }
 
 
@@ -247,7 +238,6 @@ class Route
     public function getControllerName(): string
     {
         return $this->controllerName;
-
     }
 
 
@@ -261,7 +251,6 @@ class Route
     public function setControllerName(string $name): void
     {
         $this->controllerName = $name;
-
     }
 
 
@@ -273,7 +262,6 @@ class Route
     public function getAction(): string
     {
         return $this->action;
-
     }
 
 
@@ -287,8 +275,5 @@ class Route
     public function setAction(string $action): void
     {
         $this->action = $action;
-
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Router;
 
-
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
 use App\Factory\Router\Router;
@@ -56,7 +55,6 @@ class RouterTest extends TestCase
     public function init(): void
     {
         $_ENV["TEST_PATH"] = "_test";
-
     }
 
 
@@ -101,7 +99,6 @@ class RouterTest extends TestCase
 
         $this->assertEquals(200, http_response_code());
         $this->assertStringContainsString("<title>P5 DAPS BLOG - Homepage</title>", $obContent);
-
     }
 
 
@@ -132,7 +129,6 @@ class RouterTest extends TestCase
 
         $this->assertFalse($dispatch);
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -162,8 +158,5 @@ class RouterTest extends TestCase
 
         $this->assertFalse($dispatch);
         $this->assertEquals(500, http_response_code());
-
     }
-
-
 }

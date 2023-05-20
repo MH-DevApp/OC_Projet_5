@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 /**
  * ForgottenPasswordForm class
  *
@@ -44,7 +43,6 @@ final class ForgottenPasswordForm extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -70,7 +68,6 @@ final class ForgottenPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -80,15 +77,11 @@ final class ForgottenPasswordForm extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
                 }
             ])
         ;
-
     }
-
-
 }

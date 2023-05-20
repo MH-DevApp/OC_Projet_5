@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Mailer;
 
-
 use App\Factory\Mailer\Email;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -63,9 +62,5 @@ class EmailTest extends TestCase
 
         $this->assertEquals("test@test.com", $email->getFrom());
         $this->assertEquals("test@test.com", $email->getTo());
-
-
     }
-
-
 }

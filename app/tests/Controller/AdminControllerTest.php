@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Controller;
 
-
 use App\Auth\Auth;
 use App\Controller\AbstractController;
 use App\Controller\AdminController;
@@ -101,7 +100,6 @@ class AdminControllerTest extends TestCase
         $this->manager = $manager;
 
         $this->createUser();
-
     }
 
     /**
@@ -132,7 +130,6 @@ class AdminControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -185,7 +182,6 @@ class AdminControllerTest extends TestCase
             "TABLEAU DE BORD - USERS",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -226,7 +222,6 @@ class AdminControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -267,7 +262,6 @@ class AdminControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -344,7 +338,6 @@ class AdminControllerTest extends TestCase
         $this->assertIsArray($content);
         $this->assertTrue($content["success"]);
         $this->assertEquals(0, count($content["entities"]));
-
     }
 
 
@@ -415,7 +408,6 @@ class AdminControllerTest extends TestCase
             "Impossible de modifier le status de votre compte.",
             $content["message"]
         );
-
     }
 
 
@@ -516,7 +508,6 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($newUser->getStatus() === User::STATUS_CODE_REGISTERED);
 
         $this->manager->delete($newUser);
-
     }
 
 
@@ -587,7 +578,6 @@ class AdminControllerTest extends TestCase
             "Impossible de modifier le role de votre compte.",
             $content["message"]
         );
-
     }
 
 
@@ -674,7 +664,6 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($newUser->getRole() === "ROLE_USER");
 
         $this->manager->delete($newUser);
-
     }
 
 
@@ -758,7 +747,6 @@ class AdminControllerTest extends TestCase
         );
 
         $this->manager->delete($newPost);
-
     }
 
 
@@ -829,7 +817,6 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($postUpdated->getIsPublished());
 
         $this->manager->delete($newPost);
-
     }
 
 
@@ -941,7 +928,6 @@ class AdminControllerTest extends TestCase
         foreach ($posts as $post) {
             $this->manager->delete($post);
         }
-
     }
 
 
@@ -1013,7 +999,6 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($postUpdated->getIsFeatured());
 
         $this->manager->delete($newPost);
-
     }
 
 
@@ -1086,7 +1071,6 @@ class AdminControllerTest extends TestCase
 
         $this->manager->delete($comment);
         $this->manager->delete($post);
-
     }
 
 
@@ -1200,7 +1184,6 @@ class AdminControllerTest extends TestCase
 
         $this->manager->delete($commentUpdated);
         $this->manager->delete($post);
-
     }
 
 
@@ -1351,8 +1334,6 @@ class AdminControllerTest extends TestCase
         foreach ($posts as $post) {
             $this->manager->delete($post);
         }
-
-
     }
 
 
@@ -1420,7 +1401,6 @@ class AdminControllerTest extends TestCase
         $this->assertEquals($post->getId() ?? "", $content["post"]["id"] ?? null);
 
         $this->manager->delete($post);
-
     }
 
 
@@ -1521,7 +1501,6 @@ class AdminControllerTest extends TestCase
         foreach ($posts as $post) {
             $this->manager->delete($post);
         }
-
     }
 
 
@@ -1565,7 +1544,6 @@ class AdminControllerTest extends TestCase
         $response->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -1599,7 +1577,15 @@ class AdminControllerTest extends TestCase
             ->setIsPublished(true)
             ->setIsFeatured(true);
 
-        $this->manager->flush($post);
+        $this->manager->persist($post);
+
+        $comment = (new Comment())
+            ->setContent("Test")
+            ->setPostId($post->getId() ?? "")
+            ->setUserId($this->user?->getId() ?? "");
+
+        $this->manager->persist($comment);
+        $this->manager->flush();
 
         /**
          * @var Request $request
@@ -1624,7 +1610,6 @@ class AdminControllerTest extends TestCase
 
         $this->assertTrue($content["success"]);
         $this->assertEquals("Le post a été supprimé avec succès.", $content["message"]);
-
     }
 
 
@@ -1673,8 +1658,5 @@ class AdminControllerTest extends TestCase
 
             $this->manager->delete($this->user);
         }
-
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Auth;
 
-
 use App\Auth\Auth;
 use App\Entity\Session;
 use App\Entity\User;
@@ -89,7 +88,6 @@ class AuthTest extends TestCase
             ->setPassword(password_hash("password", PASSWORD_ARGON2ID))
             ->setEmail("test@test.com");
         $this->manager->flush($this->user);
-
     }
 
 
@@ -115,7 +113,6 @@ class AuthTest extends TestCase
         }
 
         $this->manager->delete($this->user);
-
     }
 
 
@@ -158,7 +155,6 @@ class AuthTest extends TestCase
         $this->assertNotNull($currentUser);
         $this->assertInstanceOf(User::class, $currentUser);
         $this->assertEquals($this->user->getId(), $currentUser->getId());
-
     }
 
 
@@ -199,7 +195,6 @@ class AuthTest extends TestCase
 
         $currentUser = Auth::$currentUser;
         $this->assertNull($currentUser);
-
     }
 
 
@@ -280,7 +275,6 @@ class AuthTest extends TestCase
             );
 
         $this->assertFalse($session);
-
     }
 
 
@@ -341,10 +335,5 @@ class AuthTest extends TestCase
 
         $this->assertFalse($auth->isAuthenticated());
         $this->assertEmpty($request->getCookie("session"));
-
-
-
     }
-
-
 }

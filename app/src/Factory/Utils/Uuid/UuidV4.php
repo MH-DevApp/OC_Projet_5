@@ -48,5 +48,4 @@ class UuidV4 implements UuidInterface
             str_split(bin2hex($data), 4)
         );
     }
-
 }

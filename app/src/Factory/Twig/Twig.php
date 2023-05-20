@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Twig;
 
-
 use App\Entity\User;
 use App\Factory\Router\Router;
 use App\Factory\Utils\Csrf\Csrf;
@@ -60,7 +59,8 @@ class Twig
     {
         $loader = new FilesystemLoader(__DIR__."/../../../templates");
         $this->twig = new Environment(
-            $loader, [
+            $loader,
+            [
                 "cache" => false,
                 "debug" => true,
                 "strict_variables" => true
@@ -72,7 +72,6 @@ class Twig
         $this->twig->addFunction($this->getAssetsFolder());
         $this->twig->addFilter($this->unescape());
         $this->twig->addGlobal("app", self::$app);
-
     }
 
 
@@ -85,7 +84,6 @@ class Twig
     public function getTwig(): Environment
     {
         return $this->twig;
-
     }
 
 
@@ -99,7 +97,6 @@ class Twig
     public static function setCurrentUser(User $user): void
     {
         self::$app["user"] = $user;
-
     }
 
 
@@ -115,7 +112,7 @@ class Twig
     {
         return new TwigFunction(
             "csrf",
-            function(string $key) {
+            function (string $key) {
                 $csrfToken = Csrf::generateTokenCsrf($key);
 
                 if (!$csrfToken) {
@@ -125,7 +122,6 @@ class Twig
                 return $csrfToken;
             }
         );
-
     }
 
 
@@ -147,10 +143,8 @@ class Twig
                 $router = Container::getService("router");
 
                 return $router->generateUrl($name, $params);
-
             }
         );
-
     }
 
 
@@ -167,10 +161,8 @@ class Twig
                 $path = trim($path, "/");
 
                 return "/assets/".$path;
-
             }
         );
-
     }
 
 
@@ -185,11 +177,7 @@ class Twig
             "unescape",
             function (string $value): string {
                 return html_entity_decode($value);
-
             }
         );
-
     }
-
-
 }

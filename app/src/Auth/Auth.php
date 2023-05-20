@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Auth;
 
-
 use App\Entity\Session;
 use App\Entity\User;
 use App\Factory\Manager\Manager;
@@ -73,7 +72,6 @@ class Auth implements ContainerInterface
         $this->manager = $manager;
         $this->request = $request;
         $this->sessionRepository = new SessionRepository();
-
     }
 
 
@@ -92,42 +90,35 @@ class Auth implements ContainerInterface
              */
             $user = (new UserRepository())
                 ->findByOne(
-                    ["email" => $credentials["email"]]
-                    , classObject: User::class
+                    ["email" => $credentials["email"]],
+                    classObject: User::class
                 );
 
-            if (
-                $user &&
+            if ($user &&
                 $user->getStatus() === User::STATUS_CODE_REGISTERED &&
                 password_verify(
                     $credentials["password"],
                     $user->getPassword() ?? ""
-                )
-            ) {
+                )) {
                 $this->isAuthenticateSuccessful($user);
                 return true;
-
             }
 
-            if (
-                !$user ||
+            if (!$user ||
                 !password_verify(
                     $credentials["password"],
                     $user->getPassword() ?? ""
-                )
-            ) {
+                )) {
                 self::$messageError = "L'Email et/ou le mot de passe sont incorrects.";
-
             }
 
             if ($user && $user->getStatus() === User::STATUS_CODE_DEACTIVATED) {
-                self::$messageError = "Votre compte a été désactivé par un membre de notre équipe. N'hésitez pas à nous contacter via notre formulaire si vous souhaitez en savoir plus.";
-
+                self::$messageError = "Votre compte a été désactivé par un membre de notre équipe.
+                N'hésitez pas à nous contacter via notre formulaire si vous souhaitez en savoir plus.";
             }
         }
 
         return false;
-
     }
 
 
@@ -149,11 +140,8 @@ class Auth implements ContainerInterface
                     classObject: Session::class
                 );
 
-            if (
-                is_object($oldSession)
-            ) {
+            if (is_object($oldSession)) {
                 $this->manager->delete($oldSession);
-
             }
 
             // Save the new session of user authenticated
@@ -176,11 +164,8 @@ class Auth implements ContainerInterface
                 );
 
                 self::$currentUser = $user;
-
             }
-
         }
-
     }
 
 
@@ -230,22 +215,15 @@ class Auth implements ContainerInterface
                         // Delete cookie session
                         $this->request->setCookie("session", "", time() - 1);
                     }
-
                 }
 
                 return self::$currentUser !== null;
-
             } else {
                 // Delete cookie session invalid
                 $this->request->setCookie("session", "", time() - 1);
-
             }
-
         }
 
         return false;
-
     }
-
-
 }

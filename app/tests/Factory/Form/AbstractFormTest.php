@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Form;
 
-
 use App\Entity\User;
 use App\Factory\Form\AbstractForm;
 use App\Factory\Form\FormException;
@@ -65,7 +64,6 @@ class AbstractFormTest extends TestCase
 
         $user = new User();
         $form = new FormMissCsrfKeyTest($user);
-
     }
 
 
@@ -89,7 +87,6 @@ class AbstractFormTest extends TestCase
 
         $user = new User();
         $form = new FormArrayOrNumSanitizeOptionTest($user);
-
     }
 
 
@@ -112,7 +109,6 @@ class AbstractFormTest extends TestCase
 
         $user = new User();
         $form = new FormCallableValidationOptionTest($user);
-
     }
 
 
@@ -142,7 +138,6 @@ class AbstractFormTest extends TestCase
         $form->handleRequest();
 
         $this->assertTrue($form->isSubmitted());
-
     }
 
 
@@ -171,7 +166,6 @@ class AbstractFormTest extends TestCase
         $form->handleRequest();
 
         $this->assertFalse($form->isSubmitted());
-
     }
 
 
@@ -213,7 +207,6 @@ class AbstractFormTest extends TestCase
         $this->assertEquals("Ce champ est requis.", $form->getError("pseudo"));
         $this->assertEquals("L'email n'est pas valide.", $form->getError("email"));
         $this->assertEquals("Ce champ est requis.", $form->getError("password"));
-
     }
 
 
@@ -258,7 +251,6 @@ class AbstractFormTest extends TestCase
         $this->assertEquals("Test", $user->getPseudo());
         $this->assertEquals("test@test.com", $user->getEmail());
         $this->assertEquals("password", $user->getPassword());
-
     }
 
 
@@ -285,7 +277,6 @@ class AbstractFormTest extends TestCase
         $form->handleRequest();
 
         $this->assertIsArray($form->getErrors());
-
     }
 
 
@@ -313,7 +304,6 @@ class AbstractFormTest extends TestCase
 
         $this->assertNotNull($form->getError("lastname"));
         $this->assertNull($form->getError("test"));
-
     }
 
 
@@ -377,10 +367,7 @@ class AbstractFormTest extends TestCase
          */
         $dataNull = $form->getData("Test");
         $this->assertNull($dataNull);
-
     }
-
-
 }
 
 
@@ -412,7 +399,6 @@ final class FormFullTest extends AbstractForm
     {
         $this->entity = $entity;
         parent::__construct($entity);
-
     }
 
 
@@ -441,7 +427,6 @@ final class FormFullTest extends AbstractForm
                     }
 
                     return true;
-
                 }
             ])
             ->addField(name: "firstname", options: [
@@ -455,7 +440,6 @@ final class FormFullTest extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 3 || strlen($value) > 50) {
@@ -465,11 +449,9 @@ final class FormFullTest extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField(name: "pseudo", options: [
@@ -483,7 +465,6 @@ final class FormFullTest extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) < 4) {
@@ -493,7 +474,6 @@ final class FormFullTest extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     if (strlen($value) > 20) {
@@ -503,11 +483,9 @@ final class FormFullTest extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField(name: "email", options: [
@@ -521,11 +499,9 @@ final class FormFullTest extends AbstractForm
                         );
 
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField(name: "password", options: [
@@ -537,7 +513,6 @@ final class FormFullTest extends AbstractForm
                             self::ERROR_REQUIRED
                         );
                         return false;
-
                     }
 
                     if (strlen($value) < 6 || strlen($value) > 20) {
@@ -546,11 +521,9 @@ final class FormFullTest extends AbstractForm
                             sprintf(self::ERROR_LENGTH, 6, 20)
                         );
                         return false;
-
                     }
 
-                    if (
-                        (
+                    if ((
                             !isset($this->fields["data"]["password"]) ||
                             !isset($this->fields["data"]["confirmPassword"])
                         ) ||
@@ -561,11 +534,9 @@ final class FormFullTest extends AbstractForm
                             self::ERROR_CONFIRM
                         );
                         return false;
-
                     }
 
                     return true;
-
                 }
             ])
             ->addField(name: "confirmPassword", options: [
@@ -573,7 +544,6 @@ final class FormFullTest extends AbstractForm
             ])
         ;
     }
-
 }
 
 
@@ -602,7 +572,6 @@ final class FormMissCsrfKeyTest extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -610,8 +579,6 @@ final class FormMissCsrfKeyTest extends AbstractForm
     {
         parent::builder();
     }
-
-
 }
 
 
@@ -642,7 +609,6 @@ final class FormArrayOrNumSanitizeOptionTest extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -653,8 +619,6 @@ final class FormArrayOrNumSanitizeOptionTest extends AbstractForm
             "sanitize" => "Test"
         ]);
     }
-
-
 }
 
 
@@ -685,7 +649,6 @@ final class FormCallableValidationOptionTest extends AbstractForm
     public function __construct(?object $entity = null)
     {
         parent::__construct($entity);
-
     }
 
 
@@ -696,6 +659,4 @@ final class FormCallableValidationOptionTest extends AbstractForm
             "validation" => "Test"
         ]);
     }
-
-
 }

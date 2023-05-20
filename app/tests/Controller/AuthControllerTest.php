@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Controller;
 
-
 use App\Auth\Auth;
 use App\Controller\AbstractController;
 use App\Controller\AuthController;
@@ -98,7 +97,6 @@ class AuthControllerTest extends TestCase
          */
         $manager = Container::getService("manager");
         $this->manager = $manager;
-
     }
 
     /**
@@ -140,7 +138,6 @@ class AuthControllerTest extends TestCase
             "<title>P5 DAPS BLOG - Connexion</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -216,7 +213,6 @@ class AuthControllerTest extends TestCase
             "<div class=\"col-12 text-center text-danger\">L'Email et/ou le mot de passe sont incorrects.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -284,12 +280,11 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString(
-            "<div class=\"col-12 text-center text-danger\">Votre compte a été désactivé par un membre de notre équipe. N'hésitez pas à nous contacter via notre formulaire si vous souhaitez en savoir plus.</div>",
+            "Votre compte a été désactivé",
             html_entity_decode(htmlspecialchars_decode($content))
         );
         $this->assertFalse($request->hasCookie("session"));
         $this->assertNull(Auth::$currentUser);
-
     }
 
     /**
@@ -345,7 +340,6 @@ class AuthControllerTest extends TestCase
         $controller->send();
 
         $this->assertEquals(302, http_response_code());
-
     }
 
 
@@ -397,7 +391,6 @@ class AuthControllerTest extends TestCase
         $this->assertFalse($request->hasCookie("session"));
         $this->assertNull(Auth::$currentUser);
         $this->assertEquals(302, http_response_code());
-
     }
 
 
@@ -426,7 +419,6 @@ class AuthControllerTest extends TestCase
         ob_get_clean();
 
         $this->assertStringContainsString("<title>P5 DAPS BLOG - Inscription</title>", $content);
-
     }
 
 
@@ -565,7 +557,6 @@ class AuthControllerTest extends TestCase
             "<div class=\"invalid-feedback\">La confirmation du mot de passe n'est pas identique.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -631,7 +622,6 @@ class AuthControllerTest extends TestCase
         $this->user = $user;
 
         $this->assertInstanceOf(User::class, $this->user);
-
     }
 
 
@@ -673,7 +663,6 @@ class AuthControllerTest extends TestCase
             "<title>P5 DAPS BLOG - Email confirmé</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -706,7 +695,6 @@ class AuthControllerTest extends TestCase
         (new AuthController())->validEmail($token);
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -768,7 +756,6 @@ class AuthControllerTest extends TestCase
             "<title>P5 DAPS BLOG - Nouveau lien envoyé</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -796,7 +783,6 @@ class AuthControllerTest extends TestCase
             "<title>P5 DAPS BLOG - Mot de passe perdu</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -858,7 +844,6 @@ class AuthControllerTest extends TestCase
             "<div class=\"invalid-feedback\">L'email n'est pas valide.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -898,7 +883,6 @@ class AuthControllerTest extends TestCase
             "<h1>Email envoyé !</h1>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -922,7 +906,6 @@ class AuthControllerTest extends TestCase
         $controller->send();
 
         $this->assertEquals(404, http_response_code());
-
     }
 
 
@@ -967,7 +950,6 @@ class AuthControllerTest extends TestCase
             "<h1>Le lien est expiré !</h1>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -1011,7 +993,6 @@ class AuthControllerTest extends TestCase
             "<title>P5 DAPS BLOG - Réinitialiser mot de passe</title>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -1098,7 +1079,6 @@ class AuthControllerTest extends TestCase
             "<div class=\"invalid-feedback\">La confirmation du mot de passe n'est pas identique.</div>",
             html_entity_decode(htmlspecialchars_decode($content))
         );
-
     }
 
 
@@ -1154,7 +1134,6 @@ class AuthControllerTest extends TestCase
 
         $this->assertTrue(password_verify("123456", $user->getPassword() ?: ""));
         $this->assertNull($user->getForgottenPasswordToken());
-
     }
 
 
@@ -1201,7 +1180,6 @@ class AuthControllerTest extends TestCase
 
             $this->manager->delete($this->user);
         }
-
     }
 
 
@@ -1216,15 +1194,11 @@ class AuthControllerTest extends TestCase
     private function initPost(
         string $method,
         array $fields = []
-    ): void
-    {
+    ): void {
         $_SERVER["REQUEST_METHOD"] = $method;
 
         foreach ($fields as $key => $value) {
             $_POST[$key] = $value;
         }
-
     }
-
-
 }

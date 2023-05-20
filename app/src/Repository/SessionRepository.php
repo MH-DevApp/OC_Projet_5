@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-
 use App\Entity\Session;
 
 /**
@@ -42,13 +41,9 @@ class SessionRepository extends AbstractRepository
     /**
      * Construct
      *
-     * @throws RepositoryException
      */
     public function __construct()
     {
         parent::__construct(Session::class);
-
     }
-
-
 }

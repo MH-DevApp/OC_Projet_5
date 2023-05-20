@@ -153,20 +153,20 @@ echo "## DROP ALL DATA SUCCESSFULLY ##\n\n";
 // Create entities
 echo "## CREATE ENTITIES ##\n";
 
-$sql = file_get_contents(__DIR__."/sql/admins.sql");
+$sql = file_get_contents(__DIR__."/sql/admins.sql") ?: "";
 $manager->getPDO()->exec($sql);
 
-$sql = file_get_contents(__DIR__."/sql/users.sql");
+$sql = file_get_contents(__DIR__."/sql/users.sql") ?: "";
 $manager->getPDO()->exec($sql);
 
 echo "- Users with role user has created successfully\n";
 
-$sql = file_get_contents(__DIR__."/sql/posts.sql");
+$sql = file_get_contents(__DIR__."/sql/posts.sql") ?: "";
 $manager->getPDO()->exec($sql);
 
 echo "- Posts has created successfully\n";
 
-$sql = file_get_contents(__DIR__."/sql/comments.sql");
+$sql = file_get_contents(__DIR__."/sql/comments.sql") ?: "";
 $manager->getPDO()->exec($sql);
 
 echo "- Comments has created successfully\n";

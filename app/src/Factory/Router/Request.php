@@ -196,7 +196,8 @@ class Request implements ContainerInterface
             $this->_cookie[$key] = $value;
         } else {
             $this->_cookie = array_filter(
-                $this->_cookie, fn ($k) => $key !== $k,
+                $this->_cookie,
+                fn ($k) => $key !== $k,
                 ARRAY_FILTER_USE_KEY
             );
         }
@@ -224,7 +225,7 @@ class Request implements ContainerInterface
      */
     public function getURI(): string
     {
-        if (isset($this->_server['REQUEST_URI']) 
+        if (isset($this->_server['REQUEST_URI'])
             && !str_ends_with($this->_server['REQUEST_URI'], 'cgi')
         ) {
             $result = $this->_server['REQUEST_URI'];

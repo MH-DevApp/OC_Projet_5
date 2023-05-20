@@ -70,6 +70,5 @@ class DotEnvThrowExceptionWithoutEnvFileTest extends TestCase
         );
 
         (new DotEnv())->load();
-
     }
 }

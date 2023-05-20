@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Repository;
 
-
 use App\Database\Database;
 use App\Entity\Post;
 use App\Entity\User;
@@ -90,7 +89,8 @@ class PostRepositoryTest extends TestCase
          * @var User $user
          */
         $user = (new UserRepository())
-            ->findByOne(["lastname" => "User1"],
+            ->findByOne(
+                ["lastname" => "User1"],
                 classObject: User::class
             );
 
@@ -122,8 +122,5 @@ class PostRepositoryTest extends TestCase
         $post = (new PostRepository())->findByOne(["id" => $idPost], classObject: Post::class);
 
         $this->assertInstanceOf(Post::class, $post);
-
     }
-
-
 }

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-
 use App\Factory\Form\ContactForm;
 use App\Factory\Mailer\Email;
 use App\Factory\Mailer\Mailer;
@@ -69,7 +68,6 @@ class HomeController extends AbstractController
             (new Mailer())->send($email);
 
             return $this->redirectTo("app_home");
-
         }
 
         $postsFeatured = (new PostRepository())->getFeaturedPostsWithUser();
@@ -81,6 +79,4 @@ class HomeController extends AbstractController
             "postsFeatured" => $postsFeatured
         ]);
     }
-
-
 }

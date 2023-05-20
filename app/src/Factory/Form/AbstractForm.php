@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-
 use App\Factory\Router\Request;
 use App\Factory\Utils\Csrf\Csrf;
 use App\Factory\Utils\Mapper\Mapper;
@@ -75,7 +74,6 @@ abstract class AbstractForm
         $this->request = $request;
         $this->entity = $entity;
         $this->builder();
-
     }
 
 
@@ -94,7 +92,6 @@ abstract class AbstractForm
         }
 
         $this->fields["errors"]["global"] = "";
-
     }
 
 
@@ -124,12 +121,10 @@ abstract class AbstractForm
         // Initialise sanitize for this field name
 
         if (isset($options["sanitize"])) {
-
             // An array of sanitize must be to have "filter" and "flags" keys
             // Or sanitize must be numeric value
 
-            if (
-                (
+            if ((
                     is_array($options["sanitize"]) &&
                     (
                         !isset($options["sanitize"]["filter"]) ||
@@ -146,16 +141,13 @@ abstract class AbstractForm
             }
 
             $this->fields["sanitize"][$name] = $options["sanitize"];
-
         } else {
             $this->fields["sanitize"][$name] = FILTER_DEFAULT;
-
         }
 
         // Initialise validation callable in the list of validations
 
         if (isset($options["validation"])) {
-
             if (!is_callable($options["validation"])) {
                 throw new FormException(
                     "The validation option must be callable."
@@ -163,11 +155,9 @@ abstract class AbstractForm
             }
 
             $this->fields["validation"][$name] = $options["validation"];
-
         }
 
         return $this;
-
     }
 
 
@@ -203,11 +193,9 @@ abstract class AbstractForm
                 ARRAY_FILTER_USE_BOTH
             );
             $this->entity = Mapper::mapArrayToEntity($dataWithoutNotMapped, $this->entity);
-
         }
 
         return $this;
-
     }
 
 
@@ -220,7 +208,6 @@ abstract class AbstractForm
     public function isSubmitted(): bool
     {
         return $this->request->getMethod() === "POST";
-
     }
 
 
@@ -245,7 +232,6 @@ abstract class AbstractForm
                 sprintf(self::ERROR_BAD_FORMAT, "Le token CSRF")
             );
             $result = false;
-
         }
 
 
@@ -253,16 +239,12 @@ abstract class AbstractForm
          * @var callable $callable
          */
         foreach ($this->fields["validation"] as $key => $callable) {
-
             if (!$callable($this->fields["data"][$key])) {
                 $result = false;
-
             }
-
         }
 
         return $result;
-
     }
 
 
@@ -284,7 +266,6 @@ abstract class AbstractForm
         return $field ?
             $this->fields["data"]["$field"] :
             $this->fields["data"];
-
     }
 
 
@@ -307,7 +288,6 @@ abstract class AbstractForm
          * @var array<string, string>
          */
         return $errors;
-
     }
 
 
@@ -329,7 +309,6 @@ abstract class AbstractForm
          * @var string
          */
         return $this->fields["errors"][$field];
-
     }
 
 
@@ -344,8 +323,5 @@ abstract class AbstractForm
     public function setError(string $field, string $message): void
     {
         $this->fields["errors"][$field] = $message;
-
     }
-
-
 }

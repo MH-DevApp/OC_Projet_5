@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace tests\Factory\Router;
 
-
 use App\Factory\Router\Route;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -58,7 +57,6 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(["GET"], $route->getMethods());
         $this->assertEquals("app_test", $route->getName());
         $this->assertEquals([], $route->getParams());
-
     }
 
 
@@ -83,7 +81,6 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(["GET"], $route->getMethods());
         $this->assertEquals("app_test_id_and_slug", $route->getName());
         $this->assertEquals(["1", "hello"], $route->getParams());
-
     }
 
 
@@ -116,8 +113,5 @@ class RouterRouteTest extends TestCase
         $this->assertEquals(["GET", "POST"], $route->getMethods());
         $this->assertEquals("app_test_id_and_slug", $route->getName());
         $this->assertEquals(["1", "hello"], $route->getParams());
-
     }
-
-
 }
