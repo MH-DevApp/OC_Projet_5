@@ -61,12 +61,11 @@ class HomeController extends AbstractController
             // Send email
             $email = (new Email())
                 ->setSubject("[P5] Formulaire de contact")
-                ->setBody(
-                    "<h1 style='text-decoration: underline;'>Formulaire de contact</h1>".
-                    "<p>Email: ".$form->getData("email")."</p>".
-                    "<p>Titre: ".$form->getData("subject")."</p>".
-                    "<p>Message: ".$form->getData("message")."</p>"
-                );
+                ->setBodyTwig("emails/contact-form.html.twig", [
+                    "email" => $form->getData("email"),
+                    "subject" => $form->getData("subject"),
+                    "message" => $form->getData("message")
+                    ]);
             (new Mailer())->send($email);
 
             return $this->redirectTo("app_home");

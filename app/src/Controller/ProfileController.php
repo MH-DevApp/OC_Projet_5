@@ -96,16 +96,11 @@ class ProfileController extends AbstractController
                 $email = (new Email())
                     ->setSubject("[P5] P5 DAPS BLOG - Votre mot de passe a été modifié !")
                     ->setTo($userEmail)
-                    ->setBody(
-                        "<p>Bonjour ".$this->user()->getFirstname().", <br><br>".
-                        "Nous vous confirmons que votre mot de passe a été modifié avec succès. <br><br>".
-                        "Nous vous recommandons de garder votre mot de passe confidentiel et de le ".
-                        "changer régulièrement pour des raisons de sécurité. <br><br>".
-                        "Si vous n'avez pas effectué cette modification, si vous rencontrez des ".
-                        "problèmes pour vous connecter à votre compte ou si vous avez des ".
-                        "questions, n'hésitez pas à nous contacter via notre formulaire de contact. <br><br>".
-                        "Cordialement, <br>".
-                        "Mehdi"
+                    ->setBodyTwig(
+                        "emails/reset-password.html.twig",
+                        [
+                            "firstname" => $this->user()->getFirstname()
+                        ]
                     );
                 (new Mailer())->send($email);
 
