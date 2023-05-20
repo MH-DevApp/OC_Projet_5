@@ -162,20 +162,12 @@ class AuthController extends AbstractController
             $email = (new Email())
                 ->setSubject("[P5] Bienvenue sur P5 DAPS BLOG - Veuillez confirmer votre adresse email")
                 ->setTo($userEmail)
-                ->setBody(
-                    "<p>Bonjour ".$user->getFirstname().", <br><br>".
-                        "Je vous souhaite la bienvenue sur P5 DAPS BLOG! <br><br>".
-                        "Pour pouvoir accéder à toutes les fonctionnalités de mon blog, y compris la publication ".
-                        "de commentaires, nous avons besoin de confirmer votre adresse email. <br /><br/>".
-                        "Pour confirmer votre adresse email et activer votre compte, veuillez cliquer sur le lien ".
-                        "ci-dessous (Valide pendant une durée de 5 minutes) :<br>".
-                        "<a href=\"".$urlValidEmail."\">$urlValidEmail</a><br><br>".
-                        "Si vous avez des questions ou des difficultés à confirmer votre adresse email, n'hésitez pas ".
-                        "me contacter via le formulaire de contact.<br><br>".
-                        "Encore une fois, merci de votre inscription sur P5 DAPS BLOG. Nous espérons vous voir ".
-                        "régulièrement sur notre site. <br><br>".
-                        "Cordialement, <br>".
-                        "Mehdi"
+                ->setBodyTwig(
+                    "emails/register.html.twig",
+                    [
+                        "firstname" => $user->getFirstname(),
+                        "urlValidEmail" => $urlValidEmail
+                    ]
                 );
             (new Mailer())->send($email);
 
@@ -267,18 +259,11 @@ class AuthController extends AbstractController
             $email = (new Email())
                 ->setSubject("[P5] P5 DAPS BLOG - Votre compte est activé!")
                 ->setTo($userEmail)
-                ->setBody(
-                    "<p>Bonjour ".$user->getFirstname().", <br><br>".
-                    "Je vous souhaite la bienvenue sur P5 DAPS BLOG! Votre adresse email a été confirmée ".
-                    "avec succès, et votre compte est maintenant activé. <br>".
-                    "Vous pouvez désormais accéder à toutes les fonctionnalités de mon blog, y compris la ".
-                    "publication de commentaires. <br><br>".
-                    "Je suis toujours heureux d'échanger avec mes utilisateurs, alors n'hésitez pas ".
-                    "à me contacter si vous avez des questions ou des suggestions. <br><br>".
-                    "Encore une fois, merci de votre inscription sur P5 DAPS BLOG. J'espére vous voir ".
-                    "régulièrement sur mon site. <br><br>".
-                    "Cordialement, <br>".
-                    "Mehdi"
+                ->setBodyTwig(
+                    "emails/confirm-email.html.twig",
+                    [
+                        "firstname" => $user->getFirstname(),
+                    ]
                 );
             (new Mailer())->send($email);
 
@@ -324,16 +309,12 @@ class AuthController extends AbstractController
                 $email = (new Email())
                     ->setSubject("[P5] P5 DAPS BLOG - Nouveau lien d'activation de votre email")
                     ->setTo($emailUser)
-                    ->setBody(
-                        "<p>Bonjour ".$user->getFirstname().", <br><br>".
-                        "Le lien de validation de votre adresse email a expiré. <br><br>".
-                        "Pour confirmer votre adresse email et activer votre compte, veuillez cliquer sur le lien ".
-                        "ci-dessous (Celui-ci est valide pour une durée de 5 minutes) :<br>".
-                        "<a href=\"".$urlValidEmail."\">$urlValidEmail</a><br><br>".
-                        "Si vous avez des questions ou des difficultés à confirmer votre adresse email, n'hésitez pas ".
-                        "me contacter via le formulaire de contact.<br><br>".
-                        "Cordialement, <br>".
-                        "Mehdi"
+                    ->setBodyTwig(
+                        "emails/refresh-link-confirm-email.html.twig",
+                        [
+                            "firstname" => $user->getFirstname(),
+                            "urlValidEmail" => $urlValidEmail
+                        ]
                     );
                 (new Mailer())->send($email);
             }
@@ -420,18 +401,12 @@ class AuthController extends AbstractController
                 $emailTemplate = (new Email())
                     ->setSubject("[P5] P5 DAPS BLOG - Réinitialisation de votre mot de passe")
                     ->setTo($emailUser)
-                    ->setBody(
-                        "<p>Bonjour ".$user->getFirstname().", <br><br>".
-                        "Nous avons bien reçu votre demande de réinitialisation de mot de passe. <br>".
-                        "Afin de procéder à la réinitialisation, veuillez cliquer sur le lien ci-dessous et ".
-                        "suivre les instructions (Celui-ci est valide pour une durée de 5 minutes) : <br><br>".
-                        "<a href=\"".$link."\">$link</a> <br><br>".
-                        "Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer ce message et votre mot ".
-                        "de passe actuel restera inchangé. <br><br>".
-                        "Si vous avez des questions ou des problèmes avec la réinitialisation de votre mot de passe, ".
-                        "n'hésitez pas me contacter via le formulaire de contact.<br><br>".
-                        "Cordialement, <br>".
-                        "Mehdi"
+                    ->setBodyTwig(
+                        "emails/forgotten-password.html.twig",
+                        [
+                            "firstname" => $user->getFirstname(),
+                            "link" => $link
+                        ]
                     );
                 (new Mailer())->send($emailTemplate);
             }
@@ -526,14 +501,12 @@ class AuthController extends AbstractController
             $emailTemplate = (new Email())
                 ->setSubject("[P5] P5 DAPS BLOG - Votre mot de passe a été réinitialisé")
                 ->setTo($emailUser)
-                ->setBody(
-                    "<p>Bonjour ".$user->getFirstname().", <br><br>".
-                    "Nous vous confirmons que votre mot de passe a été réinitialisé avec succès. <br>".
-                    "Vous pouvez désormais vous connecter à votre compte : <a href=\"$link\">$link</a>. <br><br>".
-                    "Si vous rencontrez des problèmes pour vous connecter à votre compte ou si vous avez ".
-                    "des questions, n'hésitez pas me contacter via le formulaire de contact.<br><br>".
-                    "Cordialement, <br>".
-                    "Mehdi"
+                ->setBodyTwig(
+                    "emails/forgotten-password-success.html.twig",
+                    [
+                        "firstname" => $user->getFirstname(),
+                        "link" => $link
+                    ]
                 );
             (new Mailer())->send($emailTemplate);
             

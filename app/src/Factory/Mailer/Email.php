@@ -17,6 +17,11 @@ declare(strict_types=1);
 namespace App\Factory\Mailer;
 
 
+use App\Factory\Twig\Twig;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+
 /**
  * Email class
  *
@@ -144,6 +149,24 @@ class Email
         $this->body = $body;
         return $this;
 
+    }
+
+    /**
+     * Set Email body with template Twig.
+     *
+     * @param string $path
+     * @param array<string, mixed> $params
+     *
+     * @return $this
+     *
+     * @throws LoaderError|RuntimeError|SyntaxError
+     */
+    public function setBodyTwig(string $path, array $params = []): self
+    {
+        $twig = new Twig();
+        $this->body = $twig->getTwig()->render($path, $params);
+
+        return $this;
     }
 
 
