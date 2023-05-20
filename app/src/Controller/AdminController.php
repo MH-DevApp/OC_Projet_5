@@ -529,7 +529,7 @@ class AdminController extends AbstractController
             [\PDO::FETCH_CLASS, Comment::class]
         );
 
-        if ($comments && count($comments) > 0) {
+        if (!empty($comments)) {
             foreach ($comments as $comment) {
                 $this->manager->delete($comment);
             }

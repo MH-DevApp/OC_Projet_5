@@ -97,8 +97,22 @@ class EntityTest extends TestCase
         $this->assertEquals("Token", $user->getForgottenPasswordToken());
         $this->assertEquals(new DateTime($createdAt->format(DATE_ATOM)), $user->getCreatedAt());
         $this->assertTrue(password_verify("TEST", $user->getPassword() ?? ""));
-        $this->assertEquals($expiredAt, $user->getExpiredTokenAt()?->format(DATE_ATOM) ?? "");
-        $this->assertEquals($expiredAt, $user->getExpiredEmailTokenAt()?->format(DATE_ATOM) ?? "");
+        $this->assertEquals(
+            $expiredAt,
+            $user->getExpiredTokenAt() ?
+                $user->getExpiredTokenAt() instanceof DateTime ?
+                    $user->getExpiredTokenAt()->format(DATE_ATOM) :
+                    $user->getExpiredTokenAt() :
+                ""
+        );
+        $this->assertEquals(
+            $expiredAt,
+            $user->getExpiredEmailTokenAt() ?
+                $user->getExpiredEmailTokenAt() instanceof DateTime ?
+                    $user->getExpiredEmailTokenAt()->format(DATE_ATOM) :
+                    $user->getExpiredEmailTokenAt() :
+                ""
+        );
 
         $user->setRole("ROLE_ADMIN");
 

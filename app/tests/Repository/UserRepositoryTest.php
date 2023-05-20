@@ -201,8 +201,22 @@ class UserRepositoryTest extends TestCase
         $statement->bindValue(":pseudo", $user->getPseudo());
         $statement->bindValue(":password", $user->getPassword());
         $statement->bindValue(":email", $user->getEmail());
-        $statement->bindValue(":createdAt", $user->getCreatedAt()->format(DATE_ATOM));
-        $statement->bindValue(":expiredTokenAt", $user->getExpiredTokenAt()->format(DATE_ATOM));
+        $statement->bindValue(
+            ":createdAt",
+            $user->getCreatedAt() ?
+                $user->getCreatedAt() instanceof DateTime ?
+                    $user->getCreatedAt()->format(DATE_ATOM) :
+                    $user->getCreatedAt() :
+                ""
+        );
+        $statement->bindValue(
+            ":expiredTokenAt",
+            $user->getExpiredTokenAt() ?
+                $user->getExpiredTokenAt() instanceof DateTime ?
+                    $user->getExpiredTokenAt()->format(DATE_ATOM) :
+                    $user->getExpiredTokenAt() :
+                ""
+        );
         $statement->bindValue(":role", $user->getRole());
         $statement->bindValue(":status", $user->getStatus());
         $statement->execute();

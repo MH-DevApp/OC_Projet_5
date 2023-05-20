@@ -150,7 +150,7 @@ class Router implements ContainerInterface
      * Throw exception if the name doesn't exist.
      *
      * @param string $name
-     * @param array<string, string|int> $params
+     * @param array<string, string> $params
      * @param bool $isAbsolute
      *
      * @return string
@@ -178,7 +178,7 @@ class Router implements ContainerInterface
      * Redirect to new route with params.
      *
      * @param string $name
-     * @param array<string, string|int> $params
+     * @param array<string, string> $params
      *
      * @return Response
      *

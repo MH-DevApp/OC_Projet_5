@@ -1599,7 +1599,15 @@ class AdminControllerTest extends TestCase
             ->setIsPublished(true)
             ->setIsFeatured(true);
 
-        $this->manager->flush($post);
+        $this->manager->persist($post);
+
+        $comment = (new Comment())
+            ->setContent("Test")
+            ->setPostId($post->getId() ?? "")
+            ->setUserId($this->user?->getId() ?? "");
+
+        $this->manager->persist($comment);
+        $this->manager->flush();
 
         /**
          * @var Request $request

@@ -156,7 +156,7 @@ class Route
     /**
      * Make url with the name and params and return string.
      *
-     * @param array $params
+     * @param array<string, string> $params
      * @param bool $isAbsolute
      *
      * @return string

@@ -169,7 +169,7 @@ class Manager implements ContainerInterface
     /**
      * Create an entity in the db
      *
-     * @param array<string, string|int> $obj
+     * @param array<string, string|int|bool> $obj
      * @param string $tableName
      *
      * @return void
@@ -202,7 +202,7 @@ class Manager implements ContainerInterface
     /**
      * Update an entity in the DB by ID
      *
-     * @param array<string, string|int> $obj
+     * @param array<string, string|int|bool> $obj
      * @param string $tableName
      *
      * @return void

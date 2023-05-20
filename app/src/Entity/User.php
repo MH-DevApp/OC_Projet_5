@@ -76,7 +76,7 @@ class User extends AbstractEntity
         }
 
         if ($this->status === null) {
-            $this->setStatus(false);
+            $this->setStatus(User::STATUS_CODE_REGISTERED_WAITING);
         }
 
     }
@@ -247,9 +247,9 @@ class User extends AbstractEntity
     /**
      * Get the status of the User
      *
-     * @return int
+     * @return ?int
      */
-    public function getStatus(): int
+    public function getStatus(): ?int
     {
         return $this->status;
 

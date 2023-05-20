@@ -42,7 +42,6 @@ class SessionRepository extends AbstractRepository
     /**
      * Construct
      *
-     * @throws RepositoryException
      */
     public function __construct()
     {

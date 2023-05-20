@@ -121,7 +121,7 @@ abstract class AbstractController
      * Generate url
      *
      * @param string $name
-     * @param array<string, int|string> $params
+     * @param array<string, string> $params
      * @param bool $isAbsolute
      *
      * @return string
@@ -147,7 +147,7 @@ abstract class AbstractController
      * Redirect to URL
      *
      * @param string $name
-     * @param array<string, int|string> $params
+     * @param array<string, string> $params
      *
      * @return Response
      *
