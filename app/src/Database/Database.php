@@ -19,7 +19,6 @@ namespace App\Database;
 use App\Factory\Router\Request;
 use App\Service\Container\Container;
 use PDO;
-use PDOException;
 
 /**
  * Database class

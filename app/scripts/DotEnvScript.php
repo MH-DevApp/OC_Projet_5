@@ -22,7 +22,7 @@ use Exception;
 require_once __DIR__.'/../vendor/autoload.php';
 
 try {
-    $env_mode = getenv("ENV_MODE") ?: "";
+    $env_mode = $_ENV["ENV_MODE"] ?? "local";
     $hostDB = $env_mode === "local" ? "localhost:3306" : "db";
     $portDBTest = $env_mode === "local" ? "3306" : "3001";
     $hostMailer = $env_mode === "local" ? "localhost" : "mailer";

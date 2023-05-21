@@ -21,7 +21,6 @@ use App\Factory\Router\Response;
 use App\Factory\Router\Router;
 use App\Factory\Twig\Twig;
 use App\Service\Container\Container;
-use App\Service\Container\ContainerInterface;
 use ReflectionException;
 
 /**
