@@ -9,7 +9,7 @@ _The folder [v1](https://github.com/MH-DevApp/OC_Projet_5/tree/feature/documenta
 
 ## Specs
 
-* PHP 8.1
+* PHP >= 8.1
 * Bootstrap 5.2.3
 * Bundles installed via Composer :
   * Autoload
@@ -29,9 +29,10 @@ First clone or download the source code and extract it.
 ___
 #### Requirements
 - You need to have composer on your computer
-- Your server needs PHP version 8.1
+- Your server needs PHP >= 8.1
 - MySQL or MariaDB
 - Apache or Nginx
+- Mailer service
 
 The following PHP extensions need to be installed and enabled :
 - pdo_mysql
@@ -159,13 +160,13 @@ Once your Docker configuration is up and ready, you can follow the instructions 
 7. To run the script for creating the database and tables, with the condition of deleting the existing database if it already exists:
 
     ```bash
-    > docker exec -it p5-php-1 composer run make:database
+    > docker exec -it php composer run make:database
     ```
 
 8. To load the fixtures for users, posts, and comments:
 
     ```bash
-    > docker exec -it p5-php-1 composer run make:load:fixtures
+    > docker exec -it php composer run make:load:fixtures
     ```
 
 9. To destroy/remove a Docker image, you can use the following command:
@@ -177,10 +178,24 @@ The generated Docker container uses PHP8.2, MySQL 8.0, phpMyAdmin and mailcatche
 
 The website is available at the url: http://localhost:3000
 
+#### DBMS
+
 You can access the DBMS (phpMyAdmin) to view and configure your database. Please go to the url: http://localhost:8080.
 
 - Username: `root` ;
 - Password: `password`.
 
 This assumes that you have set up a Docker container running phpMyAdmin and configured it to run on port 8080. Make sure that the Docker container is running and accessible before attempting to access phpMyAdmin.
+
+#### Mailer
+You can access the mailer interface to view mails caught : http://localhost:5001.
+
+### USERS CREDENTIALS
+- admin@p5-oc.fr
+- user1@p5-oc.fr
+- user2@p5-oc.fr
+- ...
+- user9@p5-oc.fr
+
+Password for all users : 123456
 
