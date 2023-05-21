@@ -20,7 +20,6 @@ use App\Entity\Comment;
 use App\Factory\Form\CommentForm;
 use App\Factory\Form\FormException;
 use App\Factory\Manager\Manager;
-use App\Factory\Router\Request;
 use App\Factory\Router\Response;
 use App\Factory\Router\Route;
 use App\Repository\CommentRepository;

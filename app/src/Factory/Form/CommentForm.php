@@ -16,9 +16,6 @@ declare(strict_types=1);
 
 namespace App\Factory\Form;
 
-use App\Entity\Post;
-use App\Repository\PostRepository;
-
 /**
  * CommentForm class
  *
