@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" testdox="true" colors="true" cacheResult="false" cacheDirectory=".phpunit.cache" requireCoverageMetadata="true">
+  <coverage>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <html outputDirectory="coverage"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Tests">
+      <directory suffix="KernelTest.php">tests</directory>
+      <directory suffix=".php">tests/Factory</directory>
+      <directory suffix=".php">tests/Service</directory>
+      <directory suffix=".php">tests/Database</directory>
+      <directory suffix=".php">tests/Entity</directory>
+      <directory suffix=".php">tests/Auth</directory>
+      <directory suffix=".php">tests/Controller</directory>
+    </testsuite>
+    <testsuite name="Tests Repository">
+      <file>tests/Repository/UserRepositoryTest.php</file>
+      <file>tests/Repository/SessionRepositoryTest.php</file>
+      <file>tests/Repository/PostRepositoryTest.php</file>
+      <file>tests/Repository/CommentRepositoryTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

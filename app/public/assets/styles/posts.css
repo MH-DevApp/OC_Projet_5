@@ -1,0 +1,31 @@
+#articles .card {
+    cursor: pointer;
+    transition: opacity 0.3s, background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+#articles .card:hover {
+    transform: scale(1.02);
+}
+
+#articles .card:hover .card-header, #articles .card:hover .card-footer {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+    border-color: var(--bs-light);
+}
+
+#articles .card .card-footer img {
+    filter: invert(0.7);
+    transition: filter 0.4s;
+}
+
+#articles .card:hover .card-footer img {
+    filter: invert(0);
+}
+
+#articles .card-header {
+    min-height: 80px;
+}
+
+#articles .card-body {
+    min-height: 150px;
+}

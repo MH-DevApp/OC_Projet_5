@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/posts.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    <section id="articles" class="d-flex flex-column align-items-center">
+        <h3 class="d-flex justify-content-center align-items-center gap-3 bg-dark text-light py-5 px-2 w-100 m-0">
+            <img width="30px" src="{{ asset("images/logos/hashtag-solid.svg") }}" alt="Logo ID card">
+            <span class="text-center m-0 p-0">ARTICLES</span>
+        </h3>
+        <div class="row w-100 my-3 m-0 justify-content-center">
+            <div class="col-12 col-lg-11">
+                <div class="row gy-3">
+                    {% if posts|length > 0 %}
+                        {% for key, post in posts %}
+                            <div class="col-12 col-sm-6 col-xl-4">
+                                <a class="link-dark text-decoration-none" href="{{ path("app_post_details", {id: post.post_id}) }}">
+                                    <article class="card shadow h-100">
+                                        <div class="card-header d-flex flex-row align-items-center justify-content-center text-center h-auto">
+                                            <h5>{{ post.post_title|unescape }}</h5>
+                                        </div>
+                                        <div class="card-body h-100">
+                                            <div class="d-flex flex-column justify-content-between h-100">
+                                                <p class="card-text">
+                                                    {{ post.post_chapo|unescape|nl2br }}
+                                                </p>
+                                                <span class="small fst-italic align-self-end mt-2">Rédigé par : {{ post.author_pseudo }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer d-flex flex-row align-items-center justify-content-between gap-2">
+                                            <span class="fst-italic small">
+                                                {% if post.post_updatedAt %}
+                                                    Mis à jour le {{ post.post_updatedAt|date("d/m/Y") }}
+                                                {% else %}
+                                                    Rédigé le {{ post.post_createdAt|date("d/m/Y") }}
+                                                {% endif %}
+                                            </span>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img width="20px" src="{{ asset("images/logos/comments-solid.svg") }}" alt="Logo Comments">
+                                                <span class="small fw-bold">{{ post.comment_count }}</span>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="d-flex justify-content-center">
+                            <p>Aucun article n'a été rédigé</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{
+  "controllers": [
+    "App\\Controller\\AuthController",
+    "App\\Controller\\HomeController",
+    "App\\Controller\\PostController",
+    "App\\Controller\\ProfileController",
+    "App\\Controller\\AdminController"
+  ]
+}

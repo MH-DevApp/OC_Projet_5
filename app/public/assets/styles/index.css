@@ -1,0 +1,55 @@
+body {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.body {
+    margin-top: 80px;
+    display: flex;
+    flex-flow: column;
+    flex: 1 auto;
+}
+
+header nav {
+    height: 80px;
+    z-index: 10000;
+}
+
+header nav img.img-avatar {
+    width: 30px;
+    margin: 0 10px 0 10px;
+    border-radius: 50%;
+}
+
+header nav img.img-profile {
+    width: 20px;
+    border-radius: 50%;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    background-color: var(--bs-dark);
+    color: white;
+    padding: 30px 0;
+}
+
+footer ul {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+}
+
+.bg-secondary {
+    background-color: #454545 !important;
+}
+
+.form-floating > textarea.form-control {
+    height: unset;
+    resize: none;
+}

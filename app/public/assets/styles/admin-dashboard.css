@@ -1,0 +1,27 @@
+table tbody tr {
+    cursor: pointer;
+}
+
+textarea {
+    resize: none;
+}
+
+.modal {
+    z-index: 10001;
+}
+
+td[data-col] {
+    max-width: 150px;
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div[data-col] {
+    white-space: pre;
+    text-overflow: ellipsis;
+}
+
+#selectTypeEntity {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
