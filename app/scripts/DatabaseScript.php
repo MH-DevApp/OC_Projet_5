@@ -24,10 +24,10 @@ use PDO;
 require_once __DIR__.'/../vendor/autoload.php';
 
 try {
-    $_ENV["TEST_PATH"] = getenv("TEST_PATH") ?: "";
     (new DotEnv())->load();
-} catch (DotEnvException $e) {
-    echo $e;
+} catch (DotEnvException $exception) {
+    echo $exception;
+    return;
 }
 
 $dnsEnv = explode("dbname=", $_ENV["DB_DNS"]);
@@ -36,7 +36,14 @@ $dbname .= "_".strtolower($_ENV["APP_ENV"]);
 $user = $_ENV['DB_USER'] ?? 'root';
 $pwd = $_ENV['DB_PWD'] ?? 'password';
 
-$pdo = new PDO($dns, $user, $pwd);
+try {
+    $pdo = new PDO($dns, $user, $pwd, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+} catch (\PDOException $exception) {
+    echo $exception;
+    return;
+}
 
 // DROP DATABASE IF EXISTS
 echo "## CHECK IF DATABASE EXIST AND DROP IT IF EXIST ##\n";
@@ -69,8 +76,15 @@ echo "- Database has created successfully.\n\n";
 // Reload pdo with dbname
 echo "## CONNECT PDO TO DATABASE ##\n";
 
-$pdo = new PDO($dns."dbname=$dbname", $user, $pwd);
-echo "- Connected to Database\n\n";
+try {
+    $pdo = new PDO($dns."dbname=$dbname", $user, $pwd, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+    echo "- Connected to Database\n\n";
+} catch (\PDOException $exception) {
+    echo $exception;
+    return;
+}
 
 // Create tables
 echo "## CREATE TABLES ##\n";
