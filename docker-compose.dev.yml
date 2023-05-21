@@ -1,7 +1,9 @@
 version: '3.8'
 
+name: oc-p5
 services:
   db:
+    container_name: db
     image: "mysql:8.0"
     command: --default-authentication-plugin=mysql_native_password
     restart: always
@@ -15,6 +17,7 @@ services:
       - "3001:3306"
 
   phpmyadmin:
+    container_name: phpmyadmin
     image: phpmyadmin
     restart: always
     depends_on:
@@ -25,6 +28,7 @@ services:
       PMA_HOST: db
 
   php:
+    container_name: php
     build:
       context: .
       dockerfile: Docker/php.dockerfile
@@ -38,6 +42,7 @@ services:
       - "3000:8000"
 
   mailer:
+    container_name: mailer
     image: "schickling/mailcatcher"
     ports:
       - "5000:1025"
